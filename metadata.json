@@ -1,0 +1,6 @@
+{
+  "name": "JanVikas AI",
+  "description": "Premium multilingual AI-powered MP Development Request Prioritization Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
