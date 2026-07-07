@@ -5,8 +5,6 @@
     "state": "Andhra Pradesh",
     "latitude": 17.68,
     "longitude": 83.21,
-    "x": 300,
-    "y": 218,
     "category": "Water Supply",
     "priorityScore": 89,
     "priorityLevel": "Critical",
@@ -24,10 +22,22 @@
       "roadConnectivity": "Medium"
     },
     "topIssues": [
-      { "category": "Water Supply", "percent": 56 },
-      { "category": "Road Infrastructure", "percent": 28 },
-      { "category": "Education", "percent": 12 },
-      { "category": "Healthcare", "percent": 4 }
+      {
+        "category": "Water Supply",
+        "percent": 56
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 28
+      },
+      {
+        "category": "Education",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 4
+      }
     ],
     "recommendedAction": {
       "title": "Jal Jeevan Mission - Water Supply Expansion",
@@ -37,13 +47,575 @@
     }
   },
   {
+    "constituency": "Vijayawada",
+    "district": "NTR",
+    "state": "Andhra Pradesh",
+    "latitude": 16.5,
+    "longitude": 80.64,
+    "category": "Road Infrastructure",
+    "priorityScore": 82,
+    "priorityLevel": "High",
+    "count": 112,
+    "demandVolumeChange": "+14% this month",
+    "primaryGapsText": "Extreme pothole density and transit delays along national highway access links. Industrial zones report drainage bottlenecks.",
+    "metrics": {
+      "population": "15.40 L",
+      "literacyRate": "82.3%",
+      "villagesWards": "64",
+      "area": "2,618 km²",
+      "schools": "384",
+      "healthcareFacilities": "29",
+      "waterCoverage": "72%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 52
+      },
+      {
+        "category": "Sanitation",
+        "percent": 22
+      },
+      {
+        "category": "Water Supply",
+        "percent": 16
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Arterial Highway Asphalt overlay & Repair",
+      "beneficiaries": "3.8 Lakh",
+      "budget": "₹18.5 Cr",
+      "details": "Re-laying of highway transit stretches is vital before monsoons."
+    }
+  },
+  {
+    "constituency": "Tirupati",
+    "district": "Tirupati",
+    "state": "Andhra Pradesh",
+    "latitude": 13.62,
+    "longitude": 79.41,
+    "category": "Sanitation",
+    "priorityScore": 85,
+    "priorityLevel": "High",
+    "count": 98,
+    "demandVolumeChange": "+10% this month",
+    "primaryGapsText": "Hygiene issues in public transit spaces due to massive pilgrim inflow. Solid waste dump site capacity reached maximum.",
+    "metrics": {
+      "population": "8.20 L",
+      "literacyRate": "78.9%",
+      "villagesWards": "50",
+      "area": "3,120 km²",
+      "schools": "210",
+      "healthcareFacilities": "18",
+      "waterCoverage": "65%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 62
+      },
+      {
+        "category": "Water Supply",
+        "percent": 18
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 12
+      },
+      {
+        "category": "Education",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Decentralized Waste Processing & Compost Center",
+      "beneficiaries": "5.5 Lakh",
+      "budget": "₹14.2 Cr",
+      "details": "Set up bio-waste digestors near pilgrim routes."
+    }
+  },
+  {
+    "constituency": "Kakinada",
+    "district": "Kakinada",
+    "state": "Andhra Pradesh",
+    "latitude": 16.98,
+    "longitude": 82.24,
+    "category": "Water Supply",
+    "priorityScore": 74,
+    "priorityLevel": "Medium",
+    "count": 67,
+    "demandVolumeChange": "+5% this month",
+    "primaryGapsText": "High salinity in drinking water lines in coastal mandals. Incomplete piped supply distribution network.",
+    "metrics": {
+      "population": "6.80 L",
+      "literacyRate": "80.1%",
+      "villagesWards": "48",
+      "area": "2,420 km²",
+      "schools": "190",
+      "healthcareFacilities": "15",
+      "waterCoverage": "52%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 45
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 30
+      },
+      {
+        "category": "Healthcare",
+        "percent": 15
+      },
+      {
+        "category": "Education",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Coastal Piped Drinking Water Network Phase II",
+      "beneficiaries": "2.1 Lakh",
+      "budget": "₹8.8 Cr",
+      "details": "Install RO desalinator grids on coastal fringes."
+    }
+  },
+  {
+    "constituency": "Rajahmundry",
+    "district": "East Godavari",
+    "state": "Andhra Pradesh",
+    "latitude": 17,
+    "longitude": 81.8,
+    "category": "Education",
+    "priorityScore": 71,
+    "priorityLevel": "Medium",
+    "count": 59,
+    "demandVolumeChange": "+3% this month",
+    "primaryGapsText": "Classroom deficit in rural municipal schools. Inadequate drinking water facilities and missing boundary walls.",
+    "metrics": {
+      "population": "5.90 L",
+      "literacyRate": "81.3%",
+      "villagesWards": "44",
+      "area": "1,820 km²",
+      "schools": "230",
+      "healthcareFacilities": "14",
+      "waterCoverage": "70%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Education",
+        "percent": 48
+      },
+      {
+        "category": "Sanitation",
+        "percent": 22
+      },
+      {
+        "category": "Water Supply",
+        "percent": 18
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 12
+      }
+    ],
+    "recommendedAction": {
+      "title": "Government School Infrastructure Upgrades",
+      "beneficiaries": "1.4 Lakh",
+      "budget": "₹6.5 Cr",
+      "details": "Priority allocations for classroom desks and clean toilet construction."
+    }
+  },
+  {
+    "constituency": "Guntur",
+    "district": "Guntur",
+    "state": "Andhra Pradesh",
+    "latitude": 16.3,
+    "longitude": 80.43,
+    "category": "Sanitation",
+    "priorityScore": 76,
+    "priorityLevel": "Medium",
+    "count": 73,
+    "demandVolumeChange": "+9% this month",
+    "primaryGapsText": "Clogged drainage lines and open garbage dump issues in high-density residential blocks.",
+    "metrics": {
+      "population": "10.20 L",
+      "literacyRate": "78.4%",
+      "villagesWards": "55",
+      "area": "2,280 km²",
+      "schools": "280",
+      "healthcareFacilities": "22",
+      "waterCoverage": "62%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 50
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Water Supply",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Solid Waste Management System Overhaul",
+      "beneficiaries": "3.2 Lakh",
+      "budget": "₹12.0 Cr",
+      "details": "Introduce automated road sweeping machines and community garbage bins."
+    }
+  },
+  {
+    "constituency": "Nellore",
+    "district": "SPSR Nellore",
+    "state": "Andhra Pradesh",
+    "latitude": 14.44,
+    "longitude": 79.98,
+    "category": "Healthcare",
+    "priorityScore": 58,
+    "priorityLevel": "Low",
+    "count": 42,
+    "demandVolumeChange": "+1% this month",
+    "primaryGapsText": "Rural primary health centers report minor medicine shortages. Pediatric wards require bed expansion.",
+    "metrics": {
+      "population": "6.20 L",
+      "literacyRate": "79.1%",
+      "villagesWards": "40",
+      "area": "3,820 km²",
+      "schools": "180",
+      "healthcareFacilities": "16",
+      "waterCoverage": "75%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Healthcare",
+        "percent": 40
+      },
+      {
+        "category": "Water Supply",
+        "percent": 30
+      },
+      {
+        "category": "Education",
+        "percent": 20
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Rural Health Center Modernization Program",
+      "beneficiaries": "95,000",
+      "budget": "₹4.5 Cr",
+      "details": "Equip primary centers with diagnostic kits and secondary beds."
+    }
+  },
+  {
+    "constituency": "Kurnool",
+    "district": "Kurnool",
+    "state": "Andhra Pradesh",
+    "latitude": 15.82,
+    "longitude": 78.03,
+    "category": "Road Infrastructure",
+    "priorityScore": 61,
+    "priorityLevel": "Low",
+    "count": 49,
+    "demandVolumeChange": "+2% this month",
+    "primaryGapsText": "Connecting links between mandal headquarters and main highways show high soil erosion. High transit bottlenecks.",
+    "metrics": {
+      "population": "7.10 L",
+      "literacyRate": "73.2%",
+      "villagesWards": "46",
+      "area": "4,210 km²",
+      "schools": "190",
+      "healthcareFacilities": "17",
+      "waterCoverage": "60%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 45
+      },
+      {
+        "category": "Water Supply",
+        "percent": 25
+      },
+      {
+        "category": "Education",
+        "percent": 20
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Mandal Link Roads Bituminous Overlay",
+      "beneficiaries": "1.2 Lakh",
+      "budget": "₹7.8 Cr",
+      "details": "Apply thick coat gravel on outer links to avoid monsoon washouts."
+    }
+  },
+  {
+    "constituency": "Anantapur",
+    "district": "Anantapur",
+    "state": "Andhra Pradesh",
+    "latitude": 14.68,
+    "longitude": 77.6,
+    "category": "Water Supply",
+    "priorityScore": 78,
+    "priorityLevel": "Medium",
+    "count": 82,
+    "demandVolumeChange": "+12% this month",
+    "primaryGapsText": "Persistent drought conditions causing severe water table depletion. High demand for groundwater recharge grids.",
+    "metrics": {
+      "population": "8.90 L",
+      "literacyRate": "71.4%",
+      "villagesWards": "52",
+      "area": "8,610 km²",
+      "schools": "250",
+      "healthcareFacilities": "19",
+      "waterCoverage": "39%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 65
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 12
+      },
+      {
+        "category": "Education",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Borewell Recharge Pit Network Construction",
+      "beneficiaries": "3.5 Lakh",
+      "budget": "₹11.2 Cr",
+      "details": "Introduce watershed systems and check-dams in dry regions."
+    }
+  },
+  {
+    "constituency": "Srikakulam",
+    "district": "Srikakulam",
+    "state": "Andhra Pradesh",
+    "latitude": 18.3,
+    "longitude": 83.89,
+    "category": "Healthcare",
+    "priorityScore": 63,
+    "priorityLevel": "Low",
+    "count": 45,
+    "demandVolumeChange": "+4% this month",
+    "primaryGapsText": "Dialysis center demand in Uddanam area. Kidney disease hotspots require purified water infrastructure.",
+    "metrics": {
+      "population": "5.40 L",
+      "literacyRate": "72.8%",
+      "villagesWards": "38",
+      "area": "5,830 km²",
+      "schools": "160",
+      "healthcareFacilities": "12",
+      "waterCoverage": "58%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Healthcare",
+        "percent": 50
+      },
+      {
+        "category": "Water Supply",
+        "percent": 35
+      },
+      {
+        "category": "Education",
+        "percent": 10
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 5
+      }
+    ],
+    "recommendedAction": {
+      "title": "Uddanam RO Water Plant & Dialysis Unit Extension",
+      "beneficiaries": "1.8 Lakh",
+      "budget": "₹9.2 Cr",
+      "details": "Ensure RO filtration grids are integrated with rural health centers."
+    }
+  },
+  {
+    "constituency": "Vizianagaram",
+    "district": "Vizianagaram",
+    "state": "Andhra Pradesh",
+    "latitude": 18.11,
+    "longitude": 83.39,
+    "category": "Education",
+    "priorityScore": 59,
+    "priorityLevel": "Low",
+    "count": 38,
+    "demandVolumeChange": "+2% this month",
+    "primaryGapsText": "Infrastructure upgrades needed in tribal residential schools. Missing computer labs and digital setups.",
+    "metrics": {
+      "population": "4.80 L",
+      "literacyRate": "70.2%",
+      "villagesWards": "35",
+      "area": "6,530 km²",
+      "schools": "172",
+      "healthcareFacilities": "11",
+      "waterCoverage": "62%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Education",
+        "percent": 45
+      },
+      {
+        "category": "Water Supply",
+        "percent": 25
+      },
+      {
+        "category": "Sanitation",
+        "percent": 20
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Tribal Residential Schools Smart Lab Program",
+      "beneficiaries": "62,000",
+      "budget": "₹3.8 Cr",
+      "details": "Set up computer labs and mini-solar grids for continuous power."
+    }
+  },
+  {
+    "constituency": "Eluru",
+    "district": "Eluru",
+    "state": "Andhra Pradesh",
+    "latitude": 16.71,
+    "longitude": 81.1,
+    "category": "Water Supply",
+    "priorityScore": 64,
+    "priorityLevel": "Low",
+    "count": 51,
+    "demandVolumeChange": "+3% this month",
+    "primaryGapsText": "Drinking water pipeline contamination in municipal outer wards. Drainage channel repairs needed.",
+    "metrics": {
+      "population": "5.10 L",
+      "literacyRate": "76.8%",
+      "villagesWards": "34",
+      "area": "3,410 km²",
+      "schools": "142",
+      "healthcareFacilities": "13",
+      "waterCoverage": "67%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 40
+      },
+      {
+        "category": "Sanitation",
+        "percent": 30
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 20
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Municipal Water Pipeline De-contamination & Reroute",
+      "beneficiaries": "1.1 Lakh",
+      "budget": "₹5.4 Cr",
+      "details": "Reroute pipeline channels away from sewage outflow drains."
+    }
+  },
+  {
+    "constituency": "Ongole",
+    "district": "Prakasam",
+    "state": "Andhra Pradesh",
+    "latitude": 15.5,
+    "longitude": 80.05,
+    "category": "Water Supply",
+    "priorityScore": 68,
+    "priorityLevel": "Low",
+    "count": 48,
+    "demandVolumeChange": "+5% this month",
+    "primaryGapsText": "Severe groundwater fluoride content in dry mandals. Citizens request immediate link to river-water pipelines.",
+    "metrics": {
+      "population": "5.50 L",
+      "literacyRate": "73.5%",
+      "villagesWards": "39",
+      "area": "4,900 km²",
+      "schools": "155",
+      "healthcareFacilities": "10",
+      "waterCoverage": "44%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 55
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Sanitation",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 5
+      }
+    ],
+    "recommendedAction": {
+      "title": "River Water Drinking Grid Connection Project",
+      "beneficiaries": "1.6 Lakh",
+      "budget": "₹8.2 Cr",
+      "details": "Lay link lines from Krishna canal to Prakasam district dry villages."
+    }
+  },
+  {
     "constituency": "Varanasi",
     "district": "Varanasi",
     "state": "Uttar Pradesh",
     "latitude": 25.31,
     "longitude": 82.97,
-    "x": 300,
-    "y": 125,
     "category": "Road Infrastructure",
     "priorityScore": 94,
     "priorityLevel": "Critical",
@@ -61,10 +633,22 @@
       "roadConnectivity": "Low"
     },
     "topIssues": [
-      { "category": "Road Infrastructure", "percent": 60 },
-      { "category": "Sanitation", "percent": 20 },
-      { "category": "Water Supply", "percent": 15 },
-      { "category": "Healthcare", "percent": 5 }
+      {
+        "category": "Road Infrastructure",
+        "percent": 60
+      },
+      {
+        "category": "Sanitation",
+        "percent": 20
+      },
+      {
+        "category": "Water Supply",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 5
+      }
     ],
     "recommendedAction": {
       "title": "Emergency Corridor & Drainage Overhaul",
@@ -79,8 +663,6 @@
     "state": "Delhi",
     "latitude": 28.61,
     "longitude": 77.2,
-    "x": 248,
-    "y": 92,
     "category": "Sanitation",
     "priorityScore": 93,
     "priorityLevel": "Critical",
@@ -98,10 +680,22 @@
       "roadConnectivity": "High"
     },
     "topIssues": [
-      { "category": "Sanitation", "percent": 65 },
-      { "category": "Water Supply", "percent": 18 },
-      { "category": "Healthcare", "percent": 10 },
-      { "category": "Education", "percent": 7 }
+      {
+        "category": "Sanitation",
+        "percent": 65
+      },
+      {
+        "category": "Water Supply",
+        "percent": 18
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      },
+      {
+        "category": "Education",
+        "percent": 7
+      }
     ],
     "recommendedAction": {
       "title": "Urban Public Toilet Clusters & Biogas Setup",
@@ -116,8 +710,6 @@
     "state": "Maharashtra",
     "latitude": 19.07,
     "longitude": 72.87,
-    "x": 208,
-    "y": 198,
     "category": "Road Infrastructure",
     "priorityScore": 96,
     "priorityLevel": "Critical",
@@ -135,10 +727,22 @@
       "roadConnectivity": "Medium"
     },
     "topIssues": [
-      { "category": "Road Infrastructure", "percent": 70 },
-      { "category": "Sanitation", "percent": 15 },
-      { "category": "Water Supply", "percent": 10 },
-      { "category": "Healthcare", "percent": 5 }
+      {
+        "category": "Road Infrastructure",
+        "percent": 70
+      },
+      {
+        "category": "Sanitation",
+        "percent": 15
+      },
+      {
+        "category": "Water Supply",
+        "percent": 10
+      },
+      {
+        "category": "Healthcare",
+        "percent": 5
+      }
     ],
     "recommendedAction": {
       "title": "Arterial Highway Asphalt overlay & Repair",
@@ -148,13 +752,58 @@
     }
   },
   {
+    "constituency": "Pune",
+    "district": "Pune",
+    "state": "Maharashtra",
+    "latitude": 18.52,
+    "longitude": 73.85,
+    "category": "Road Infrastructure",
+    "priorityScore": 84,
+    "priorityLevel": "High",
+    "count": 124,
+    "demandVolumeChange": "+15% this month",
+    "primaryGapsText": "Severe bottleneck points on outer IT park entry highways. Transit latency has jumped 2x.",
+    "metrics": {
+      "population": "21.40 L",
+      "literacyRate": "88.5%",
+      "villagesWards": "92",
+      "area": "1,450 km²",
+      "schools": "480",
+      "healthcareFacilities": "36",
+      "waterCoverage": "78%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 60
+      },
+      {
+        "category": "Water Supply",
+        "percent": 20
+      },
+      {
+        "category": "Sanitation",
+        "percent": 15
+      },
+      {
+        "category": "Education",
+        "percent": 5
+      }
+    ],
+    "recommendedAction": {
+      "title": "IT Corridor Underpass & Junction Redesign",
+      "beneficiaries": "5.8 Lakh",
+      "budget": "₹28.4 Cr",
+      "details": "Construct bypass loops and flyovers on main highway channels."
+    }
+  },
+  {
     "constituency": "Bengaluru",
     "district": "Bengaluru Urban",
     "state": "Karnataka",
     "latitude": 12.97,
     "longitude": 77.59,
-    "x": 248,
-    "y": 275,
     "category": "Water Supply",
     "priorityScore": 95,
     "priorityLevel": "Critical",
@@ -172,10 +821,22 @@
       "roadConnectivity": "High"
     },
     "topIssues": [
-      { "category": "Water Supply", "percent": 58 },
-      { "category": "Road Infrastructure", "percent": 22 },
-      { "category": "Sanitation", "percent": 15 },
-      { "category": "Healthcare", "percent": 5 }
+      {
+        "category": "Water Supply",
+        "percent": 58
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 22
+      },
+      {
+        "category": "Sanitation",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 5
+      }
     ],
     "recommendedAction": {
       "title": "Cauvery Water Pipeline Grid Extension",
@@ -190,8 +851,6 @@
     "state": "Tamil Nadu",
     "latitude": 13.08,
     "longitude": 80.27,
-    "x": 272,
-    "y": 274,
     "category": "Sanitation",
     "priorityScore": 91,
     "priorityLevel": "Critical",
@@ -199,26 +858,38 @@
     "demandVolumeChange": "+15% this month",
     "primaryGapsText": "Stormwater drainage blocks trigger local flood hazards. High demand for modern de-clogging infrastructure.",
     "metrics": {
-      "population": "18.50 L",
-      "literacyRate": "90.1%",
-      "villagesWards": "90",
+      "population": "20.10 L",
+      "literacyRate": "88.6%",
+      "villagesWards": "105",
       "area": "426 km²",
-      "schools": "540",
+      "schools": "590",
       "healthcareFacilities": "46",
       "waterCoverage": "74%",
-      "roadConnectivity": "High"
+      "roadConnectivity": "Medium"
     },
     "topIssues": [
-      { "category": "Sanitation", "percent": 60 },
-      { "category": "Water Supply", "percent": 25 },
-      { "category": "Road Infrastructure", "percent": 10 },
-      { "category": "Healthcare", "percent": 5 }
+      {
+        "category": "Sanitation",
+        "percent": 62
+      },
+      {
+        "category": "Water Supply",
+        "percent": 20
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 10
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
     ],
     "recommendedAction": {
-      "title": "Sump Pump & Stormwater Drain De-clogging",
-      "beneficiaries": "6.0 Lakh",
+      "title": "Stormwater Drainage Desilting & Channel Repair",
+      "beneficiaries": "6.8 Lakh",
       "budget": "₹38.5 Cr",
-      "details": "AI recommends allocating funds to critical low-lying wards."
+      "details": "Immediate silt removal recommended for low-lying transit basins."
     }
   },
   {
@@ -227,368 +898,327 @@
     "state": "Telangana",
     "latitude": 17.38,
     "longitude": 78.48,
-    "x": 258,
-    "y": 222,
-    "category": "Healthcare",
-    "priorityScore": 85,
-    "priorityLevel": "High",
-    "count": 128,
-    "demandVolumeChange": "+11% this month",
-    "primaryGapsText": "Deficit in critical medical equipment in district health centers. High citizen demand for emergency trauma gear.",
-    "metrics": {
-      "population": "19.20 L",
-      "literacyRate": "83.6%",
-      "villagesWards": "82",
-      "area": "650 km²",
-      "schools": "580",
-      "healthcareFacilities": "38",
-      "waterCoverage": "78%",
-      "roadConnectivity": "High"
-    },
-    "topIssues": [
-      { "category": "Healthcare", "percent": 50 },
-      { "category": "Water Supply", "percent": 25 },
-      { "category": "Road Infrastructure", "percent": 15 },
-      { "category": "Education", "percent": 10 }
-    ],
-    "recommendedAction": {
-      "title": "District Health Centre Trauma Support Kit",
-      "beneficiaries": "5.2 Lakh",
-      "budget": "₹28.4 Cr",
-      "details": "AI advises equipping primary health hubs with oxygen grids."
-    }
-  },
-  {
-    "constituency": "Vijayawada",
-    "district": "Krishna",
-    "state": "Andhra Pradesh",
-    "latitude": 16.5,
-    "longitude": 80.64,
-    "x": 278,
-    "y": 234,
-    "category": "Transport",
-    "priorityScore": 76,
-    "priorityLevel": "Medium",
-    "count": 68,
-    "demandVolumeChange": "+6% this month",
-    "primaryGapsText": "Traffic congestion near central transit terminals. Public requests smart traffic signal grid overrides.",
-    "metrics": {
-      "population": "10.40 L",
-      "literacyRate": "82.5%",
-      "villagesWards": "59",
-      "area": "261 km²",
-      "schools": "290",
-      "healthcareFacilities": "24",
-      "waterCoverage": "72%",
-      "roadConnectivity": "Medium"
-    },
-    "topIssues": [
-      { "category": "Transport", "percent": 55 },
-      { "category": "Road Infrastructure", "percent": 25 },
-      { "category": "Sanitation", "percent": 15 },
-      { "category": "Water Supply", "percent": 5 }
-    ],
-    "recommendedAction": {
-      "title": "Transit Terminal Smart Junctions Grid",
-      "beneficiaries": "3.1 Lakh",
-      "budget": "₹14.8 Cr",
-      "details": "AI plans adaptive queue sensors at high density nodes."
-    }
-  },
-  {
-    "constituency": "Tirupati",
-    "district": "Chittoor",
-    "state": "Andhra Pradesh",
-    "latitude": 13.62,
-    "longitude": 79.41,
-    "x": 265,
-    "y": 266,
-    "category": "Sanitation",
-    "priorityScore": 65,
-    "priorityLevel": "Medium",
-    "count": 55,
-    "demandVolumeChange": "+8% this month",
-    "primaryGapsText": "High pilgrim traffic triggers micro-hygiene issues. Deficit in public convenience units in transit lanes.",
-    "metrics": {
-      "population": "4.60 L",
-      "literacyRate": "87.5%",
-      "villagesWards": "48",
-      "area": "115 km²",
-      "schools": "112",
-      "healthcareFacilities": "18",
-      "waterCoverage": "85%",
-      "roadConnectivity": "Medium"
-    },
-    "topIssues": [
-      { "category": "Sanitation", "percent": 58 },
-      { "category": "Water Supply", "percent": 22 },
-      { "category": "Transport", "percent": 15 },
-      { "category": "Healthcare", "percent": 5 }
-    ],
-    "recommendedAction": {
-      "title": "Pilgrim Transit Zone E-Toilet Blocks",
-      "beneficiaries": "2.8 Lakh",
-      "budget": "₹9.6 Cr",
-      "details": "AI details multi-user smart e-toilets on walking corridors."
-    }
-  },
-  {
-    "constituency": "Kakinada",
-    "district": "East Godavari",
-    "state": "Andhra Pradesh",
-    "latitude": 16.98,
-    "longitude": 82.24,
-    "x": 292,
-    "y": 228,
     "category": "Water Supply",
-    "priorityScore": 55,
-    "priorityLevel": "Low",
-    "count": 32,
-    "demandVolumeChange": "+4% this month",
-    "primaryGapsText": "Agricultural canal silt accumulation limits clean water reach to rural fields. Regular maintenance requested.",
+    "priorityScore": 92,
+    "priorityLevel": "Critical",
+    "count": 161,
+    "demandVolumeChange": "+22% this month",
+    "primaryGapsText": "Drinking water scarcity in historical core areas. Piped network upgrades requested in dense residential zones.",
     "metrics": {
-      "population": "3.80 L",
-      "literacyRate": "78.4%",
-      "villagesWards": "36",
-      "area": "301 km²",
-      "schools": "98",
-      "healthcareFacilities": "12",
-      "waterCoverage": "62%",
-      "roadConnectivity": "Medium"
-    },
-    "topIssues": [
-      { "category": "Water Supply", "percent": 48 },
-      { "category": "Agriculture", "percent": 32 },
-      { "category": "Road Infrastructure", "percent": 15 },
-      { "category": "Education", "percent": 5 }
-    ],
-    "recommendedAction": {
-      "title": "Canal Desilting & Piped Water Links",
-      "beneficiaries": "1.9 Lakh",
-      "budget": "₹6.4 Cr",
-      "details": "AI prioritizes agricultural tail-end canal clusters."
-    }
-  },
-  {
-    "constituency": "Rajahmundry",
-    "district": "East Godavari",
-    "state": "Andhra Pradesh",
-    "latitude": 17.0,
-    "longitude": 81.8,
-    "x": 288,
-    "y": 228,
-    "category": "Education",
-    "priorityScore": 48,
-    "priorityLevel": "Low",
-    "count": 28,
-    "demandVolumeChange": "+2% this month",
-    "primaryGapsText": "Minor roof damages and bench deficits in mandal primary schools. Simple asset replenishment required.",
-    "metrics": {
-      "population": "3.40 L",
-      "literacyRate": "79.2%",
-      "villagesWards": "42",
-      "area": "250 km²",
-      "schools": "125",
-      "healthcareFacilities": "14",
-      "waterCoverage": "80%",
+      "population": "21.60 L",
+      "literacyRate": "83.2%",
+      "villagesWards": "96",
+      "area": "650 km²",
+      "schools": "612",
+      "healthcareFacilities": "41",
+      "waterCoverage": "52%",
       "roadConnectivity": "High"
     },
     "topIssues": [
-      { "category": "Education", "percent": 50 },
-      { "category": "Sanitation", "percent": 30 },
-      { "category": "Road Infrastructure", "percent": 15 },
-      { "category": "Water Supply", "percent": 5 }
+      {
+        "category": "Water Supply",
+        "percent": 54
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 24
+      },
+      {
+        "category": "Sanitation",
+        "percent": 14
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
     ],
     "recommendedAction": {
-      "title": "Primary School Structural Upgrades",
-      "beneficiaries": "1.5 Lakh",
-      "budget": "₹4.8 Cr",
-      "details": "AI suggests allocating minor maintenance grants to gram panchayats."
+      "title": "Core City Water Distribution Grid Modernization",
+      "beneficiaries": "6.9 Lakh",
+      "budget": "₹42.0 Cr",
+      "details": "Rerouting and pipeline layout upgrades targeting old city grids."
     }
   },
   {
-    "constituency": "Guntur",
-    "district": "Guntur",
-    "state": "Andhra Pradesh",
-    "latitude": 16.3,
-    "longitude": 80.43,
-    "x": 276,
-    "y": 236,
-    "category": "Agriculture",
-    "priorityScore": 88,
-    "priorityLevel": "High",
-    "count": 114,
-    "demandVolumeChange": "+14% this month",
-    "primaryGapsText": "Chili and tomato farmers suffer from lack of temperature controlled storage facilities. High wastage reported.",
-    "metrics": {
-      "population": "12.80 L",
-      "literacyRate": "80.6%",
-      "villagesWards": "78",
-      "area": "3,443 km²",
-      "schools": "412",
-      "healthcareFacilities": "30",
-      "waterCoverage": "68%",
-      "roadConnectivity": "Medium"
-    },
-    "topIssues": [
-      { "category": "Agriculture", "percent": 56 },
-      { "category": "Road Infrastructure", "percent": 24 },
-      { "category": "Sanitation", "percent": 12 },
-      { "category": "Water Supply", "percent": 8 }
-    ],
-    "recommendedAction": {
-      "title": "Solar Powered Cold Storage Facility",
-      "beneficiaries": "4.2 Lakh",
-      "budget": "₹22.5 Cr",
-      "details": "AI targets cooperative market yards for cold storage setups."
-    }
-  },
-  {
-    "constituency": "Nellore",
-    "district": "Nellore",
-    "state": "Andhra Pradesh",
-    "latitude": 14.44,
-    "longitude": 79.98,
-    "x": 270,
-    "y": 256,
-    "category": "Road Infrastructure",
-    "priorityScore": 62,
-    "priorityLevel": "Medium",
-    "count": 48,
-    "demandVolumeChange": "+5% this month",
-    "primaryGapsText": "Bridge joint deterioration on village link routes. Heavy agricultural transport vehicles face bypass limits.",
-    "metrics": {
-      "population": "5.10 L",
-      "literacyRate": "78.9%",
-      "villagesWards": "52",
-      "area": "1,200 km²",
-      "schools": "180",
-      "healthcareFacilities": "16",
-      "waterCoverage": "70%",
-      "roadConnectivity": "Medium"
-    },
-    "topIssues": [
-      { "category": "Road Infrastructure", "percent": 52 },
-      { "category": "Agriculture", "percent": 28 },
-      { "category": "Sanitation", "percent": 15 },
-      { "category": "Water Supply", "percent": 5 }
-    ],
-    "recommendedAction": {
-      "title": "Rural Link Bridge Reinforcement",
-      "beneficiaries": "2.1 Lakh",
-      "budget": "₹8.4 Cr",
-      "details": "AI prioritizes river crossing corridors for structural patches."
-    }
-  },
-  {
-    "constituency": "Kurnool",
-    "district": "Kurnool",
-    "state": "Andhra Pradesh",
-    "latitude": 15.82,
-    "longitude": 78.03,
-    "x": 254,
-    "y": 242,
-    "category": "Healthcare",
-    "priorityScore": 82,
+    "constituency": "Guwahati",
+    "district": "Kamrup Metropolitan",
+    "state": "Assam",
+    "latitude": 26.14,
+    "longitude": 91.73,
+    "category": "Water Supply",
+    "priorityScore": 81,
     "priorityLevel": "High",
     "count": 94,
-    "demandVolumeChange": "+10% this month",
-    "primaryGapsText": "Distance grid deficit to nearest multi-specialty unit. Community health centres lack oxygen backup lines.",
+    "demandVolumeChange": "+14% this month",
+    "primaryGapsText": "Flooding hazards and drinking water shortages in hilly wards. High demand for storm drainage grids.",
     "metrics": {
-      "population": "11.20 L",
-      "literacyRate": "72.4%",
-      "villagesWards": "74",
-      "area": "7,980 km²",
-      "schools": "340",
-      "healthcareFacilities": "26",
+      "population": "9.80 L",
+      "literacyRate": "85.2%",
+      "villagesWards": "60",
+      "area": "328 km²",
+      "schools": "280",
+      "healthcareFacilities": "24",
+      "waterCoverage": "41%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 50
+      },
+      {
+        "category": "Sanitation",
+        "percent": 25
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Hilly Terrain Water Pipeline & Storm Drainage",
+      "beneficiaries": "3.2 Lakh",
+      "budget": "₹18.9 Cr",
+      "details": "Set up gravity water lines and specialized side-slope storm drains."
+    }
+  },
+  {
+    "constituency": "Patna",
+    "district": "Patna",
+    "state": "Bihar",
+    "latitude": 25.59,
+    "longitude": 85.13,
+    "category": "Sanitation",
+    "priorityScore": 90,
+    "priorityLevel": "Critical",
+    "count": 141,
+    "demandVolumeChange": "+18% this month",
+    "primaryGapsText": "Critical sanitation and waste logging in low-lying transit wards. High demand for sewage line installations.",
+    "metrics": {
+      "population": "16.80 L",
+      "literacyRate": "70.6%",
+      "villagesWards": "75",
+      "area": "3,202 km²",
+      "schools": "412",
+      "healthcareFacilities": "28",
       "waterCoverage": "60%",
       "roadConnectivity": "Low"
     },
     "topIssues": [
-      { "category": "Healthcare", "percent": 54 },
-      { "category": "Water Supply", "percent": 22 },
-      { "category": "Road Infrastructure", "percent": 16 },
-      { "category": "Education", "percent": 8 }
+      {
+        "category": "Sanitation",
+        "percent": 58
+      },
+      {
+        "category": "Water Supply",
+        "percent": 22
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
     ],
     "recommendedAction": {
-      "title": "CHC Multi-Specialty Oxygen Plant Setup",
-      "beneficiaries": "3.5 Lakh",
-      "budget": "₹16.5 Cr",
-      "details": "AI recommends localized oxygen pressure swings plants."
+      "title": "Ganga-Adjacent Ward Sewage Network Overhaul",
+      "beneficiaries": "4.8 Lakh",
+      "budget": "₹34.5 Cr",
+      "details": "Install central pumping stations and sewage interceptor lines."
     }
   },
   {
-    "constituency": "Anantapur",
-    "district": "Anantapur",
-    "state": "Andhra Pradesh",
-    "latitude": 14.68,
-    "longitude": 77.6,
-    "x": 250,
-    "y": 254,
-    "category": "Agriculture",
-    "priorityScore": 79,
-    "priorityLevel": "Medium",
-    "count": 82,
-    "demandVolumeChange": "+7% this month",
-    "primaryGapsText": "Arid zone micro-irrigation pipeline deficit. Farmers request drip irrigation subsidization linkages.",
-    "metrics": {
-      "population": "8.80 L",
-      "literacyRate": "74.2%",
-      "villagesWards": "68",
-      "area": "9,120 km²",
-      "schools": "290",
-      "healthcareFacilities": "20",
-      "waterCoverage": "52%",
-      "roadConnectivity": "Medium"
-    },
-    "topIssues": [
-      { "category": "Agriculture", "percent": 58 },
-      { "category": "Water Supply", "percent": 24 },
-      { "category": "Road Infrastructure", "percent": 12 },
-      { "category": "Sanitation", "percent": 6 }
-    ],
-    "recommendedAction": {
-      "title": "Drip Irrigation Mainline Pipeline Seeding",
-      "beneficiaries": "2.9 Lakh",
-      "budget": "₹12.4 Cr",
-      "details": "AI recommends connecting dry mandal blocks to main canals."
-    }
-  },
-  {
-    "constituency": "Lucknow",
-    "district": "Lucknow",
-    "state": "Uttar Pradesh",
-    "latitude": 26.85,
-    "longitude": 80.94,
-    "x": 282,
-    "y": 110,
-    "category": "Education",
-    "priorityScore": 87,
+    "constituency": "Ahmedabad",
+    "district": "Ahmedabad",
+    "state": "Gujarat",
+    "latitude": 23.02,
+    "longitude": 72.57,
+    "category": "Road Infrastructure",
+    "priorityScore": 83,
     "priorityLevel": "High",
-    "count": 110,
-    "demandVolumeChange": "+13% this month",
-    "primaryGapsText": "Anganwadi facilities lack structured seating and primary digital teaching aids in urban peripheral wards.",
+    "count": 119,
+    "demandVolumeChange": "+11% this month",
+    "primaryGapsText": "Heavy congestion along express highways. Citizens demand bridge loops and automated toll transit corridors.",
     "metrics": {
-      "population": "16.40 L",
-      "literacyRate": "84.3%",
-      "villagesWards": "82",
-      "area": "2,528 km²",
-      "schools": "480",
-      "healthcareFacilities": "36",
-      "waterCoverage": "76%",
+      "population": "20.20 L",
+      "literacyRate": "88.6%",
+      "villagesWards": "84",
+      "area": "8,081 km²",
+      "schools": "520",
+      "healthcareFacilities": "39",
+      "waterCoverage": "84%",
       "roadConnectivity": "High"
     },
     "topIssues": [
-      { "category": "Education", "percent": 52 },
-      { "category": "Sanitation", "percent": 24 },
-      { "category": "Road Infrastructure", "percent": 16 },
-      { "category": "Healthcare", "percent": 8 }
+      {
+        "category": "Road Infrastructure",
+        "percent": 55
+      },
+      {
+        "category": "Sanitation",
+        "percent": 20
+      },
+      {
+        "category": "Water Supply",
+        "percent": 15
+      },
+      {
+        "category": "Education",
+        "percent": 10
+      }
     ],
     "recommendedAction": {
-      "title": "Prefabricated Anganwadi Classrooms Setup",
-      "beneficiaries": "3.8 Lakh",
-      "budget": "₹18.6 Cr",
-      "details": "AI plans modular classroom deployments across outer circles."
+      "title": "Express Highway Bypass & Flyover Extensions",
+      "beneficiaries": "4.1 Lakh",
+      "budget": "₹24.5 Cr",
+      "details": "Add flyover loops at high-density commercial intersections."
+    }
+  },
+  {
+    "constituency": "Kochi",
+    "district": "Ernakulam",
+    "state": "Kerala",
+    "latitude": 9.93,
+    "longitude": 76.26,
+    "category": "Sanitation",
+    "priorityScore": 80,
+    "priorityLevel": "High",
+    "count": 88,
+    "demandVolumeChange": "+8% this month",
+    "primaryGapsText": "Canal dredging and wastewater treatment capacity bottleneck. Coastal areas report saline groundwater intrusion.",
+    "metrics": {
+      "population": "6.50 L",
+      "literacyRate": "97.5%",
+      "villagesWards": "42",
+      "area": "3,061 km²",
+      "schools": "185",
+      "healthcareFacilities": "18",
+      "waterCoverage": "79%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 52
+      },
+      {
+        "category": "Water Supply",
+        "percent": 28
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Wastewater Treatment Plant & Canal Desilting",
+      "beneficiaries": "2.8 Lakh",
+      "budget": "₹16.8 Cr",
+      "details": "Desilt regional canals to prevent water stagnation and disease vectors."
+    }
+  },
+  {
+    "constituency": "Jaipur",
+    "district": "Jaipur",
+    "state": "Rajasthan",
+    "latitude": 26.91,
+    "longitude": 75.78,
+    "category": "Water Supply",
+    "priorityScore": 82,
+    "priorityLevel": "High",
+    "count": 105,
+    "demandVolumeChange": "+13% this month",
+    "primaryGapsText": "High water shortages in old city colonies. Citizens request additional link lines from Bisalpur pipeline grid.",
+    "metrics": {
+      "population": "14.80 L",
+      "literacyRate": "75.4%",
+      "villagesWards": "78",
+      "area": "11,152 km²",
+      "schools": "460",
+      "healthcareFacilities": "30",
+      "waterCoverage": "45%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 58
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 22
+      },
+      {
+        "category": "Sanitation",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Bisalpur Piped Line Old City Connection",
+      "beneficiaries": "3.9 Lakh",
+      "budget": "₹22.6 Cr",
+      "details": "Lay main feeder lines directly into historical town blocks."
+    }
+  },
+  {
+    "constituency": "Kolkata",
+    "district": "Kolkata",
+    "state": "West Bengal",
+    "latitude": 22.57,
+    "longitude": 88.36,
+    "category": "Sanitation",
+    "priorityScore": 92,
+    "priorityLevel": "Critical",
+    "count": 169,
+    "demandVolumeChange": "+19% this month",
+    "primaryGapsText": "Water stagnation in old central sewage vaults during tidal events. Heavy storm pumping grids requested.",
+    "metrics": {
+      "population": "21.90 L",
+      "literacyRate": "86.3%",
+      "villagesWards": "144",
+      "area": "206 km²",
+      "schools": "580",
+      "healthcareFacilities": "43",
+      "waterCoverage": "88%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 60
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 20
+      },
+      {
+        "category": "Water Supply",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 5
+      }
+    ],
+    "recommendedAction": {
+      "title": "Stormwater High-Duty Pumping Stations",
+      "beneficiaries": "8.2 Lakh",
+      "budget": "₹45.0 Cr",
+      "details": "Set up automated high-volume drainage pumps along river banks."
     }
   },
   {
@@ -597,35 +1227,1126 @@
     "state": "Jammu & Kashmir",
     "latitude": 34.08,
     "longitude": 74.79,
-    "x": 230,
-    "y": 35,
-    "category": "Water Supply",
-    "priorityScore": 87,
+    "category": "Road Infrastructure",
+    "priorityScore": 81,
     "priorityLevel": "High",
-    "count": 92,
-    "demandVolumeChange": "+15% this month",
-    "primaryGapsText": "Turbidity and chemical impurities in inflow drinking channels. High demand for modern intake filtration screens.",
+    "count": 76,
+    "demandVolumeChange": "+11% this month",
+    "primaryGapsText": "Pavement erosion and missing retaining walls on hilly transit bypass corridors. Snow clearance delays reported.",
     "metrics": {
-      "population": "11.80 L",
-      "literacyRate": "71.2%",
-      "villagesWards": "68",
-      "area": "294 km²",
-      "schools": "210",
-      "healthcareFacilities": "22",
-      "waterCoverage": "64%",
+      "population": "6.90 L",
+      "literacyRate": "70.1%",
+      "villagesWards": "48",
+      "area": "3,220 km²",
+      "schools": "190",
+      "healthcareFacilities": "16",
+      "waterCoverage": "71%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 52
+      },
+      {
+        "category": "Water Supply",
+        "percent": 28
+      },
+      {
+        "category": "Education",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Bypass Mountain Road Retaining Walls & Asphalt",
+      "beneficiaries": "2.1 Lakh",
+      "budget": "₹14.8 Cr",
+      "details": "Construct heavy stone gabion walls to avoid land-slips during winters."
+    }
+  },
+  {
+    "constituency": "Itanagar",
+    "district": "Papum Pare",
+    "state": "Arunachal Pradesh",
+    "latitude": 27.08,
+    "longitude": 93.6,
+    "category": "Road Infrastructure",
+    "priorityScore": 75,
+    "priorityLevel": "Medium",
+    "count": 48,
+    "demandVolumeChange": "+5% this month",
+    "primaryGapsText": "Frequent landslides damage connecting mountain links. Missing guard rails and crash barriers.",
+    "metrics": {
+      "population": "1.20 L",
+      "literacyRate": "84.3%",
+      "villagesWards": "24",
+      "area": "1,530 km²",
+      "schools": "68",
+      "healthcareFacilities": "6",
+      "waterCoverage": "65%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 55
+      },
+      {
+        "category": "Healthcare",
+        "percent": 20
+      },
+      {
+        "category": "Education",
+        "percent": 15
+      },
+      {
+        "category": "Water Supply",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Mountain Highway Guard Rails & Landslide Mitigation",
+      "beneficiaries": "68,000",
+      "budget": "₹6.2 Cr",
+      "details": "Apply metal netting along landslide zones and construct steel guard rails."
+    }
+  },
+  {
+    "constituency": "Shillong",
+    "district": "East Khasi Hills",
+    "state": "Meghalaya",
+    "latitude": 25.57,
+    "longitude": 91.88,
+    "category": "Road Infrastructure",
+    "priorityScore": 72,
+    "priorityLevel": "Medium",
+    "count": 51,
+    "demandVolumeChange": "+6% this month",
+    "primaryGapsText": "Severe road erosion due to heavy rain. Narrow transit roads cause massive local traffic bottlenecks.",
+    "metrics": {
+      "population": "1.40 L",
+      "literacyRate": "88.9%",
+      "villagesWards": "28",
+      "area": "2,235 km²",
+      "schools": "82",
+      "healthcareFacilities": "8",
+      "waterCoverage": "72%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 50
+      },
+      {
+        "category": "Water Supply",
+        "percent": 25
+      },
+      {
+        "category": "Education",
+        "percent": 15
+      },
+      {
+        "category": "Sanitation",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Hill Road Asphalt overlay & Water Channels",
+      "beneficiaries": "85,000",
+      "budget": "₹5.8 Cr",
+      "details": "Lay heavy bituminous layers combined with side drains for water run-off."
+    }
+  },
+  {
+    "constituency": "Imphal",
+    "district": "Imphal West",
+    "state": "Manipur",
+    "latitude": 24.81,
+    "longitude": 93.93,
+    "category": "Healthcare",
+    "priorityScore": 74,
+    "priorityLevel": "Medium",
+    "count": 55,
+    "demandVolumeChange": "+7% this month",
+    "primaryGapsText": "Sub-divisional hospitals report major infrastructure shortages. Ambulance connectivity is heavily restricted.",
+    "metrics": {
+      "population": "2.70 L",
+      "literacyRate": "79.8%",
+      "villagesWards": "32",
+      "area": "1,228 km²",
+      "schools": "98",
+      "healthcareFacilities": "11",
+      "waterCoverage": "58%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Healthcare",
+        "percent": 45
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Education",
+        "percent": 20
+      },
+      {
+        "category": "Water Supply",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Sub-Divisional Hospital Infrastructure Support",
+      "beneficiaries": "1.2 Lakh",
+      "budget": "₹8.4 Cr",
+      "details": "Procure generic medicines and deploy mountain-grade 4x4 ambulances."
+    }
+  },
+  {
+    "constituency": "Kohima",
+    "district": "Kohima",
+    "state": "Nagaland",
+    "latitude": 25.67,
+    "longitude": 94.1,
+    "category": "Road Infrastructure",
+    "priorityScore": 73,
+    "priorityLevel": "Medium",
+    "count": 46,
+    "demandVolumeChange": "+4% this month",
+    "primaryGapsText": "Rural market link roads in poor condition. High freight costs due to unpaved roads.",
+    "metrics": {
+      "population": "1.10 L",
+      "literacyRate": "85.2%",
+      "villagesWards": "22",
+      "area": "1,463 km²",
+      "schools": "72",
+      "healthcareFacilities": "7",
+      "waterCoverage": "60%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 60
+      },
+      {
+        "category": "Water Supply",
+        "percent": 20
+      },
+      {
+        "category": "Education",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 5
+      }
+    ],
+    "recommendedAction": {
+      "title": "Rural Market Link Roads Paving",
+      "beneficiaries": "54,000",
+      "budget": "₹4.8 Cr",
+      "details": "Pave the primary linking path using concrete slabs to resist soil sliding."
+    }
+  },
+  {
+    "constituency": "Aizawl",
+    "district": "Aizawl",
+    "state": "Mizoram",
+    "latitude": 23.73,
+    "longitude": 92.71,
+    "category": "Water Supply",
+    "priorityScore": 71,
+    "priorityLevel": "Medium",
+    "count": 42,
+    "demandVolumeChange": "+3% this month",
+    "primaryGapsText": "High lift-irrigation and drinking water costs. Hill-top villages report regular dry spells.",
+    "metrics": {
+      "population": "2.90 L",
+      "literacyRate": "98.2%",
+      "villagesWards": "31",
+      "area": "3,576 km²",
+      "schools": "115",
+      "healthcareFacilities": "9",
+      "waterCoverage": "49%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 52
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 28
+      },
+      {
+        "category": "Education",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Hill Village Gravity Water Pipeline Grid",
+      "beneficiaries": "98,000",
+      "budget": "₹6.9 Cr",
+      "details": "Install intermediate check tanks to regularize pressure down the slopes."
+    }
+  },
+  {
+    "constituency": "Agartala",
+    "district": "West Tripura",
+    "state": "Tripura",
+    "latitude": 23.83,
+    "longitude": 91.28,
+    "category": "Water Supply",
+    "priorityScore": 72,
+    "priorityLevel": "Medium",
+    "count": 53,
+    "demandVolumeChange": "+6% this month",
+    "primaryGapsText": "High iron content in local water lines. Citizen representations request modern de-ironing plants.",
+    "metrics": {
+      "population": "4.00 L",
+      "literacyRate": "87.8%",
+      "villagesWards": "35",
+      "area": "1,800 km²",
+      "schools": "120",
+      "healthcareFacilities": "12",
+      "waterCoverage": "52%",
       "roadConnectivity": "Medium"
     },
     "topIssues": [
-      { "category": "Water Supply", "percent": 54 },
-      { "category": "Sanitation", "percent": 26 },
-      { "category": "Road Infrastructure", "percent": 12 },
-      { "category": "Healthcare", "percent": 8 }
+      {
+        "category": "Water Supply",
+        "percent": 48
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 22
+      },
+      {
+        "category": "Sanitation",
+        "percent": 20
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
     ],
     "recommendedAction": {
-      "title": "Dal Lake Intake Inflow Filtration Grids",
+      "title": "Community Water Filter & De-ironing Units",
+      "beneficiaries": "1.2 Lakh",
+      "budget": "₹5.2 Cr",
+      "details": "Install 24 localized filtration units directly along high-risk supply pipes."
+    }
+  },
+  {
+    "constituency": "Gangtok",
+    "district": "East Sikkim",
+    "state": "Sikkim",
+    "latitude": 27.33,
+    "longitude": 88.61,
+    "category": "Healthcare",
+    "priorityScore": 68,
+    "priorityLevel": "Medium",
+    "count": 36,
+    "demandVolumeChange": "+2% this month",
+    "primaryGapsText": "High altitude primary centers lack modern thermal isolation. Oxygen grid piping is requested.",
+    "metrics": {
+      "population": "1.00 L",
+      "literacyRate": "82.1%",
+      "villagesWards": "20",
+      "area": "950 km²",
+      "schools": "48",
+      "healthcareFacilities": "6",
+      "waterCoverage": "74%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Healthcare",
+        "percent": 48
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 28
+      },
+      {
+        "category": "Education",
+        "percent": 14
+      },
+      {
+        "category": "Water Supply",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "High Altitude Primary Health Center Oxygen Piping",
+      "beneficiaries": "35,000",
+      "budget": "₹3.2 Cr",
+      "details": "Implement insulation panels and small oxygen generation grids."
+    }
+  },
+  {
+    "constituency": "Patna",
+    "district": "Patna",
+    "state": "Bihar",
+    "latitude": 25.59,
+    "longitude": 85.13,
+    "category": "Sanitation",
+    "priorityScore": 90,
+    "priorityLevel": "Critical",
+    "count": 141,
+    "demandVolumeChange": "+18% this month",
+    "primaryGapsText": "Critical sanitation and waste logging in low-lying transit wards. High demand for sewage line installations.",
+    "metrics": {
+      "population": "16.80 L",
+      "literacyRate": "70.6%",
+      "villagesWards": "75",
+      "area": "3,202 km²",
+      "schools": "412",
+      "healthcareFacilities": "28",
+      "waterCoverage": "60%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 58
+      },
+      {
+        "category": "Water Supply",
+        "percent": 22
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Ganga-Adjacent Ward Sewage Network Overhaul",
+      "beneficiaries": "4.8 Lakh",
+      "budget": "₹34.5 Cr",
+      "details": "Install central pumping stations and sewage interceptor lines."
+    }
+  },
+  {
+    "constituency": "Raipur",
+    "district": "Raipur",
+    "state": "Chhattisgarh",
+    "latitude": 21.25,
+    "longitude": 81.63,
+    "category": "Healthcare",
+    "priorityScore": 78,
+    "priorityLevel": "Medium",
+    "count": 82,
+    "demandVolumeChange": "+10% this month",
+    "primaryGapsText": "Sub-divisional clinics report basic equipment deficit. Missing maternity ward equipment.",
+    "metrics": {
+      "population": "10.10 L",
+      "literacyRate": "74.2%",
+      "villagesWards": "58",
+      "area": "2,810 km²",
+      "schools": "210",
+      "healthcareFacilities": "20",
+      "waterCoverage": "63%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Healthcare",
+        "percent": 52
+      },
+      {
+        "category": "Education",
+        "percent": 22
+      },
+      {
+        "category": "Water Supply",
+        "percent": 16
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Sub-Divisional Maternity Ward Support Program",
+      "beneficiaries": "1.9 Lakh",
+      "budget": "₹9.8 Cr",
+      "details": "Procure child incubator setups and basic scan units for regional centers."
+    }
+  },
+  {
+    "constituency": "Ranchi",
+    "district": "Ranchi",
+    "state": "Jharkhand",
+    "latitude": 23.34,
+    "longitude": 85.3,
+    "category": "Road Infrastructure",
+    "priorityScore": 82,
+    "priorityLevel": "High",
+    "count": 98,
+    "demandVolumeChange": "+12% this month",
+    "primaryGapsText": "Congested mining transport links cause severe delays. Citizens request heavy vehicle bypass channels.",
+    "metrics": {
+      "population": "11.20 L",
+      "literacyRate": "76.1%",
+      "villagesWards": "62",
+      "area": "5,097 km²",
+      "schools": "320",
+      "healthcareFacilities": "22",
+      "waterCoverage": "58%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 55
+      },
+      {
+        "category": "Water Supply",
+        "percent": 25
+      },
+      {
+        "category": "Education",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Heavy Transit Bypass Outer Link Roads",
       "beneficiaries": "3.2 Lakh",
-      "budget": "₹21.4 Cr",
-      "details": "AI advises mechanical mesh filtration blocks on main channels."
+      "budget": "₹18.4 Cr",
+      "details": "Pave bypass roads with heavy asphalt thickness to sustain heavy truck traffic."
+    }
+  },
+  {
+    "constituency": "Bhubaneswar",
+    "district": "Khordha",
+    "state": "Odisha",
+    "latitude": 20.29,
+    "longitude": 85.82,
+    "category": "Sanitation",
+    "priorityScore": 81,
+    "priorityLevel": "High",
+    "count": 92,
+    "demandVolumeChange": "+11% this month",
+    "primaryGapsText": "Cyclone shelter drainage blocks and missing waste dump spaces. Citizens demand solid waste processing units.",
+    "metrics": {
+      "population": "8.80 L",
+      "literacyRate": "88.2%",
+      "villagesWards": "54",
+      "area": "422 km²",
+      "schools": "215",
+      "healthcareFacilities": "19",
+      "waterCoverage": "71%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 50
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Water Supply",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Solid Waste Processing & Recycling Unit",
+      "beneficiaries": "2.4 Lakh",
+      "budget": "₹12.8 Cr",
+      "details": "Set up automated compactor grids and organic compost machines."
+    }
+  },
+  {
+    "constituency": "Ludhiana",
+    "district": "Ludhiana",
+    "state": "Punjab",
+    "latitude": 30.9,
+    "longitude": 75.85,
+    "category": "Sanitation",
+    "priorityScore": 84,
+    "priorityLevel": "High",
+    "count": 105,
+    "demandVolumeChange": "+13% this month",
+    "primaryGapsText": "Industrial wastewater stagnation in local water bodies. Citizen representations demand chemical treatment plants.",
+    "metrics": {
+      "population": "16.10 L",
+      "literacyRate": "82.5%",
+      "villagesWards": "75",
+      "area": "3,760 km²",
+      "schools": "410",
+      "healthcareFacilities": "28",
+      "waterCoverage": "81%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 55
+      },
+      {
+        "category": "Water Supply",
+        "percent": 25
+      },
+      {
+        "category": "Healthcare",
+        "percent": 15
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 5
+      }
+    ],
+    "recommendedAction": {
+      "title": "Effluent Treatment Plant (ETP) Expansion",
+      "beneficiaries": "3.5 Lakh",
+      "budget": "₹24.0 Cr",
+      "details": "Increase chemical treatment plant capacity near industrial clusters."
+    }
+  },
+  {
+    "constituency": "Dehradun",
+    "district": "Dehradun",
+    "state": "Uttarakhand",
+    "latitude": 30.31,
+    "longitude": 78.03,
+    "category": "Road Infrastructure",
+    "priorityScore": 80,
+    "priorityLevel": "High",
+    "count": 78,
+    "demandVolumeChange": "+10% this month",
+    "primaryGapsText": "Severe pothole density on primary hill highway passes. Landslide risk requires steel mesh barriers.",
+    "metrics": {
+      "population": "5.80 L",
+      "literacyRate": "84.2%",
+      "villagesWards": "40",
+      "area": "3,088 km²",
+      "schools": "192",
+      "healthcareFacilities": "15",
+      "waterCoverage": "74%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 54
+      },
+      {
+        "category": "Healthcare",
+        "percent": 22
+      },
+      {
+        "category": "Water Supply",
+        "percent": 14
+      },
+      {
+        "category": "Education",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Hill Highway Pothole Paving & Landslide Netting",
+      "beneficiaries": "2.1 Lakh",
+      "budget": "₹11.8 Cr",
+      "details": "Introduce high-grip asphalt coats and steel mesh layout on steep turns."
+    }
+  },
+  {
+    "constituency": "Shimla",
+    "district": "Shimla",
+    "state": "Himachal Pradesh",
+    "latitude": 31.1,
+    "longitude": 77.17,
+    "category": "Water Supply",
+    "priorityScore": 76,
+    "priorityLevel": "Medium",
+    "count": 55,
+    "demandVolumeChange": "+7% this month",
+    "primaryGapsText": "Regular water shortages during summer peak tourist cycles. Missing central distribution reservoir capacity.",
+    "metrics": {
+      "population": "1.70 L",
+      "literacyRate": "89.1%",
+      "villagesWards": "25",
+      "area": "5,131 km²",
+      "schools": "72",
+      "healthcareFacilities": "7",
+      "waterCoverage": "61%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 52
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 28
+      },
+      {
+        "category": "Education",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "High-Capacity Municipal Water Storage Tank",
+      "beneficiaries": "95,000",
+      "budget": "₹6.8 Cr",
+      "details": "Set up 10-lakh-gallon reservoir on Shimla ridge lines."
+    }
+  },
+  {
+    "constituency": "Bhopal",
+    "district": "Bhopal",
+    "state": "Madhya Pradesh",
+    "latitude": 23.25,
+    "longitude": 77.41,
+    "category": "Healthcare",
+    "priorityScore": 81,
+    "priorityLevel": "High",
+    "count": 94,
+    "demandVolumeChange": "+11% this month",
+    "primaryGapsText": "Outpatient department congestion in regional hospitals. Citizens demand auxiliary clinics.",
+    "metrics": {
+      "population": "18.00 L",
+      "literacyRate": "80.4%",
+      "villagesWards": "85",
+      "area": "2,772 km²",
+      "schools": "480",
+      "healthcareFacilities": "35",
+      "waterCoverage": "72%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Healthcare",
+        "percent": 48
+      },
+      {
+        "category": "Water Supply",
+        "percent": 24
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 18
+      },
+      {
+        "category": "Education",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Municipal Auxiliary Clinic Network",
+      "beneficiaries": "3.6 Lakh",
+      "budget": "₹18.0 Cr",
+      "details": "Establish 12 community health centers to offload district hospital loads."
+    }
+  },
+  {
+    "constituency": "Panaji",
+    "district": "North Goa",
+    "state": "Goa",
+    "latitude": 15.49,
+    "longitude": 73.82,
+    "category": "Sanitation",
+    "priorityScore": 55,
+    "priorityLevel": "Low",
+    "count": 28,
+    "demandVolumeChange": "+1% this month",
+    "primaryGapsText": "Beach waste collection bottleneck. Missing garbage segregation bins in coastal zones.",
+    "metrics": {
+      "population": "1.10 L",
+      "literacyRate": "89.5%",
+      "villagesWards": "18",
+      "area": "300 km²",
+      "schools": "35",
+      "healthcareFacilities": "4",
+      "waterCoverage": "88%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 45
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Water Supply",
+        "percent": 20
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Beach Solid Waste Segregation & Compactors",
+      "beneficiaries": "45,000",
+      "budget": "₹2.8 Cr",
+      "details": "Introduce solar-powered compacting trash bins on primary tourist spots."
+    }
+  },
+  {
+    "constituency": "Gurugram",
+    "district": "Gurugram",
+    "state": "Haryana",
+    "latitude": 28.45,
+    "longitude": 77.02,
+    "category": "Road Infrastructure",
+    "priorityScore": 84,
+    "priorityLevel": "High",
+    "count": 132,
+    "demandVolumeChange": "+16% this month",
+    "primaryGapsText": "Severe water clogging on main expressways during rains. Missing lateral drain links.",
+    "metrics": {
+      "population": "15.10 L",
+      "literacyRate": "84.4%",
+      "villagesWards": "80",
+      "area": "1,253 km²",
+      "schools": "310",
+      "healthcareFacilities": "25",
+      "waterCoverage": "81%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Road Infrastructure",
+        "percent": 58
+      },
+      {
+        "category": "Sanitation",
+        "percent": 22
+      },
+      {
+        "category": "Water Supply",
+        "percent": 12
+      },
+      {
+        "category": "Healthcare",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Highway Drainage Pipe Network Interceptor",
+      "beneficiaries": "4.5 Lakh",
+      "budget": "₹22.0 Cr",
+      "details": "Lay large-diameter lateral storm drainage systems along the highway corridors."
+    }
+  },
+  {
+    "constituency": "Leh",
+    "district": "Leh",
+    "state": "Ladakh",
+    "latitude": 34.15,
+    "longitude": 77.57,
+    "category": "Water Supply",
+    "priorityScore": 52,
+    "priorityLevel": "Low",
+    "count": 24,
+    "demandVolumeChange": "+1% this month",
+    "primaryGapsText": "Freezing water lines in winter. Citizens request insulated solar-heated water distribution points.",
+    "metrics": {
+      "population": "1.40 L",
+      "literacyRate": "77.2%",
+      "villagesWards": "22",
+      "area": "45,110 km²",
+      "schools": "68",
+      "healthcareFacilities": "5",
+      "waterCoverage": "45%",
+      "roadConnectivity": "Low"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 50
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 30
+      },
+      {
+        "category": "Healthcare",
+        "percent": 12
+      },
+      {
+        "category": "Education",
+        "percent": 8
+      }
+    ],
+    "recommendedAction": {
+      "title": "Insulated Solar-Heated Water Standpost Installation",
+      "beneficiaries": "35,000",
+      "budget": "₹3.8 Cr",
+      "details": "Set up vacuum-jacketed pipelines and heated kiosks in remote blocks."
+    }
+  },
+  {
+    "constituency": "Chandigarh",
+    "district": "Chandigarh",
+    "state": "Chandigarh",
+    "latitude": 30.73,
+    "longitude": 76.77,
+    "category": "Sanitation",
+    "priorityScore": 56,
+    "priorityLevel": "Low",
+    "count": 31,
+    "demandVolumeChange": "+2% this month",
+    "primaryGapsText": "Solid waste dump segregation upgrades requested. Citizen representations demand sorting conveyors.",
+    "metrics": {
+      "population": "10.50 L",
+      "literacyRate": "86.0%",
+      "villagesWards": "26",
+      "area": "114 km²",
+      "schools": "115",
+      "healthcareFacilities": "14",
+      "waterCoverage": "94%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 45
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Water Supply",
+        "percent": 20
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Waste Sorting Conveyor Belt Modernization",
+      "beneficiaries": "3.2 Lakh",
+      "budget": "₹4.5 Cr",
+      "details": "Procure automated sorting belts for the central sector dumping plants."
+    }
+  },
+  {
+    "constituency": "Puducherry",
+    "district": "Puducherry",
+    "state": "Puducherry",
+    "latitude": 11.94,
+    "longitude": 79.8,
+    "category": "Water Supply",
+    "priorityScore": 54,
+    "priorityLevel": "Low",
+    "count": 27,
+    "demandVolumeChange": "+1% this month",
+    "primaryGapsText": "Saline water infiltration along coastal wards. Citizens request additional inland fresh-water grids.",
+    "metrics": {
+      "population": "9.50 L",
+      "literacyRate": "85.8%",
+      "villagesWards": "23",
+      "area": "293 km²",
+      "schools": "98",
+      "healthcareFacilities": "11",
+      "waterCoverage": "67%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 50
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Sanitation",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Inland Freshwater Grid Connection",
+      "beneficiaries": "1.1 Lakh",
+      "budget": "₹3.4 Cr",
+      "details": "Extend pipelines from inland aquifers to coastal fishing villages."
+    }
+  },
+  {
+    "constituency": "Port Blair",
+    "district": "South Andaman",
+    "state": "Andaman & Nicobar Islands",
+    "latitude": 11.62,
+    "longitude": 92.72,
+    "category": "Water Supply",
+    "priorityScore": 58,
+    "priorityLevel": "Low",
+    "count": 34,
+    "demandVolumeChange": "+3% this month",
+    "primaryGapsText": "Drinking water grid expansion required on island fringes. Citizens request rain water harvesting reservoirs.",
+    "metrics": {
+      "population": "1.00 L",
+      "literacyRate": "89.2%",
+      "villagesWards": "24",
+      "area": "8,249 km²",
+      "schools": "68",
+      "healthcareFacilities": "6",
+      "waterCoverage": "49%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 55
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 20
+      },
+      {
+        "category": "Sanitation",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Island Ward Rainwater Harvesting Reservoir",
+      "beneficiaries": "48,000",
+      "budget": "₹4.8 Cr",
+      "details": "Construct 5-lakh-liter community rainwater tanks in fringe wards."
+    }
+  },
+  {
+    "constituency": "Kavaratti",
+    "district": "Lakshadweep",
+    "state": "Lakshadweep",
+    "latitude": 10.56,
+    "longitude": 72.64,
+    "category": "Water Supply",
+    "priorityScore": 51,
+    "priorityLevel": "Low",
+    "count": 18,
+    "demandVolumeChange": "+1% this month",
+    "primaryGapsText": "Extreme groundwater depletion on coral islands. High saline content. Citizens demand solar desalination units.",
+    "metrics": {
+      "population": "64,000",
+      "literacyRate": "91.8%",
+      "villagesWards": "10",
+      "area": "32 km²",
+      "schools": "25",
+      "healthcareFacilities": "3",
+      "waterCoverage": "25%",
+      "roadConnectivity": "Medium"
+    },
+    "topIssues": [
+      {
+        "category": "Water Supply",
+        "percent": 65
+      },
+      {
+        "category": "Sanitation",
+        "percent": 20
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 5
+      }
+    ],
+    "recommendedAction": {
+      "title": "Solar-Powered RO Desalination Units",
+      "beneficiaries": "25,000",
+      "budget": "₹2.2 Cr",
+      "details": "Set up mini solar desalination units in high-density island wards."
+    }
+  },
+  {
+    "constituency": "Daman",
+    "district": "Daman",
+    "state": "Dadra & Nagar Haveli and Daman & Diu",
+    "latitude": 20.39,
+    "longitude": 72.83,
+    "category": "Sanitation",
+    "priorityScore": 53,
+    "priorityLevel": "Low",
+    "count": 24,
+    "demandVolumeChange": "+2% this month",
+    "primaryGapsText": "Beach tourist wastes cause severe sanitation blocks. Inadequate solid waste processing plants.",
+    "metrics": {
+      "population": "2.40 L",
+      "literacyRate": "87.1%",
+      "villagesWards": "15",
+      "area": "112 km²",
+      "schools": "45",
+      "healthcareFacilities": "5",
+      "waterCoverage": "78%",
+      "roadConnectivity": "High"
+    },
+    "topIssues": [
+      {
+        "category": "Sanitation",
+        "percent": 50
+      },
+      {
+        "category": "Road Infrastructure",
+        "percent": 25
+      },
+      {
+        "category": "Water Supply",
+        "percent": 15
+      },
+      {
+        "category": "Healthcare",
+        "percent": 10
+      }
+    ],
+    "recommendedAction": {
+      "title": "Coastal Segregation & Waste Compactor Stations",
+      "beneficiaries": "54,000",
+      "budget": "₹3.2 Cr",
+      "details": "Deploy beach compactor systems to process tourist litter daily."
     }
   }
 ]

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import hotspotsData from '../../data/hotspots.json';
+import statesData from '../assets/india_states_simplified.json';
 import mapBg from '../assets/india_dark_satellite.png';
 import { 
   AlertCircle, 
@@ -58,8 +59,6 @@ interface Hotspot {
   state: string;
   latitude: number;
   longitude: number;
-  x: number;
-  y: number;
   category: string;
   priorityScore: number;
   priorityLevel: 'Critical' | 'High' | 'Medium' | 'Low';
@@ -107,9 +106,56 @@ const getStateAbbr = (state: string) => {
     'Madhya Pradesh': 'MP',
     'Gujarat': 'GJ',
     'Rajasthan': 'RJ',
-    'Kerala': 'KL'
+    'Kerala': 'KL',
+    'Goa': 'GA',
+    'Chhattisgarh': 'CG',
+    'Nagaland': 'NL',
+    'Puducherry': 'PY',
+    'Ladakh': 'LA',
+    'Chandigarh': 'CH',
+    'Andaman & Nicobar Islands': 'AN',
+    'Lakshadweep': 'LD',
+    'Dadra & Nagar Haveli and Daman & Diu': 'DN'
   };
   return map[state] || state;
+};
+
+// Equirectangular projection mapping coordinates of India to fit inside a 500x350 viewport.
+// Centered around 82.5°E, 22.0°N. Preserves geographic aspect ratios correctly.
+const project = (lng: number, lat: number) => {
+  const centerLng = 82.5;
+  const centerLat = 22.0;
+  const scale = 11.5; 
+  const svgCenterX = 250;
+  const svgCenterY = 175;
+  const cosLat = Math.cos((centerLat * Math.PI) / 180);
+  
+  const x = svgCenterX + (lng - centerLng) * scale * cosLat;
+  const y = svgCenterY - (lat - centerLat) * scale;
+  return { x, y };
+};
+
+// Get the SVG path string for a state polygon
+const getSvgPath = (state: any) => {
+  const { type, coordinates } = state;
+  if (type === 'Polygon') {
+    return coordinates.map((ring: any) => {
+      return 'M ' + ring.map((pt: any) => {
+        const { x, y } = project(pt[0], pt[1]);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' L ') + ' Z';
+    }).join(' ');
+  } else if (type === 'MultiPolygon') {
+    return coordinates.map((polygon: any) => {
+      return polygon.map((ring: any) => {
+        return 'M ' + ring.map((pt: any) => {
+          const { x, y } = project(pt[0], pt[1]);
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' L ') + ' Z';
+      }).join(' ');
+    }).join(' ');
+  }
+  return '';
 };
 
 export default function HotspotMap({ onConstituencySelect, selectedConstituency }: HotspotMapProps) {
@@ -119,7 +165,9 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
     HOTSPOTS.find(h => h.constituency === 'Visakhapatnam') || HOTSPOTS[0]
   );
   const [zoomLevel, setZoomLevel] = useState<number>(100);
+  const [hoveredHotspot, setHoveredHotspot] = useState<any | null>(null);
 
+  // Apply filters on the primary list
   const filteredHotspots = HOTSPOTS.filter(h => {
     if (filterStatus === 'All') return true;
     if (filterStatus === 'Critical') return h.priorityLevel === 'Critical';
@@ -127,6 +175,150 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
     if (filterStatus === 'Normal') return h.priorityLevel === 'Low';
     return true;
   });
+
+  // Calculate dynamic projected coordinates for filtered hotspots
+  const projectedHotspots = filteredHotspots.map(h => {
+    const { x, y } = project(h.longitude, h.latitude);
+    return { ...h, x, y };
+  });
+
+  // Clustering logic for National Zoom (zoomLevel < 100)
+  const getClusters = (hotspots: typeof projectedHotspots, zoom: number) => {
+    if (zoom >= 100) {
+      return hotspots.map(h => ({
+        ...h,
+        id: `${h.state}-${h.constituency}`,
+        isCluster: false,
+        childHotspots: [h]
+      }));
+    }
+
+    const clusters: any[] = [];
+    const visited = new Set<string>();
+    const threshold = 35; // Cluster distance threshold in pixels
+
+    // Sort by priority score descending to center clusters around critical areas
+    const sorted = [...hotspots].sort((a, b) => b.priorityScore - a.priorityScore);
+
+    for (const h of sorted) {
+      const key = `${h.state}-${h.constituency}`;
+      if (visited.has(key)) continue;
+
+      visited.add(key);
+      const childHotspots = [h];
+
+      for (const other of sorted) {
+        const otherKey = `${other.state}-${other.constituency}`;
+        if (visited.has(otherKey)) continue;
+
+        const dx = h.x - other.x;
+        const dy = h.y - other.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < threshold) {
+          visited.add(otherKey);
+          childHotspots.push(other);
+        }
+      }
+
+      if (childHotspots.length > 1) {
+        // Average coordinates for the cluster
+        const avgX = childHotspots.reduce((sum, c) => sum + c.x, 0) / childHotspots.length;
+        const avgY = childHotspots.reduce((sum, c) => sum + c.y, 0) / childHotspots.length;
+        const totalCount = childHotspots.reduce((sum, c) => sum + c.count, 0);
+        const maxScore = Math.max(...childHotspots.map(c => c.priorityScore));
+        
+        // Take priorityLevel of the highest priority score node
+        const leader = childHotspots.find(c => c.priorityScore === maxScore) || h;
+
+        clusters.push({
+          id: `cluster-${leader.constituency}`,
+          constituency: `${leader.constituency} Area Cluster`,
+          state: leader.state,
+          x: avgX,
+          y: avgY,
+          latitude: leader.latitude,
+          longitude: leader.longitude,
+          category: leader.category,
+          priorityScore: maxScore,
+          priorityLevel: leader.priorityLevel,
+          count: totalCount,
+          demandVolumeChange: leader.demandVolumeChange,
+          primaryGapsText: leader.primaryGapsText,
+          metrics: leader.metrics,
+          topIssues: leader.topIssues,
+          recommendedAction: leader.recommendedAction,
+          isCluster: true,
+          childHotspots
+        });
+      } else {
+        clusters.push({
+          ...h,
+          id: `${h.state}-${h.constituency}`,
+          isCluster: false,
+          childHotspots: [h]
+        });
+      }
+    }
+
+    return clusters;
+  };
+
+  const visibleItems = getClusters(projectedHotspots, zoomLevel);
+
+  // Label overlap collision avoidance algorithm
+  const computeLabelPositions = (items: any[]) => {
+    const layout = items.map(item => ({
+      item,
+      x: item.x,
+      y: item.y,
+      dx: 0,
+      dy: -8,
+      textAnchor: "middle" as "middle" | "start" | "end"
+    }));
+
+    for (let i = 0; i < layout.length; i++) {
+      for (let j = i + 1; j < layout.length; j++) {
+        const p1 = layout[i];
+        const p2 = layout[j];
+        
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // If markers are close, shift labels to prevent collisions
+        if (dist < 22) {
+          if (Math.abs(dx) > Math.abs(dy)) {
+            // Horizontal shift
+            if (dx > 0) {
+              p1.dx = 8; p1.dy = 3; p1.textAnchor = "start";
+              p2.dx = -8; p2.dy = 3; p2.textAnchor = "end";
+            } else {
+              p1.dx = -8; p1.dy = 3; p1.textAnchor = "end";
+              p2.dx = 8; p2.dy = 3; p2.textAnchor = "start";
+            }
+          } else {
+            // Vertical shift
+            if (dy > 0) {
+              p1.dx = 0; p1.dy = 10; p1.textAnchor = "middle";
+              p2.dx = 0; p2.dy = -10; p2.textAnchor = "middle";
+            } else {
+              p1.dx = 0; p1.dy = -10; p1.textAnchor = "middle";
+              p2.dx = 0; p2.dy = 10; p2.textAnchor = "middle";
+            }
+          }
+        }
+      }
+    }
+    return layout;
+  };
+
+  const labelLayouts = computeLabelPositions(visibleItems);
+
+  // Find dynamic selected constituency state
+  const currentSelectTarget = selectedConstituency 
+    ? HOTSPOTS.find(h => h.constituency === selectedConstituency) 
+    : activeHotspot;
 
   return (
     <div className="w-full bg-gradient-to-b from-[#0F2D52] to-[#081B33] text-[#FAF6E8] p-5 rounded-2xl border-2 border-gold-700 shadow-xl relative overflow-hidden font-serif" id="hotspot-map-module">
@@ -143,7 +335,11 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
             </span>
             <h3 className="font-bold text-base text-slate-100">National Priority Hotspot GIS</h3>
           </div>
-          <p className="text-xs text-slate-400">Spatial telemetry of developmental gaps & citizen mandates</p>
+          <p className="text-xs text-slate-400">
+            {zoomLevel < 100 ? "National Zoom — Displaying clustered hotspots" : 
+             zoomLevel < 130 ? "State Zoom — Displaying constituencies with overlap filters" :
+             "District Zoom — Displaying deep constituency metrics"}
+          </p>
         </div>
 
         {/* Status Filters */}
@@ -219,37 +415,43 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
             <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-sky-500 rounded-full"></span> Digital</span>
           </div>
 
-          {/* Map Overlay Popup Tooltip */}
-          {activeHotspot && (
+          {/* Hover / Click Tooltip Overlay (Priority details) */}
+          {hoveredHotspot && (
             <div 
               className="absolute bg-navy-950/90 border border-gold-700/35 rounded-lg p-2.5 text-[9px] space-y-1.5 shadow-lg pointer-events-none z-20 font-serif leading-tight animate-fadeIn"
               style={{
-                left: `${(activeHotspot.x / 500) * 100}%`,
-                top: `${(activeHotspot.y / 350) * 100}%`,
-                transform: 'translate(10px, -50%)',
-                width: '130px'
+                left: `${(hoveredHotspot.x / 500) * 100}%`,
+                top: `${(hoveredHotspot.y / 350) * 100}%`,
+                transform: 'translate(12px, -50%)',
+                width: '135px'
               }}
             >
-              <p className="font-bold text-slate-100 leading-none">{activeHotspot.constituency}</p>
-              <p className="text-slate-450 text-[8px]">{activeHotspot.state}</p>
-              <div className="flex justify-between border-t border-slate-800 pt-1 mt-1 text-slate-350">
+              <p className="font-bold text-slate-100 leading-none">{hoveredHotspot.constituency}</p>
+              <p className="text-slate-450 text-[8px]">{hoveredHotspot.state}</p>
+              <div className="flex justify-between border-t border-slate-800 pt-1 mt-1 text-slate-355">
                 <span>Priority Score</span>
-                <span className="font-bold font-mono text-[#C89B3C]">{activeHotspot.priorityScore}</span>
+                <span className="font-bold font-mono text-[#C89B3C]">{hoveredHotspot.priorityScore}</span>
               </div>
-              <div className="flex justify-between text-slate-350">
+              <div className="flex justify-between text-slate-355">
                 <span>Requests</span>
-                <span className="font-bold font-mono">{activeHotspot.count}</span>
+                <span className="font-bold font-mono">{hoveredHotspot.count}</span>
               </div>
-              <div className="flex justify-between text-slate-350">
+              <div className="flex justify-between text-slate-355">
                 <span>Main Issue</span>
-                <span className="font-bold text-gold-600">{activeHotspot.category}</span>
+                <span className="font-bold text-gold-600">{hoveredHotspot.category}</span>
               </div>
-              <div className="flex justify-between text-slate-350 items-center">
+              <div className="flex justify-between text-slate-355 items-center">
                 <span>Level</span>
                 <span className={`font-bold text-[8px] uppercase ${
-                  activeHotspot.priorityLevel === 'Critical' ? 'text-[#CD1A30]' : 'text-[#EA580C]'
-                }`}>{activeHotspot.priorityLevel}</span>
+                  hoveredHotspot.priorityLevel === 'Critical' ? 'text-[#CD1A30]' : 
+                  hoveredHotspot.priorityLevel === 'High' ? 'text-[#EA580C]' : 'text-slate-400'
+                }`}>{hoveredHotspot.priorityLevel}</span>
               </div>
+              {hoveredHotspot.isCluster && (
+                <div className="border-t border-slate-800 pt-1 text-[7px] text-emerald-400 italic">
+                  * Cluster of {hoveredHotspot.childHotspots.length} hotspots. Click to zoom.
+                </div>
+              )}
             </div>
           )}
 
@@ -273,31 +475,31 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
               <line x1="0" y1="280" x2="500" y2="280" />
             </g>
 
-            {/* Detailed Realistic India Map Outline Path */}
-            <path 
-              d="M 235 15 L 245 15 L 255 20 L 260 25 L 260 35 L 250 45 L 255 55 L 265 65 L 270 80 L 290 95 L 305 95 L 320 110 L 300 120 L 320 135 L 350 140 L 355 130 L 360 130 L 365 135 L 375 135 L 380 130 L 390 135 L 400 125 L 415 115 L 430 120 L 440 125 L 435 140 L 420 145 L 425 160 L 415 170 L 410 165 L 395 160 L 390 175 L 380 170 L 375 185 L 365 195 L 350 210 L 345 225 L 330 240 L 320 255 L 300 280 L 295 295 L 270 325 L 255 335 L 245 340 L 238 330 L 242 320 L 230 300 L 210 280 L 195 250 L 180 220 L 170 195 L 160 180 L 155 165 L 145 160 L 135 165 L 125 155 L 115 150 L 105 155 L 85 155 L 80 145 L 90 135 L 105 130 L 120 135 L 125 120 L 120 110 L 130 95 L 140 80 L 165 70 L 185 55 L 205 45 L 220 35 L 225 25 Z" 
-              fill="none" 
-              stroke="#C89B3C" 
-              strokeWidth="0.8" 
-              className="opacity-40" 
-            />
-
-            {/* Inter-state highway link lines */}
-            <path 
-              d="M 208 198 L 248 275 L 272 274 L 258 222 L 248 92 L 300 125 L 350 152" 
-              fill="none" 
-              stroke="#102b4d" 
-              strokeWidth="1" 
-              strokeDasharray="3,5" 
-              className="opacity-55"
-            />
+            {/* High-quality India base map state boundaries GeoJSON rendering */}
+            <g id="state-boundaries-layer">
+              {statesData.map((state: any, idx: number) => {
+                const pathD = getSvgPath(state);
+                return (
+                  <path
+                    key={idx}
+                    d={pathD}
+                    fill="#0F2D52"
+                    fillOpacity="0.05"
+                    stroke="#C89B3C"
+                    strokeWidth="0.5"
+                    className="opacity-40 hover:fill-opacity-20 hover:opacity-100 transition-all duration-200 cursor-default"
+                  />
+                );
+              })}
+            </g>
 
             {/* Map Markers */}
-            {filteredHotspots.map((hotspot, idx) => {
-              const x = hotspot.x;
-              const y = hotspot.y;
+            {labelLayouts.map((layout, idx) => {
+              const hotspot = layout.item;
+              const x = layout.x;
+              const y = layout.y;
 
-              const isSelected = activeHotspot?.constituency === hotspot.constituency || selectedConstituency === hotspot.constituency;
+              const isSelected = currentSelectTarget?.constituency === hotspot.constituency;
               
               // Marker colors: Red -> Critical, Orange -> High, Yellow -> Medium, Green -> Low
               const markerColor = 
@@ -306,20 +508,34 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                 hotspot.priorityLevel === 'Medium' ? '#CA8A04' :   // Yellow
                 '#16A34A';                                         // Green (Low)
 
+              // Dynamic marker sizing representing priority score & request count
+              const markerRadius = hotspot.isCluster 
+                ? 6.5 + Math.min(hotspot.count / 40, 5) 
+                : 3.5 + Math.min(hotspot.priorityScore / 22, 3.5);
+
               return (
                 <g 
                   key={idx} 
                   className="cursor-pointer group"
+                  onMouseEnter={() => setHoveredHotspot(hotspot)}
+                  onMouseLeave={() => setHoveredHotspot(null)}
                   onClick={() => {
-                    setActiveHotspot(hotspot);
-                    if (onConstituencySelect) onConstituencySelect(hotspot.constituency);
+                    if (hotspot.isCluster) {
+                      // Zoom in on cluster center
+                      setZoomLevel(115);
+                      setActiveHotspot(hotspot.childHotspots[0]);
+                      if (onConstituencySelect) onConstituencySelect(hotspot.childHotspots[0].constituency);
+                    } else {
+                      setActiveHotspot(hotspot);
+                      if (onConstituencySelect) onConstituencySelect(hotspot.constituency);
+                    }
                   }}
                 >
-                  {/* Glowing pulse aura */}
+                  {/* Glowing pulse aura - critical hotspots pulse smoothly */}
                   <circle 
                     cx={x} 
                     cy={y} 
-                    r={isSelected ? 10 : 5.5} 
+                    r={isSelected ? markerRadius + 5 : markerRadius + 2.5} 
                     fill={markerColor} 
                     className={`opacity-25 ${hotspot.priorityLevel === 'Critical' ? 'animate-pulse' : ''}`} 
                   />
@@ -327,39 +543,60 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                     <circle 
                       cx={x} 
                       cy={y} 
-                      r="16" 
+                      r={markerRadius + 8} 
                       fill="none" 
                       stroke={markerColor} 
-                      strokeWidth="1" 
+                      strokeWidth="0.8" 
                       className="animate-ping opacity-45" 
                       style={{ animationDuration: '3s' }}
                     />
                   )}
+                  
                   {/* Central marker pin */}
                   <circle 
                     cx={x} 
                     cy={y} 
-                    r={isSelected ? 5 : 3.5} 
+                    r={markerRadius} 
                     fill={markerColor} 
                     stroke="#051426" 
                     strokeWidth="1.2"
                     className="transition-all duration-300" 
                   />
 
-                  {/* Tiny Label (only visible on hover or if selected) */}
-                  <text 
-                    x={x} 
-                    y={y - 8} 
-                    textAnchor="middle" 
-                    fill={isSelected ? '#C89B3C' : '#cbd5e1'} 
-                    fontSize="7" 
-                    fontWeight={isSelected ? "bold" : "normal"}
-                    className={`tracking-wide font-serif transition-opacity duration-200 ${
-                      isSelected ? 'opacity-100' : 'opacity-65 group-hover:opacity-100'
-                    }`}
-                  >
-                    {hotspot.constituency}
-                  </text>
+                  {/* Render Cluster counts inside the pin if clustered */}
+                  {hotspot.isCluster && (
+                    <text
+                      x={x}
+                      y={y + 2.5}
+                      textAnchor="middle"
+                      fill="#ffffff"
+                      fontSize="6.5"
+                      fontWeight="bold"
+                      className="pointer-events-none"
+                    >
+                      {hotspot.childHotspots.length}
+                    </text>
+                  )}
+
+                  {/* Collision-free label texts */}
+                  {/* Only show labels at national zoom if they are clusters or contain critical items to avoid clutter */}
+                  {(zoomLevel >= 100 || hotspot.priorityLevel === 'Critical' || hotspot.isCluster) && (
+                    <text 
+                      x={x + layout.dx} 
+                      y={y + layout.dy} 
+                      textAnchor={layout.textAnchor} 
+                      fill={isSelected ? '#C89B3C' : '#cbd5e1'} 
+                      fontSize="6.5" 
+                      fontWeight={isSelected ? "bold" : "normal"}
+                      className={`tracking-wide font-serif transition-opacity duration-200 ${
+                        isSelected ? 'opacity-100 text-shadow-sm' : 'opacity-70 group-hover:opacity-100'
+                      }`}
+                    >
+                      {hotspot.constituency}
+                      {/* District zoom displays request stats below labels */}
+                      {zoomLevel >= 130 && ` (${hotspot.count})`}
+                    </text>
+                  )}
                 </g>
               );
             })}
@@ -375,15 +612,15 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
               HOTSPOT ANALYSIS TRAY
             </h4>
 
-            {activeHotspot ? (
-              <div className="space-y-4" id="telemetry-box">
+            {currentSelectTarget ? (
+              <div className="space-y-4" id="telemetry-box animate-fadeIn">
                 {/* Location Detail block */}
                 <div className="flex justify-between items-start">
                   <div>
                     <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Constituency</p>
                     <p className="text-base font-bold text-[#FAF6E8] flex items-center gap-1">
                       <MapPin className="w-4 h-4 text-gold-700 shrink-0" />
-                      {activeHotspot.constituency} ({getStateAbbr(activeHotspot.state)})
+                      {currentSelectTarget.constituency} ({getStateAbbr(currentSelectTarget.state)})
                     </p>
                   </div>
                   <span className="bg-emerald-950/40 text-emerald-300 border border-emerald-800 text-[8px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
@@ -395,19 +632,25 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-navy-900/60 p-2.5 rounded-lg border border-gold-700/15">
                     <p className="text-[9px] text-slate-400 font-bold uppercase">Demand Volume</p>
-                    <p className="text-sm font-bold text-slate-100">{activeHotspot.count} requests</p>
+                    <p className="text-sm font-bold text-slate-100">{currentSelectTarget.count} requests</p>
                     <p className="text-[9px] text-emerald-400 font-bold flex items-center gap-0.5 mt-0.5">
                       <TrendingUp className="w-3 h-3 text-emerald-400" />
-                      {activeHotspot.demandVolumeChange}
+                      {currentSelectTarget.demandVolumeChange}
                     </p>
                   </div>
                   <div className="bg-navy-900/60 p-2.5 rounded-lg border border-gold-700/15">
                     <p className="text-[9px] text-slate-400 font-bold uppercase">Severe Status</p>
-                    <span className="bg-red-950/40 text-red-300 border border-red-800 text-[8px] font-bold px-1.5 py-0.5 mt-0.5 rounded inline-block uppercase font-mono">
-                      {activeHotspot.priorityLevel}
+                    <span className={`border text-[8px] font-bold px-1.5 py-0.5 mt-0.5 rounded inline-block uppercase font-mono ${
+                      currentSelectTarget.priorityLevel === 'Critical' 
+                        ? 'bg-red-950/40 text-red-300 border-red-800' 
+                        : currentSelectTarget.priorityLevel === 'High' 
+                        ? 'bg-amber-950/40 text-amber-300 border-amber-800'
+                        : 'bg-yellow-950/40 text-yellow-300 border-yellow-800'
+                    }`}>
+                      {currentSelectTarget.priorityLevel}
                     </span>
                     <p className="text-[9px] text-slate-300 font-bold mt-1">
-                      Priority Score: <span className="text-gold-700 font-mono">{activeHotspot.priorityScore}/100</span>
+                      Priority Score: <span className="text-gold-700 font-mono">{currentSelectTarget.priorityScore}/100</span>
                     </p>
                   </div>
                 </div>
@@ -416,7 +659,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                 <div className="space-y-1">
                   <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Primary Demand Gaps</p>
                   <p className="text-xs text-gold-100 bg-[#0F2D52]/60 p-2.5 rounded-lg border border-gold-700/20 font-medium font-serif leading-relaxed">
-                    {activeHotspot.primaryGapsText}
+                    {currentSelectTarget.primaryGapsText}
                   </p>
                 </div>
 
@@ -427,42 +670,42 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <Users className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Population</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.population}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.population}</p>
                     </div>
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <Award className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Literacy</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.literacyRate}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.literacyRate}</p>
                     </div>
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <Warehouse className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Wards/Vill</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.villagesWards}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.villagesWards}</p>
                     </div>
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <Map className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Area</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.area}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.area}</p>
                     </div>
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <School className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Schools</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.schools}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.schools}</p>
                     </div>
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <Hospital className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Clinics</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.healthcareFacilities}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.healthcareFacilities}</p>
                     </div>
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <Droplet className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Water Cov</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.waterCoverage}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.waterCoverage}</p>
                     </div>
                     <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
                       <Waypoints className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
                       <p className="text-[8px] text-slate-400 uppercase">Road Conn</p>
-                      <p className="font-bold text-slate-100 font-mono">{activeHotspot.metrics.roadConnectivity}</p>
+                      <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.roadConnectivity}</p>
                     </div>
                   </div>
                 </div>
@@ -471,7 +714,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                 <div className="space-y-2">
                   <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Top Issues by Category</p>
                   <div className="space-y-2">
-                    {activeHotspot.topIssues.map((issue, idx) => (
+                    {currentSelectTarget.topIssues.map((issue, idx) => (
                       <div key={idx} className="space-y-0.5 text-[10px]">
                         <div className="flex justify-between text-slate-350 leading-none">
                           <span>{issue.category}</span>
@@ -497,20 +740,20 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                   </div>
                   <p className="font-bold text-slate-100 text-xs flex items-center gap-1 font-serif leading-tight">
                     <Droplet className="w-4 h-4 text-blue-400 shrink-0" />
-                    {activeHotspot.recommendedAction.title}
+                    {currentSelectTarget.recommendedAction.title}
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-[9px] border-t border-gold-700/15 pt-1.5 mt-1">
                     <div>
                       <p className="text-slate-400">Est. Beneficiaries</p>
-                      <p className="font-bold text-slate-200 font-mono text-xs">{activeHotspot.recommendedAction.beneficiaries}</p>
+                      <p className="font-bold text-slate-200 font-mono text-xs">{currentSelectTarget.recommendedAction.beneficiaries}</p>
                     </div>
                     <div className="border-l border-gold-700/15 pl-2">
                       <p className="text-slate-400">Est. Budget</p>
-                      <p className="font-bold text-[#C89B3C] font-mono text-xs">{activeHotspot.recommendedAction.budget}</p>
+                      <p className="font-bold text-[#C89B3C] font-mono text-xs">{currentSelectTarget.recommendedAction.budget}</p>
                     </div>
                   </div>
                   <p className="text-[9px] text-slate-350 italic pt-1 leading-normal font-sans border-t border-gold-700/10">
-                    💡 {activeHotspot.recommendedAction.details}
+                    💡 {currentSelectTarget.recommendedAction.details}
                   </p>
                 </div>
               </div>
