@@ -39,6 +39,9 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
     demandLevel: 'Medium' as 'Very High' | 'High' | 'Medium'
   });
 
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Fetch district and mandals based on selected constituency
   const constituencyData = CONSTITUENCIES.find(c => c.name === constituency) || CONSTITUENCIES[0];
   const district = constituencyData.district;
@@ -60,9 +63,9 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
     else if (constituency === 'Lucknow') { setLat(26.8467); setLng(80.9462); }
   }, [constituency]);
 
-  // Handle Dynamic AI Analysis Calculations as user types description!
+  // Handle Dynamic AI Analysis Calculations as user types description with a debounce!
   useEffect(() => {
-    if (description.length < 15) {
+    if (description.length < 20) {
       setAiAnalysisPreview({
         sentiment: 'Neutral',
         priorityScore: urgency === 'High' ? 65 : urgency === 'Medium' ? 45 : 25,
@@ -72,37 +75,30 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
       return;
     }
 
-    // Rough NLP simulation
-    const lowercaseDesc = description.toLowerCase();
-    let sentiment: 'Positive' | 'Neutral' | 'Critical' = 'Neutral';
-    let baseScore = 50;
-    let cost = 12.0;
+    setIsAnalyzing(true);
+    const delayDebounceFn = setTimeout(() => {
+      fetch('/api/prioritize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, description, urgency })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data && !data.error) {
+            setAiAnalysisPreview({
+              sentiment: data.sentiment,
+              priorityScore: data.priorityScore,
+              costLakhs: data.estimatedCostLakhs,
+              demandLevel: data.priorityScore > 85 ? 'Very High' : data.priorityScore > 70 ? 'High' : 'Medium'
+            });
+          }
+        })
+        .catch(err => console.error('Error prioritizing:', err))
+        .finally(() => setIsAnalyzing(false));
+    }, 1200);
 
-    if (lowercaseDesc.includes('pothole') || lowercaseDesc.includes('accident') || lowercaseDesc.includes('danger') || lowercaseDesc.includes('broken') || lowercaseDesc.includes('leak') || lowercaseDesc.includes('clog')) {
-      sentiment = 'Critical';
-      baseScore += 25;
-    }
-
-    if (lowercaseDesc.includes('school') || lowercaseDesc.includes('children') || lowercaseDesc.includes('hospital') || lowercaseDesc.includes('health') || lowercaseDesc.includes('solar') || lowercaseDesc.includes('farmers')) {
-      baseScore += 15;
-      cost += 10;
-    }
-
-    if (urgency === 'High') baseScore += 12;
-    if (urgency === 'Low') baseScore -= 10;
-
-    // Constrain score
-    const finalScore = Math.min(Math.max(baseScore, 10), 98);
-    const demand: 'Very High' | 'High' | 'Medium' = finalScore > 85 ? 'Very High' : finalScore > 70 ? 'High' : 'Medium';
-
-    setAiAnalysisPreview({
-      sentiment,
-      priorityScore: finalScore,
-      costLakhs: parseFloat((cost + (description.length * 0.05)).toFixed(1)),
-      demandLevel: demand
-    });
-
-  }, [description, urgency]);
+    return () => clearTimeout(delayDebounceFn);
+  }, [description, category, urgency]);
 
   // Voice Input Simulation
   const handleVoiceSimulation = () => {
@@ -130,37 +126,42 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
       return;
     }
 
-    const mockId = `JV-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newRequest: CitizenRequest = {
-      id: mockId,
-      name,
-      contact,
-      constituency,
-      district,
-      mandal,
-      locality: locality || 'Main Village Road',
-      category,
-      description,
-      urgency,
-      status: 'Submitted',
-      date: new Date().toISOString().split('T')[0],
-      language: currentLang,
-      priorityScore: aiAnalysisPreview.priorityScore,
-      upvotes: 1,
-      latitude: lat,
-      longitude: lng,
-      aiAnalysis: {
-        sentiment: aiAnalysisPreview.sentiment,
-        estimatedImpactUsers: Math.floor(200 + Math.random() * 1500),
-        estimatedCostLakhs: aiAnalysisPreview.costLakhs,
-        primaryNeed: `Reconstruction of local ${category} nodes.`,
-        justification: `AI analyzed safety threat: ${aiAnalysisPreview.sentiment}. Immediate municipal response recommended.`
-      }
-    };
-
-    onAddRequest(newRequest);
-    setCreatedID(mockId);
-    setShowSuccessModal(true);
+    setIsSubmitting(true);
+    fetch('/api/requests', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        contact,
+        constituency,
+        district,
+        mandal,
+        locality: locality || 'Main Village Road',
+        category,
+        description,
+        urgency,
+        latitude: lat,
+        longitude: lng,
+        language: currentLang
+      })
+    })
+      .then(res => res.json())
+      .then(newRequest => {
+        if (newRequest && !newRequest.error) {
+          onAddRequest(newRequest);
+          setCreatedID(newRequest.id);
+          setShowSuccessModal(true);
+        } else {
+          alert('Error: ' + (newRequest.error || 'Failed to submit request'));
+        }
+      })
+      .catch(err => {
+        console.error('Error submitting request:', err);
+        alert('Failed to connect to the server.');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   return (
@@ -438,11 +439,12 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
             <div className="pt-2">
               <button
                 type="submit"
-                className="w-full btn-gov-primary py-3.5 text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                disabled={isSubmitting || isAnalyzing}
+                className={`w-full btn-gov-primary py-3.5 text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md ${(isSubmitting || isAnalyzing) ? 'opacity-70 cursor-not-allowed' : ''}`}
                 id="btn-citizen-submit"
               >
                 <Sparkles className="w-4.5 h-4.5 text-gold-600 fill-gold-600 animate-pulse" />
-                Submit and AI Prioritize Request
+                {isSubmitting ? 'Submitting & Prioritizing...' : 'Submit and AI Prioritize Request'}
               </button>
             </div>
 
@@ -454,9 +456,14 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
           <div className="bg-white card-gov p-5 md:p-6 relative overflow-hidden" id="realtime-nlp-preview">
             <div className="absolute top-0 right-0 w-24 h-24 bg-gold-200 rounded-full blur-2xl opacity-15 pointer-events-none"></div>
             
-            <div className="flex items-center gap-2 mb-4 border-b border-gold-700/15 pb-2">
-              <Sparkles className="w-4 h-4 text-gold-700 fill-gold-700 animate-pulse" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 font-serif">REALTIME AI ASSESSMENT</h4>
+            <div className="flex items-center justify-between mb-4 border-b border-gold-700/15 pb-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-gold-700 fill-gold-700 animate-pulse" />
+                <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 font-serif">REALTIME AI ASSESSMENT</h4>
+              </div>
+              {isAnalyzing && (
+                <span className="text-[10px] text-gold-800 font-bold animate-pulse">Analyzing...</span>
+              )}
             </div>
 
             <div className="space-y-4">

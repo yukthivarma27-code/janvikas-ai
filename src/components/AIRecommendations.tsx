@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { AI_RECOMMENDATIONS } from '../mockData';
+import { AIRecommendation } from '../types';
 import { Sparkles, IndianRupee, ShieldCheck, Check, Landmark, Calendar, Info, MapPin } from 'lucide-react';
 
 export default function AIRecommendations() {
   // Track which recommendations have been officially "sanctioned" by the MP
-  const [sanctionedList, setSanctionedList] = useState<string[]>(['REC-003']); // Default 1 already approved for visual density
+  const [sanctionedList, setSanctionedList] = useState<string[]>([]);
   const [totalFundLimit] = useState(500.0); // 5 Crore = 500 Lakhs
+  const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetch('/api/recommendations')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setRecommendations(data);
+          // Set a default sanctioned if there's any for UI weight
+          if (data.length > 2) {
+            setSanctionedList([data[2].id]);
+          }
+        }
+      })
+      .catch(err => console.error('Error fetching recommendations:', err))
+      .finally(() => setIsLoading(false));
+  }, []);
 
   const handleSanctionToggle = (id: string) => {
     if (sanctionedList.includes(id)) {
@@ -17,7 +36,7 @@ export default function AIRecommendations() {
   };
 
   // Calculate allocated sum based on recommendation costs
-  const allocatedLakhs = AI_RECOMMENDATIONS.reduce((acc, rec) => {
+  const allocatedLakhs = recommendations.reduce((acc, rec) => {
     if (sanctionedList.includes(rec.id)) {
       return acc + rec.estimatedCostLakhs;
     }
@@ -86,121 +105,145 @@ export default function AIRecommendations() {
 
       {/* Recommendation Cards list */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slideUp" id="ai-recs-cards-list">
-        {AI_RECOMMENDATIONS.map((rec) => {
-          const isSanctioned = sanctionedList.includes(rec.id);
-
-          return (
-            <div 
-              key={rec.id} 
-              className={`bg-white card-gov p-5 md:p-6 flex flex-col justify-between relative overflow-hidden ${
-                isSanctioned 
-                  ? 'border-emerald-500! ring-2 ring-emerald-500/10 scale-[1.01]' 
-                  : 'hover:-translate-y-1'
-              }`}
-            >
-              {/* Sanctioned Ribbon badge */}
-              {isSanctioned && (
-                <div className="absolute top-0 right-0 bg-emerald-750 text-white text-[9px] font-bold px-3.5 py-1 rounded-bl-xl flex items-center gap-1 uppercase tracking-wider">
-                  <ShieldCheck className="w-3.5 h-3.5" /> Sanctioned
-                </div>
-              )}
-
-              <div className="space-y-4">
-                {/* Score & Category info */}
+        {isLoading ? (
+          <>
+            {[1, 2, 3, 4].map(n => (
+              <div key={n} className="bg-white card-gov p-5 md:p-6 space-y-4 animate-pulse">
                 <div className="flex justify-between items-center pr-16">
-                  <span className="text-[10px] font-mono font-bold bg-gold-50 text-gold-950 px-2 py-0.5 rounded border border-gold-700/20">
-                    Priority Score: {rec.priorityScore}%
-                  </span>
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-550">
-                    <MapPin className="w-3.5 h-3.5 text-gold-700" />
-                    <span>{rec.constituency}</span>
-                  </div>
+                  <div className="h-5 w-28 bg-slate-200 rounded"></div>
+                  <div className="h-4 w-20 bg-slate-200 rounded"></div>
                 </div>
-
-                {/* Recommendation Title */}
-                <div>
-                  <h3 className="text-base md:text-lg font-bold text-navy-900 leading-tight">
-                    {rec.title}
-                  </h3>
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 mt-1">
-                    <span>Category: <strong className="text-navy-900">{rec.category}</strong></span>
-                    <span>•</span>
-                    <span>Demand: <strong className="text-[#C89B3C]">{rec.demandLevel}</strong></span>
-                  </div>
+                <div className="h-6 w-3/4 bg-slate-200 rounded"></div>
+                <div className="h-3.5 w-1/2 bg-slate-200 rounded"></div>
+                <div className="bg-gold-50/10 p-3.5 rounded-xl border border-gold-700/5 space-y-2">
+                  <div className="h-3 w-full bg-slate-200 rounded"></div>
+                  <div className="h-3 w-5/6 bg-slate-200 rounded"></div>
                 </div>
+                <div className="h-3.5 w-1/3 bg-slate-200 rounded"></div>
+                <div className="h-10 w-full bg-slate-200 rounded-xl"></div>
+              </div>
+            ))}
+          </>
+        ) : recommendations.length === 0 ? (
+          <div className="col-span-2 bg-white card-gov p-10 text-center text-slate-500 font-serif border border-gold-700/20">
+            No dynamic recommendations available. Please submit more citizen requests first so the AI model can cluster them!
+          </div>
+        ) : (
+          recommendations.map((rec) => {
+            const isSanctioned = sanctionedList.includes(rec.id);
 
-                {/* Impact details */}
-                <div className="bg-gold-50/20 p-3.5 rounded-xl border border-gold-700/15 space-y-2 text-xs">
+            return (
+              <div 
+                key={rec.id} 
+                className={`bg-white card-gov p-5 md:p-6 flex flex-col justify-between relative overflow-hidden ${
+                  isSanctioned 
+                    ? 'border-emerald-500! ring-2 ring-emerald-500/10 scale-[1.01]' 
+                    : 'hover:-translate-y-1'
+                }`}
+              >
+                {/* Sanctioned Ribbon badge */}
+                {isSanctioned && (
+                  <div className="absolute top-0 right-0 bg-emerald-750 text-white text-[9px] font-bold px-3.5 py-1 rounded-bl-xl flex items-center gap-1 uppercase tracking-wider">
+                    <ShieldCheck className="w-3.5 h-3.5" /> Sanctioned
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  {/* Score & Category info */}
+                  <div className="flex justify-between items-center pr-16">
+                    <span className="text-[10px] font-mono font-bold bg-gold-50 text-gold-950 px-2 py-0.5 rounded border border-gold-700/20">
+                      Priority Score: {rec.priorityScore}%
+                    </span>
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-550">
+                      <MapPin className="w-3.5 h-3.5 text-gold-700" />
+                      <span>{rec.constituency}</span>
+                    </div>
+                  </div>
+
+                  {/* Recommendation Title */}
                   <div>
-                    <p className="text-[9px] font-bold text-slate-400 uppercase">Estimated Impact</p>
-                    <p className="text-slate-700 leading-relaxed font-bold mt-0.5">{rec.estimatedImpact}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 border-t border-gold-700/15 pt-2 mt-2">
-                    <div>
-                      <p className="text-[9px] font-bold text-slate-400 uppercase">Sanction Cost</p>
-                      <p className="font-bold text-navy-900 font-mono text-sm mt-0.5">₹{rec.estimatedCostLakhs} Lakhs</p>
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-bold text-slate-400 uppercase">Related Submissions</p>
-                      <p className="font-bold text-slate-800 text-sm mt-0.5">{rec.relatedRequestCount} requests grouped</p>
+                    <h3 className="text-base md:text-lg font-bold text-navy-900 leading-tight">
+                      {rec.title}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 mt-1">
+                      <span>Category: <strong className="text-navy-900">{rec.category}</strong></span>
+                      <span>•</span>
+                      <span>Demand: <strong className="text-[#C89B3C]">{rec.demandLevel}</strong></span>
                     </div>
                   </div>
+
+                  {/* Impact details */}
+                  <div className="bg-gold-50/20 p-3.5 rounded-xl border border-gold-700/15 space-y-2 text-xs">
+                    <div>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase">Estimated Impact</p>
+                      <p className="text-slate-700 leading-relaxed font-bold mt-0.5">{rec.estimatedImpact}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 border-t border-gold-700/15 pt-2 mt-2">
+                      <div>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase">Sanction Cost</p>
+                        <p className="font-bold text-navy-900 font-mono text-sm mt-0.5">₹{rec.estimatedCostLakhs} Lakhs</p>
+                      </div>
+                      <div>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase">Related Submissions</p>
+                        <p className="font-bold text-slate-800 text-sm mt-0.5">{rec.relatedRequestCount} requests grouped</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Al Algorithmic justification */}
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
+                      <Info className="w-3 h-3 text-gold-700" />
+                      Algorithmic Justification
+                    </p>
+                    <p className="text-xs text-slate-600 leading-normal font-serif">
+                      {rec.reason}
+                    </p>
+                  </div>
+
+                  {/* Suggested Action */}
+                  <div className="bg-[#FAF6E8]/30 p-3.5 rounded-xl border border-gold-700/15 text-xs">
+                    <p className="text-[9px] font-bold text-gold-950 uppercase tracking-wider">Suggested MP Action Motion</p>
+                    <p className="text-navy-950 leading-relaxed mt-0.5 font-bold font-serif">
+                      {rec.suggestedMPAction}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Al Algorithmic justification */}
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
-                    <Info className="w-3 h-3 text-gold-700" />
-                    Algorithmic Justification
-                  </p>
-                  <p className="text-xs text-slate-600 leading-normal font-serif">
-                    {rec.reason}
-                  </p>
+                {/* Sanction button trigger */}
+                <div className="mt-5 pt-4 border-t border-gold-700/15 flex items-center justify-between gap-4">
+                  <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" /> Target cycle: {rec.timelineMonths} months
+                  </span>
+
+                  <button
+                    onClick={() => handleSanctionToggle(rec.id)}
+                    className={`px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all duration-200 ${
+                      isSanctioned 
+                        ? 'bg-emerald-100! hover:bg-emerald-200! text-emerald-800! border border-emerald-300! rounded-full' 
+                        : 'btn-gov-primary'
+                    }`}
+                    id={`btn-sanction-${rec.id}`}
+                  >
+                    {isSanctioned ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        Sanctioned Active
+                      </>
+                    ) : (
+                      <>
+                        <IndianRupee className="w-3.5 h-3.5" />
+                        Sanction Funds
+                      </>
+                    )}
+                  </button>
                 </div>
 
-                {/* Suggested Action */}
-                <div className="bg-[#FAF6E8]/30 p-3.5 rounded-xl border border-gold-700/15 text-xs">
-                  <p className="text-[9px] font-bold text-gold-950 uppercase tracking-wider">Suggested MP Action Motion</p>
-                  <p className="text-navy-950 leading-relaxed mt-0.5 font-bold font-serif">
-                    {rec.suggestedMPAction}
-                  </p>
-                </div>
               </div>
-
-              {/* Sanction button trigger */}
-              <div className="mt-5 pt-4 border-t border-gold-700/15 flex items-center justify-between gap-4">
-                <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" /> Target cycle: {rec.timelineMonths} months
-                </span>
-
-                <button
-                  onClick={() => handleSanctionToggle(rec.id)}
-                  className={`px-5 py-2.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-all duration-200 ${
-                    isSanctioned 
-                      ? 'bg-emerald-100! hover:bg-emerald-200! text-emerald-800! border border-emerald-300! rounded-full' 
-                      : 'btn-gov-primary'
-                  }`}
-                  id={`btn-sanction-${rec.id}`}
-                >
-                  {isSanctioned ? (
-                    <>
-                      <Check className="w-3.5 h-3.5" />
-                      Sanctioned Active
-                    </>
-                  ) : (
-                    <>
-                      <IndianRupee className="w-3.5 h-3.5" />
-                      Sanction Funds
-                    </>
-                  )}
-                </button>
-              </div>
-
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
-
     </div>
   );
 }

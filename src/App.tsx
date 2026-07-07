@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import RequestForm from './components/RequestForm';
 import RequestTracker from './components/RequestTracker';
 import MPDashboard from './components/MPDashboard';
 import AIRecommendations from './components/AIRecommendations';
 import ProposalComparison from './components/ProposalComparison';
-import { INITIAL_REQUESTS, LANGUAGES } from './mockData';
+import { LANGUAGES } from './mockData';
 import { CitizenRequest, Language, RequestStatus } from './types';
 import { 
   Sparkles, 
@@ -27,8 +27,15 @@ export default function App() {
   const [currentLang, setCurrentLang] = useState<Language>('en');
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
   const [activeView, setActiveView] = useState<string>('landing');
-  const [requests, setRequests] = useState<CitizenRequest[]>(INITIAL_REQUESTS);
+  const [requests, setRequests] = useState<CitizenRequest[]>([]);
   const [selectedTrackID, setSelectedTrackID] = useState<string>('');
+
+  useEffect(() => {
+    fetch('/api/requests')
+      .then(res => res.json())
+      .then(data => setRequests(data))
+      .catch(err => console.error('Error fetching requests:', err));
+  }, []);
 
   const langData = LANGUAGES[currentLang] || LANGUAGES.en;
 
@@ -38,30 +45,33 @@ export default function App() {
   };
 
   const handleUpvote = (id: string) => {
-    setRequests(prev => prev.map(req => {
-      if (req.id === id) {
-        // Increment upvote & dynamically adjust priorityScore slightly up to simulate AI update
-        const updatedUpvotes = req.upvotes + 1;
-        const additionalScore = Math.min(Math.floor(updatedUpvotes / 10), 5);
-        const originalScore = req.priorityScore;
-        const newScore = Math.min(originalScore + additionalScore, 98);
-        return {
-          ...req,
-          upvotes: updatedUpvotes,
-          priorityScore: newScore
-        };
-      }
-      return req;
-    }));
+    fetch('/api/upvote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    })
+      .then(res => res.json())
+      .then(updatedReq => {
+        if (updatedReq && !updatedReq.error) {
+          setRequests(prev => prev.map(req => req.id === id ? updatedReq : req));
+        }
+      })
+      .catch(err => console.error('Error upvoting:', err));
   };
 
   const handleStatusChange = (id: string, newStatus: RequestStatus) => {
-    setRequests(prev => prev.map(req => {
-      if (req.id === id) {
-        return { ...req, status: newStatus };
-      }
-      return req;
-    }));
+    fetch('/api/status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: newStatus })
+    })
+      .then(res => res.json())
+      .then(updatedReq => {
+        if (updatedReq && !updatedReq.error) {
+          setRequests(prev => prev.map(req => req.id === id ? updatedReq : req));
+        }
+      })
+      .catch(err => console.error('Error updating status:', err));
   };
 
   const handleNavigateToTrack = (id: string) => {
@@ -424,7 +434,7 @@ export default function App() {
         )}
 
         {activeView === 'proposal-comparison' && (
-          <ProposalComparison />
+          <ProposalComparison requests={requests} />
         )}
       </main>
     </div>
