@@ -1,4 +1,5 @@
-# 🏛️ JanVikas AI — Civic Development Priority Platform
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/ea5727a2-8660-4078-abbb-23f714fcdb01" />
+
 
 [![Tech Stack](https://img.shields.io/badge/Stack-React%20%7C%20TypeScript%20%7C%20Express-blue.svg)](https://react.dev)
 [![AI Engine](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-orange.svg)](https://ai.google.dev)
