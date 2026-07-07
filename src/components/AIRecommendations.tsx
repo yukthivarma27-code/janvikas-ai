@@ -170,6 +170,15 @@ export default function AIRecommendations() {
                       <span>•</span>
                       <span>Demand: <strong className="text-[#C89B3C]">{rec.demandLevel}</strong></span>
                     </div>
+                    {rec.verifiedGaps && rec.verifiedGaps.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {rec.verifiedGaps.map(gap => (
+                          <span key={gap} className="text-[9px] bg-rose-50 text-rose-800 border border-rose-200 px-2 py-0.5 rounded font-mono font-bold">
+                            {gap}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Impact details */}
@@ -177,20 +186,29 @@ export default function AIRecommendations() {
                     <div>
                       <p className="text-[9px] font-bold text-slate-400 uppercase">Estimated Impact</p>
                       <p className="text-slate-700 leading-relaxed font-bold mt-0.5">{rec.estimatedImpact}</p>
+                      {rec.baselineSummary && (
+                        <p className="text-[10px] text-navy-800 bg-white border border-gold-700/10 p-1.5 rounded mt-1.5 font-serif">
+                          <strong>Data-Backed Validation:</strong> {rec.baselineSummary}
+                        </p>
+                      )}
                     </div>
-                    <div className="grid grid-cols-2 gap-4 border-t border-gold-700/15 pt-2 mt-2">
+                    <div className="grid grid-cols-3 gap-2 border-t border-gold-700/15 pt-2 mt-2 text-center sm:text-left">
                       <div>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase">Sanction Cost</p>
-                        <p className="font-bold text-navy-900 font-mono text-sm mt-0.5">₹{rec.estimatedCostLakhs} Lakhs</p>
+                        <p className="text-[8px] font-bold text-slate-400 uppercase">Sanction Cost</p>
+                        <p className="font-bold text-navy-900 font-mono text-xs mt-0.5">₹{rec.estimatedCostLakhs} L</p>
                       </div>
                       <div>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase">Related Submissions</p>
-                        <p className="font-bold text-slate-800 text-sm mt-0.5">{rec.relatedRequestCount} requests grouped</p>
+                        <p className="text-[8px] font-bold text-slate-400 uppercase">Grouped Demands</p>
+                        <p className="font-bold text-slate-800 text-xs mt-0.5">{rec.relatedRequestCount} requests</p>
+                      </div>
+                      <div>
+                        <p className="text-[8px] font-bold text-slate-400 uppercase">Population Served</p>
+                        <p className="font-bold text-emerald-800 text-xs mt-0.5">{(rec.totalPopulationServed || 1200).toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Al Algorithmic justification */}
+                  {/* AI Algorithmic justification */}
                   <div className="space-y-1">
                     <p className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
                       <Info className="w-3 h-3 text-gold-700" />
@@ -208,6 +226,7 @@ export default function AIRecommendations() {
                       {rec.suggestedMPAction}
                     </p>
                   </div>
+
                 </div>
 
                 {/* Sanction button trigger */}

@@ -1,0 +1,74 @@
+[
+  {
+    "villageLgdCode": "586201",
+    "villageName": "Bheemunipatnam",
+    "mandalName": "Bheemunipatnam",
+    "totalPopulation": 48300,
+    "scStPopulation": 7245,
+    "literacyRate": 78.2
+  },
+  {
+    "villageLgdCode": "586202",
+    "villageName": "Mulakuddu",
+    "mandalName": "Bheemunipatnam",
+    "totalPopulation": 6800,
+    "scStPopulation": 1700,
+    "literacyRate": 64.5
+  },
+  {
+    "villageLgdCode": "586203",
+    "villageName": "Anandapuram",
+    "mandalName": "Anandapuram",
+    "totalPopulation": 12500,
+    "scStPopulation": 3125,
+    "literacyRate": 70.1
+  },
+  {
+    "villageLgdCode": "586204",
+    "villageName": "Tagarapuvalasa",
+    "mandalName": "Bheemunipatnam",
+    "totalPopulation": 24200,
+    "scStPopulation": 3630,
+    "literacyRate": 75.4
+  },
+  {
+    "villageLgdCode": "586205",
+    "villageName": "Padmanabham",
+    "mandalName": "Padmanabham",
+    "totalPopulation": 9800,
+    "scStPopulation": 2940,
+    "literacyRate": 58.2
+  },
+  {
+    "villageLgdCode": "586206",
+    "villageName": "Pendurthi",
+    "mandalName": "Pendurthi",
+    "totalPopulation": 36500,
+    "scStPopulation": 5475,
+    "literacyRate": 76.8
+  },
+  {
+    "villageLgdCode": "586207",
+    "villageName": "Rushikonda",
+    "mandalName": "Visakhapatnam (Rural)",
+    "totalPopulation": 15800,
+    "scStPopulation": 1580,
+    "literacyRate": 82.1
+  },
+  {
+    "villageLgdCode": "586208",
+    "villageName": "Gajuwaka",
+    "mandalName": "Gajuwaka",
+    "totalPopulation": 68900,
+    "scStPopulation": 10335,
+    "literacyRate": 80.5
+  },
+  {
+    "villageLgdCode": "586209",
+    "villageName": "Gopalapatnam",
+    "mandalName": "Pendurthi",
+    "totalPopulation": 28400,
+    "scStPopulation": 4260,
+    "literacyRate": 77.2
+  }
+]

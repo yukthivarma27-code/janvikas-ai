@@ -22,6 +22,40 @@ export type RequestStatus =
   | 'In Progress' 
   | 'Completed';
 
+export interface ScoreBreakdown {
+  sentiment: number;
+  urgency: number;
+  upvotes: number;
+  density: number;
+  antyodaya: number;
+  infraGap: number;
+  disasterRisk: number;
+  finalScore: number;
+}
+
+export interface BaselineData {
+  villageLgdCode?: string;
+  villageName?: string;
+  mandalName?: string;
+  totalPopulation?: number;
+  scStPopulation?: number;
+  literacyRate?: number;
+  schoolCode?: string;
+  schoolName?: string;
+  pupilTeacherRatio?: number;
+  schoolToilets?: boolean;
+  schoolWater?: boolean;
+  schoolElectricity?: boolean;
+  nearestFacilityName?: string;
+  nearestFacilityType?: string;
+  nearestFacilityBeds?: number;
+  nearestFacilityDoctors?: number;
+  nearestFacilityDistanceKm?: number;
+  totalHouseholds?: number;
+  tapConnectionsPercentage?: number;
+  waterQualityStatus?: string;
+}
+
 export interface CitizenRequest {
   id: string;
   name: string;
@@ -47,6 +81,9 @@ export interface CitizenRequest {
     primaryNeed: string;
     justification: string;
   };
+  scoreBreakdown?: ScoreBreakdown;
+  verifiedGaps?: string[];
+  baselineData?: BaselineData;
 }
 
 export interface AIRecommendation {
@@ -63,7 +100,11 @@ export interface AIRecommendation {
   relatedRequestCount: number;
   suggestedMPAction: string;
   timelineMonths: number;
+  verifiedGaps?: string[];
+  totalPopulationServed?: number;
+  baselineSummary?: string;
 }
+
 
 export interface ProposalComparison {
   id: string;

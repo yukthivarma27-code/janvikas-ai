@@ -1,0 +1,56 @@
+[
+  {
+    "villageLgdCode": "586201",
+    "totalHouseholds": 9500,
+    "tapConnectionsPercentage": 82.5,
+    "waterQualityStatus": "Safe"
+  },
+  {
+    "villageLgdCode": "586202",
+    "totalHouseholds": 1400,
+    "tapConnectionsPercentage": 28.4,
+    "waterQualityStatus": "High Fluoride"
+  },
+  {
+    "villageLgdCode": "586203",
+    "totalHouseholds": 2600,
+    "tapConnectionsPercentage": 55.2,
+    "waterQualityStatus": "Safe"
+  },
+  {
+    "villageLgdCode": "586204",
+    "totalHouseholds": 5100,
+    "tapConnectionsPercentage": 70.1,
+    "waterQualityStatus": "Safe"
+  },
+  {
+    "villageLgdCode": "586205",
+    "totalHouseholds": 1950,
+    "tapConnectionsPercentage": 18.6,
+    "waterQualityStatus": "Safe"
+  },
+  {
+    "villageLgdCode": "586206",
+    "totalHouseholds": 7800,
+    "tapConnectionsPercentage": 76.4,
+    "waterQualityStatus": "Safe"
+  },
+  {
+    "villageLgdCode": "586207",
+    "totalHouseholds": 3400,
+    "tapConnectionsPercentage": 89.0,
+    "waterQualityStatus": "Safe"
+  },
+  {
+    "villageLgdCode": "586208",
+    "totalHouseholds": 14500,
+    "tapConnectionsPercentage": 92.4,
+    "waterQualityStatus": "Safe"
+  },
+  {
+    "villageLgdCode": "586209",
+    "totalHouseholds": 6200,
+    "tapConnectionsPercentage": 81.1,
+    "waterQualityStatus": "Safe"
+  }
+]

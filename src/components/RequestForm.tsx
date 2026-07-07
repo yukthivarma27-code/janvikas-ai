@@ -39,6 +39,10 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
     demandLevel: 'Medium' as 'Very High' | 'High' | 'Medium'
   });
 
+  const [scoreBreakdown, setScoreBreakdown] = useState<any>(null);
+  const [verifiedGaps, setVerifiedGaps] = useState<string[]>([]);
+  const [baselineData, setBaselineData] = useState<any>(null);
+
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -53,7 +57,8 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
     }
     
     // Simulate latitude/longitude shift
-    if (constituency === 'Varanasi') { setLat(25.3176); setLng(82.9739); }
+    if (constituency === 'Visakhapatnam') { setLat(17.89); setLng(83.44); }
+    else if (constituency === 'Varanasi') { setLat(25.3176); setLng(82.9739); }
     else if (constituency === 'Bengaluru South') { setLat(12.9716); setLng(77.5946); }
     else if (constituency === 'Hyderabad') { setLat(17.3850); setLng(78.4867); }
     else if (constituency === 'Pune') { setLat(18.5204); setLng(73.8567); }
@@ -72,6 +77,9 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
         costLakhs: 4.5,
         demandLevel: 'Medium'
       });
+      setScoreBreakdown(null);
+      setVerifiedGaps([]);
+      setBaselineData(null);
       return;
     }
 
@@ -80,7 +88,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
       fetch('/api/prioritize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, description, urgency })
+        body: JSON.stringify({ category, description, urgency, latitude: lat, longitude: lng, locality, mandal })
       })
         .then(res => res.json())
         .then(data => {
@@ -89,8 +97,11 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
               sentiment: data.sentiment,
               priorityScore: data.priorityScore,
               costLakhs: data.estimatedCostLakhs,
-              demandLevel: data.priorityScore > 85 ? 'Very High' : data.priorityScore > 70 ? 'High' : 'Medium'
+              demandLevel: data.priorityScore > 80 ? 'Very High' : data.priorityScore > 60 ? 'High' : 'Medium'
             });
+            setScoreBreakdown(data.scoreBreakdown);
+            setVerifiedGaps(data.verifiedGaps || []);
+            setBaselineData(data.baselineData);
           }
         })
         .catch(err => console.error('Error prioritizing:', err))
@@ -98,7 +109,8 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
     }, 1200);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [description, category, urgency]);
+  }, [description, category, urgency, constituency, mandal, locality, lat, lng]);
+
 
   // Voice Input Simulation
   const handleVoiceSimulation = () => {
@@ -509,9 +521,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                   </span>
                   <span className="text-[10px] text-slate-500 font-serif">Emotional severity classification</span>
                 </div>
-              </div>
-
-              {/* Cost layout */}
+              </div>              {/* Cost layout */}
               <div className="grid grid-cols-2 gap-3.5 bg-white p-3.5 rounded-xl border border-gold-700/20">
                 <div>
                   <p className="text-[9px] text-slate-500 uppercase font-serif font-bold">Cost Projection</p>
@@ -525,13 +535,148 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                 </div>
               </div>
 
+              {/* Verified Data Checks */}
+              {baselineData && (
+                <div className="space-y-2 bg-slate-50 p-3.5 rounded-xl border border-gold-700/15 text-xs text-slate-700">
+                  <p className="text-[9px] font-bold text-[#0F2D52] uppercase font-serif tracking-wider border-b border-gold-700/10 pb-1">
+                    ✓ Verified Open Government Data
+                  </p>
+                  <div className="space-y-1.5 text-[11px] font-serif leading-relaxed">
+                    <p className="flex items-center gap-1">
+                      <span className="text-emerald-600 font-bold">●</span>
+                      <strong>LGD lookup:</strong> {baselineData.villageName} Village (Mandal: {baselineData.mandalName})
+                    </p>
+                    <p className="flex items-center gap-1">
+                      <span className="text-emerald-600 font-bold">●</span>
+                      <strong>Census Pop:</strong> {baselineData.totalPopulation?.toLocaleString()} (SC/ST: {Math.round((baselineData.scStPopulation || 0) / (baselineData.totalPopulation || 1) * 100)}%)
+                    </p>
+                    
+                    {category === 'Education' && baselineData.schoolCode && (
+                      <div className="pl-3 mt-1 space-y-0.5 border-l border-gold-700/20">
+                        <p className="text-[10px] text-slate-500 font-bold">UDISE+ SCHOOL DIRECTORY VERIFICATION:</p>
+                        <p className="font-bold">🏫 {baselineData.schoolName}</p>
+                        <p>• Toilets: {baselineData.schoolToilets ? '✅ Present' : '❌ Lacking (TOILET_GAP)'}</p>
+                        <p>• Water: {baselineData.schoolWater ? '✅ Present' : '❌ Lacking (WATER_GAP)'}</p>
+                        <p>• Student-Teacher Ratio: <span className={baselineData.pupilTeacherRatio > 30 ? 'text-rose-600 font-bold' : ''}>{baselineData.pupilTeacherRatio}:1</span></p>
+                      </div>
+                    )}
+
+                    {(category === 'Water' || category === 'Sanitation') && baselineData.totalHouseholds && (
+                      <div className="pl-3 mt-1 space-y-0.5 border-l border-gold-700/20">
+                        <p className="text-[10px] text-slate-500 font-bold">JAL JEEVAN MISSION DIRECTORY VERIFICATION:</p>
+                        <p>💧 JJM Connections: <span className="font-bold">{baselineData.tapConnectionsPercentage}%</span></p>
+                        <p>🧪 Quality Check: <span className={baselineData.waterQualityStatus !== 'Safe' ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}>{baselineData.waterQualityStatus}</span></p>
+                      </div>
+                    )}
+
+                    {category === 'Healthcare' && baselineData.nearestFacilityName && (
+                      <div className="pl-3 mt-1 space-y-0.5 border-l border-gold-700/20">
+                        <p className="text-[10px] text-slate-500 font-bold">HEALTH FACILITY REGISTRY VERIFICATION:</p>
+                        <p className="font-bold">🏥 Closest: {baselineData.nearestFacilityName} ({baselineData.nearestFacilityDistanceKm} km)</p>
+                        <p>• Capacity: {baselineData.nearestFacilityBeds} Beds, {baselineData.nearestFacilityDoctors} Doctors</p>
+                      </div>
+                    )}
+
+                    {verifiedGaps.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {verifiedGaps.map(gap => (
+                          <span key={gap} className="text-[9px] bg-rose-50 text-rose-800 border border-rose-205 px-1.5 py-0.5 rounded font-mono font-bold">
+                            {gap}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Priority Score Breakdown Chart */}
+              {scoreBreakdown && (
+                <div className="space-y-2 bg-[#FAF6E8]/45 p-3.5 rounded-xl border border-gold-700/15 text-xs text-slate-700">
+                  <p className="text-[9px] font-bold text-navy-900 uppercase font-serif tracking-wider border-b border-gold-700/10 pb-1">
+                    📊 Explainable AI Score Breakdown
+                  </p>
+                  <div className="space-y-1.5 font-mono text-[10px]">
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between text-slate-600">
+                        <span>Sentiment Factor (15%)</span>
+                        <span>{scoreBreakdown.sentiment} / 15</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-gold-600 h-full" style={{ width: `${(scoreBreakdown.sentiment / 15) * 100}%` }}></div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between text-slate-600">
+                        <span>User-reported Urgency (10%)</span>
+                        <span>{scoreBreakdown.urgency} / 10</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-gold-600 h-full" style={{ width: `${(scoreBreakdown.urgency / 10) * 100}%` }}></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between text-slate-600">
+                        <span>Local Demand (Upvotes) (15%)</span>
+                        <span>{scoreBreakdown.upvotes} / 15</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-gold-600 h-full" style={{ width: `${(scoreBreakdown.upvotes / 15) * 100}%` }}></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between text-slate-600">
+                        <span>Population Density (15%)</span>
+                        <span>{scoreBreakdown.density} / 15</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-gold-600 h-full" style={{ width: `${(scoreBreakdown.density / 15) * 100}%` }}></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between text-slate-600">
+                        <span>Antyodaya Deprivation (15%)</span>
+                        <span>{scoreBreakdown.antyodaya} / 15</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-gold-600 h-full" style={{ width: `${(scoreBreakdown.antyodaya / 15) * 100}%` }}></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between text-slate-600">
+                        <span>Verified Structural Gaps (20%)</span>
+                        <span>{scoreBreakdown.infraGap} / 20</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-[#0F2D52] h-full" style={{ width: `${(scoreBreakdown.infraGap / 20) * 100}%` }}></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <div className="flex justify-between text-slate-600">
+                        <span>Disaster & hazard Risk (10%)</span>
+                        <span>{scoreBreakdown.disasterRisk} / 10</span>
+                      </div>
+                      <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                        <div className="bg-gold-600 h-full" style={{ width: `${(scoreBreakdown.disasterRisk / 10) * 100}%` }}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Help box */}
-              <div className="text-[10px] text-slate-650 leading-relaxed bg-[#F5EFE6]/40 p-3 rounded-lg border border-gold-700/15">
+              <div className="text-[10px] text-slate-655 leading-relaxed bg-[#F5EFE6]/40 p-3 rounded-lg border border-gold-700/15">
                 <p className="font-bold text-navy-900 mb-0.5 flex items-center gap-1 font-serif">
                   <AlertCircle className="w-3.5 h-3.5 text-gold-700" />
-                  Did you know?
+                  Evidence-based Scoring
                 </p>
-                Including keywords like "accident", "hospital", "flood", "leakage", or "school children" allows the algorithm to trigger immediate safety prioritization flags.
+                Priority is dynamically calculated using local census files, UDISE+ school indicators, healthcare distance grids, and tap connections percentage.
               </div>
             </div>
           </div>

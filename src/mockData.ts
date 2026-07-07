@@ -50,6 +50,7 @@ export const LANGUAGES: Record<Language, { name: string; native: string; welcome
 };
 
 export const CONSTITUENCIES = [
+  { name: 'Visakhapatnam', state: 'Andhra Pradesh', district: 'Visakhapatnam', mandals: ['Bheemunipatnam', 'Anandapuram', 'Padmanabham', 'Pendurthi', 'Gajuwaka'] },
   { name: 'Varanasi', state: 'Uttar Pradesh', district: 'Varanasi', mandals: ['Kashi Vidyapith', 'Pindra', 'Harahua', 'Sewa Puri', 'Cholapur'] },
   { name: 'Bengaluru South', state: 'Karnataka', district: 'Bengaluru Urban', mandals: ['Jayanagar', 'Basavanagudi', 'Padmanabhanagar', 'BTM Layout', 'Vijayanagar'] },
   { name: 'Hyderabad', state: 'Telangana', district: 'Hyderabad', mandals: ['Charminar', 'Karwan', 'Malakpet', 'Bahadurpura', 'Chandrayangutta'] },
@@ -61,6 +62,108 @@ export const CONSTITUENCIES = [
 ];
 
 export const INITIAL_REQUESTS: CitizenRequest[] = [
+  {
+    id: 'JV-2026-6101',
+    name: 'Appala Raju',
+    contact: 'appala.raju@gmail.com',
+    constituency: 'Visakhapatnam',
+    district: 'Visakhapatnam',
+    mandal: 'Bheemunipatnam',
+    locality: 'Mulakuddu Village Primary School',
+    category: 'Education',
+    description: 'The primary school building in Mulakuddu village does not have functional toilets for girls and boys, forcing children to go outside. Also, there is a shortage of teachers leading to a high pupil-to-teacher ratio.',
+    urgency: 'High',
+    status: 'Submitted',
+    date: '2026-07-06',
+    language: 'te',
+    priorityScore: 89,
+    upvotes: 85,
+    latitude: 17.9125,
+    longitude: 83.4560,
+    aiAnalysis: {
+      sentiment: 'Critical',
+      estimatedImpactUsers: 120,
+      estimatedCostLakhs: 5.5,
+      primaryNeed: 'Construction of twin separate functional toilets and appointment of additional teacher.',
+      justification: 'Critical sanitation gap found in school. Active risk to female student attendance. High pupil-to-teacher ratio verified.'
+    },
+    verifiedGaps: ['SCHOOL_TOILET_GAP', 'SCHOOL_DRINKING_WATER_GAP', 'HIGH_PUPIL_TEACHER_RATIO'],
+    scoreBreakdown: {
+      sentiment: 15,
+      urgency: 10,
+      upvotes: 12,
+      density: 2,
+      antyodaya: 13,
+      infraGap: 20,
+      disasterRisk: 8,
+      finalScore: 80
+    },
+    baselineData: {
+      villageLgdCode: "586202",
+      villageName: "Mulakuddu",
+      mandalName: "Bheemunipatnam",
+      totalPopulation: 6800,
+      scStPopulation: 1700,
+      literacyRate: 64.5,
+      schoolCode: "28130102",
+      schoolName: "Mandal Parishad Primary School, Mulakuddu",
+      pupilTeacherRatio: 42,
+      schoolToilets: false,
+      schoolWater: false,
+      schoolElectricity: true,
+      totalHouseholds: 1400,
+      tapConnectionsPercentage: 28.4,
+      waterQualityStatus: "High Fluoride"
+    }
+  },
+  {
+    id: 'JV-2026-6102',
+    name: 'Lakshmi Devi',
+    contact: '+91 94901 28312',
+    constituency: 'Visakhapatnam',
+    district: 'Visakhapatnam',
+    mandal: 'Bheemunipatnam',
+    locality: 'Mulakuddu Village Center',
+    category: 'Water',
+    description: 'Our village has no direct drinking water tap connection for most households. We rely on a community borewell which has high fluoride content. Children are getting joint pains.',
+    urgency: 'High',
+    status: 'Prioritized',
+    date: '2026-07-07',
+    language: 'te',
+    priorityScore: 92,
+    upvotes: 120,
+    latitude: 17.9125,
+    longitude: 83.4560,
+    aiAnalysis: {
+      sentiment: 'Critical',
+      estimatedImpactUsers: 1400,
+      estimatedCostLakhs: 12.0,
+      primaryNeed: 'JJM pipeline expansion and fluoride treatment filtration unit setup.',
+      justification: 'High chemical contamination (Fluoride) in local groundwater. Severe tap connectivity gaps under Jal Jeevan Mission.'
+    },
+    verifiedGaps: ['LOW_TAP_CONNECTION'],
+    scoreBreakdown: {
+      sentiment: 15,
+      urgency: 10,
+      upvotes: 15,
+      density: 2,
+      antyodaya: 13,
+      infraGap: 18,
+      disasterRisk: 8,
+      finalScore: 81
+    },
+    baselineData: {
+      villageLgdCode: "586202",
+      villageName: "Mulakuddu",
+      mandalName: "Bheemunipatnam",
+      totalPopulation: 6800,
+      scStPopulation: 1700,
+      literacyRate: 64.5,
+      totalHouseholds: 1400,
+      tapConnectionsPercentage: 28.4,
+      waterQualityStatus: "High Fluoride"
+    }
+  },
   {
     id: 'JV-2026-9041',
     name: 'Rajesh Kumar Patel',

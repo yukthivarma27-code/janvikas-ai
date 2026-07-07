@@ -1,0 +1,68 @@
+[
+  {
+    "schoolCode": "28130101",
+    "schoolName": "Zilla Parishad High School, Bheemunipatnam",
+    "villageLgdCode": "586201",
+    "category": "Secondary",
+    "totalStudents": 350,
+    "hasElectricity": true,
+    "hasToilets": true,
+    "hasDrinkingWater": true,
+    "pupilTeacherRatio": 25
+  },
+  {
+    "schoolCode": "28130102",
+    "schoolName": "Mandal Parishad Primary School, Mulakuddu",
+    "villageLgdCode": "586202",
+    "category": "Primary",
+    "totalStudents": 120,
+    "hasElectricity": true,
+    "hasToilets": false,
+    "hasDrinkingWater": false,
+    "pupilTeacherRatio": 42
+  },
+  {
+    "schoolCode": "28130201",
+    "schoolName": "Zilla Parishad High School, Anandapuram",
+    "villageLgdCode": "586203",
+    "category": "Secondary",
+    "totalStudents": 280,
+    "hasElectricity": true,
+    "hasToilets": true,
+    "hasDrinkingWater": false,
+    "pupilTeacherRatio": 28
+  },
+  {
+    "schoolCode": "28130301",
+    "schoolName": "Mandal Parishad Primary School, Padmanabham",
+    "villageLgdCode": "586205",
+    "category": "Primary",
+    "totalStudents": 80,
+    "hasElectricity": false,
+    "hasToilets": false,
+    "hasDrinkingWater": true,
+    "pupilTeacherRatio": 35
+  },
+  {
+    "schoolCode": "28130401",
+    "schoolName": "Government High School, Pendurthi",
+    "villageLgdCode": "586206",
+    "category": "Secondary",
+    "totalStudents": 420,
+    "hasElectricity": true,
+    "hasToilets": true,
+    "hasDrinkingWater": true,
+    "pupilTeacherRatio": 24
+  },
+  {
+    "schoolCode": "28130501",
+    "schoolName": "ZP High School, Tagarapuvalasa",
+    "villageLgdCode": "586204",
+    "category": "Secondary",
+    "totalStudents": 310,
+    "hasElectricity": true,
+    "hasToilets": true,
+    "hasDrinkingWater": true,
+    "pupilTeacherRatio": 32
+  }
+]

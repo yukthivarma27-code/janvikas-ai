@@ -1,0 +1,47 @@
+[
+  {
+    "facilityId": "HFR-AP-01",
+    "facilityName": "Community Health Centre (CHC) Bheemili",
+    "facilityType": "CHC",
+    "latitude": 17.8904,
+    "longitude": 83.4428,
+    "bedsCount": 30,
+    "doctorsCount": 6
+  },
+  {
+    "facilityId": "HFR-AP-02",
+    "facilityName": "Primary Health Centre (PHC) Mulakuddu",
+    "facilityType": "PHC",
+    "latitude": 17.9125,
+    "longitude": 83.4560,
+    "bedsCount": 4,
+    "doctorsCount": 1
+  },
+  {
+    "facilityId": "HFR-AP-03",
+    "facilityName": "Primary Health Centre (PHC) Anandapuram",
+    "facilityType": "PHC",
+    "latitude": 17.8615,
+    "longitude": 83.3421,
+    "bedsCount": 6,
+    "doctorsCount": 2
+  },
+  {
+    "facilityId": "HFR-AP-04",
+    "facilityName": "Community Health Centre (CHC) Pendurthi",
+    "facilityType": "CHC",
+    "latitude": 17.8085,
+    "longitude": 83.2014,
+    "bedsCount": 50,
+    "doctorsCount": 8
+  },
+  {
+    "facilityId": "HFR-AP-05",
+    "facilityName": "Primary Health Centre (PHC) Padmanabham",
+    "facilityType": "PHC",
+    "latitude": 17.9405,
+    "longitude": 83.3325,
+    "bedsCount": 5,
+    "doctorsCount": 1
+  }
+]

@@ -31,6 +31,9 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const reqA = requests.find(r => r.id === selectedIdA);
+  const reqB = requests.find(r => r.id === selectedIdB);
+
   // Auto-select first two requests on load
   useEffect(() => {
     if (requests.length >= 2) {
@@ -241,6 +244,159 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                   ))}
                 </div>
               </div>
+
+              {/* Verified OGD Metrics Side-by-Side Comparison */}
+              {(reqA?.baselineData || reqB?.baselineData) && (
+                <div className="space-y-4 pt-4 border-t border-gold-700/15">
+                  <h4 className="text-xs font-bold text-[#0F2D52] uppercase tracking-wider mb-2 font-serif flex items-center gap-1">
+                    <ShieldCheck className="w-4 h-4 text-gold-700" />
+                    Verified Open Government Data (OGD) Indicators
+                  </h4>
+                  <div className="divide-y divide-gold-700/10 text-xs border border-gold-700/20 rounded-xl overflow-hidden shadow-xs">
+                    {/* Header */}
+                    <div className="grid grid-cols-3 py-2 bg-[#FAF6E8]/40 text-[#0F2D52] font-bold text-[10px] tracking-wide text-center">
+                      <div>INDICATOR</div>
+                      <div>PROPOSAL A ({reqA.id})</div>
+                      <div>PROPOSAL B ({reqB.id})</div>
+                    </div>
+                    
+                    {/* Village Name & LGD */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">LGD Location</div>
+                      <div className="font-bold text-navy-950">{reqA?.baselineData?.villageName || 'N/A'} (LGD: {reqA?.baselineData?.villageLgdCode || 'N/A'})</div>
+                      <div className="font-bold text-navy-950">{reqB?.baselineData?.villageName || 'N/A'} (LGD: {reqB?.baselineData?.villageLgdCode || 'N/A'})</div>
+                    </div>
+
+                    {/* Population */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Census Population</div>
+                      <div className="font-bold text-slate-800">{reqA?.baselineData?.totalPopulation?.toLocaleString() || 'N/A'}</div>
+                      <div className="font-bold text-slate-800">{reqB?.baselineData?.totalPopulation?.toLocaleString() || 'N/A'}</div>
+                    </div>
+
+                    {/* SC/ST Percentage */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">SC/ST Share</div>
+                      <div className="font-bold text-slate-800">
+                        {reqA?.baselineData?.totalPopulation
+                          ? `${Math.round((reqA.baselineData.scStPopulation || 0) / reqA.baselineData.totalPopulation * 100)}%`
+                          : 'N/A'}
+                      </div>
+                      <div className="font-bold text-slate-800">
+                        {reqB?.baselineData?.totalPopulation
+                          ? `${Math.round((reqB.baselineData.scStPopulation || 0) / reqB.baselineData.totalPopulation * 100)}%`
+                          : 'N/A'}
+                      </div>
+                    </div>
+
+                    {/* Literacy Rate */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Literacy Rate</div>
+                      <div className="font-bold text-slate-800">{reqA?.baselineData?.literacyRate ? `${reqA.baselineData.literacyRate}%` : 'N/A'}</div>
+                      <div className="font-bold text-slate-800">{reqB?.baselineData?.literacyRate ? `${reqB.baselineData.literacyRate}%` : 'N/A'}</div>
+                    </div>
+
+                    {/* UDISE School Stats */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">UDISE+ School Status</div>
+                      <div className="text-slate-800 text-[11px] leading-tight font-serif px-2">
+                        {reqA?.baselineData?.schoolCode ? (
+                          <>
+                            <p className="font-bold">{reqA.baselineData.schoolName}</p>
+                            <p>Toilets: {reqA.baselineData.schoolToilets ? '✅' : '❌'}</p>
+                            <p>Water: {reqA.baselineData.schoolWater ? '✅' : '❌'}</p>
+                            <p>Electricity: {reqA.baselineData.schoolElectricity ? '✅' : '❌'}</p>
+                          </>
+                        ) : 'N/A'}
+                      </div>
+                      <div className="text-slate-800 text-[11px] leading-tight font-serif px-2">
+                        {reqB?.baselineData?.schoolCode ? (
+                          <>
+                            <p className="font-bold">{reqB.baselineData.schoolName}</p>
+                            <p>Toilets: {reqB.baselineData.schoolToilets ? '✅' : '❌'}</p>
+                            <p>Water: {reqB.baselineData.schoolWater ? '✅' : '❌'}</p>
+                            <p>Electricity: {reqB.baselineData.schoolElectricity ? '✅' : '❌'}</p>
+                          </>
+                        ) : 'N/A'}
+                      </div>
+                    </div>
+
+                    {/* Pupil Teacher Ratio */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Pupil-Teacher Ratio</div>
+                      <div className="font-bold text-slate-850">
+                        {reqA?.baselineData?.pupilTeacherRatio ? `${reqA.baselineData.pupilTeacherRatio}:1` : 'N/A'}
+                      </div>
+                      <div className="font-bold text-slate-850">
+                        {reqB?.baselineData?.pupilTeacherRatio ? `${reqB.baselineData.pupilTeacherRatio}:1` : 'N/A'}
+                      </div>
+                    </div>
+
+                    {/* Health facility beds and doctors */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Nearest PHC / Health Clinic</div>
+                      <div className="text-slate-850 leading-tight px-2 text-xs">
+                        {reqA?.baselineData?.nearestFacilityName ? (
+                          <>
+                            <p className="font-bold">{reqA.baselineData.nearestFacilityName}</p>
+                            <p className="text-[10px]">({reqA.baselineData.nearestFacilityDistanceKm} km away)</p>
+                            <p>{reqA.baselineData.nearestFacilityBeds} Beds, {reqA.baselineData.nearestFacilityDoctors} Doctors</p>
+                          </>
+                        ) : 'N/A'}
+                      </div>
+                      <div className="text-slate-850 leading-tight px-2 text-xs">
+                        {reqB?.baselineData?.nearestFacilityName ? (
+                          <>
+                            <p className="font-bold">{reqB.baselineData.nearestFacilityName}</p>
+                            <p className="text-[10px]">({reqB.baselineData.nearestFacilityDistanceKm} km away)</p>
+                            <p>{reqB.baselineData.nearestFacilityBeds} Beds, {reqB.baselineData.nearestFacilityDoctors} Doctors</p>
+                          </>
+                        ) : 'N/A'}
+                      </div>
+                    </div>
+
+                    {/* JJM tap connections */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">JJM Tap Connections</div>
+                      <div className="text-slate-850 leading-tight px-2 text-xs">
+                        {reqA?.baselineData?.totalHouseholds ? (
+                          <>
+                            <p className="font-bold">{reqA.baselineData.tapConnectionsPercentage}% Connections</p>
+                            <p className="text-[10px]">Quality: {reqA.baselineData.waterQualityStatus}</p>
+                          </>
+                        ) : 'N/A'}
+                      </div>
+                      <div className="text-slate-850 leading-tight px-2 text-xs">
+                        {reqB?.baselineData?.totalHouseholds ? (
+                          <>
+                            <p className="font-bold">{reqB.baselineData.tapConnectionsPercentage}% Connections</p>
+                            <p className="text-[10px]">Quality: {reqB.baselineData.waterQualityStatus}</p>
+                          </>
+                        ) : 'N/A'}
+                      </div>
+                    </div>
+
+                    {/* Verified gaps badges */}
+                    <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Verified Infrastructure Gaps</div>
+                      <div className="flex flex-wrap justify-center gap-1 px-1">
+                        {reqA?.verifiedGaps && reqA.verifiedGaps.length > 0 ? (
+                          reqA.verifiedGaps.map(g => (
+                            <span key={g} className="text-[8px] bg-rose-50 text-rose-800 border border-rose-200 px-1 py-0.5 rounded font-mono font-bold">{g}</span>
+                          ))
+                        ) : <span className="text-slate-400">None</span>}
+                      </div>
+                      <div className="flex flex-wrap justify-center gap-1 px-1">
+                        {reqB?.verifiedGaps && reqB.verifiedGaps.length > 0 ? (
+                          reqB.verifiedGaps.map(g => (
+                            <span key={g} className="text-[8px] bg-rose-50 text-rose-800 border border-rose-200 px-1 py-0.5 rounded font-mono font-bold">{g}</span>
+                          ))
+                        ) : <span className="text-slate-400">None</span>}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </>
           ) : (
             <div className="py-12 text-center text-slate-400 font-medium">
