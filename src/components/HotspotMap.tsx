@@ -121,13 +121,14 @@ const getStateAbbr = (state: string) => {
 };
 
 // Equirectangular projection mapping coordinates of India to fit inside a 500x350 viewport.
-// Centered around 82.5°E, 22.0°N. Preserves geographic aspect ratios correctly.
+// Centered around 81.5°E, 22.0°N with scale 9.5. This ensures the entire outline of India, 
+// including the full northern region (Jammu & Kashmir and Ladakh), is 100% visible and centered.
 const project = (lng: number, lat: number) => {
-  const centerLng = 82.5;
+  const centerLng = 81.5;
   const centerLat = 22.0;
-  const scale = 11.5; 
+  const scale = 9.5; 
   const svgCenterX = 250;
-  const svgCenterY = 175;
+  const svgCenterY = 185;
   const cosLat = Math.cos((centerLat * Math.PI) / 180);
   
   const x = svgCenterX + (lng - centerLng) * scale * cosLat;
@@ -273,7 +274,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
       x: item.x,
       y: item.y,
       dx: 0,
-      dy: -8,
+      dy: -10,
       textAnchor: "middle" as "middle" | "start" | "end"
     }));
 
@@ -291,20 +292,20 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
           if (Math.abs(dx) > Math.abs(dy)) {
             // Horizontal shift
             if (dx > 0) {
-              p1.dx = 8; p1.dy = 3; p1.textAnchor = "start";
-              p2.dx = -8; p2.dy = 3; p2.textAnchor = "end";
+              p1.dx = 10; p1.dy = 3; p1.textAnchor = "start";
+              p2.dx = -10; p2.dy = 3; p2.textAnchor = "end";
             } else {
-              p1.dx = -8; p1.dy = 3; p1.textAnchor = "end";
-              p2.dx = 8; p2.dy = 3; p2.textAnchor = "start";
+              p1.dx = -10; p1.dy = 3; p1.textAnchor = "end";
+              p2.dx = 10; p2.dy = 3; p2.textAnchor = "start";
             }
           } else {
             // Vertical shift
             if (dy > 0) {
-              p1.dx = 0; p1.dy = 10; p1.textAnchor = "middle";
-              p2.dx = 0; p2.dy = -10; p2.textAnchor = "middle";
+              p1.dx = 0; p1.dy = 12; p1.textAnchor = "middle";
+              p2.dx = 0; p2.dy = -12; p2.textAnchor = "middle";
             } else {
-              p1.dx = 0; p1.dy = -10; p1.textAnchor = "middle";
-              p2.dx = 0; p2.dy = 10; p2.textAnchor = "middle";
+              p1.dx = 0; p1.dy = -12; p1.textAnchor = "middle";
+              p2.dx = 0; p2.dy = 12; p2.textAnchor = "middle";
             }
           }
         }
@@ -500,6 +501,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
               const y = layout.y;
 
               const isSelected = currentSelectTarget?.constituency === hotspot.constituency;
+              const isHovered = hoveredHotspot?.id === hotspot.id;
               
               // Marker colors: Red -> Critical, Orange -> High, Yellow -> Medium, Green -> Low
               const markerColor = 
@@ -512,6 +514,10 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
               const markerRadius = hotspot.isCluster 
                 ? 6.5 + Math.min(hotspot.count / 40, 5) 
                 : 3.5 + Math.min(hotspot.priorityScore / 22, 3.5);
+
+              // Render text labels only when needed (hovered, selected, critical, or if it is a cluster node)
+              // This guarantees a clean, professional, and readable national level visualization
+              const shouldShowLabel = isSelected || isHovered || hotspot.priorityLevel === 'Critical' || hotspot.isCluster;
 
               return (
                 <g 
@@ -572,15 +578,14 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                       fill="#ffffff"
                       fontSize="6.5"
                       fontWeight="bold"
-                      className="pointer-events-none"
+                      className="pointer-events-none font-sans"
                     >
                       {hotspot.childHotspots.length}
                     </text>
                   )}
 
                   {/* Collision-free label texts */}
-                  {/* Only show labels at national zoom if they are clusters or contain critical items to avoid clutter */}
-                  {(zoomLevel >= 100 || hotspot.priorityLevel === 'Critical' || hotspot.isCluster) && (
+                  {shouldShowLabel && (
                     <text 
                       x={x + layout.dx} 
                       y={y + layout.dy} 
@@ -589,7 +594,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                       fontSize="6.5" 
                       fontWeight={isSelected ? "bold" : "normal"}
                       className={`tracking-wide font-serif transition-opacity duration-200 ${
-                        isSelected ? 'opacity-100 text-shadow-sm' : 'opacity-70 group-hover:opacity-100'
+                        isSelected ? 'opacity-100 text-shadow-sm' : 'opacity-85 group-hover:opacity-100'
                       }`}
                     >
                       {hotspot.constituency}
