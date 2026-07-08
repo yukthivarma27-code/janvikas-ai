@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { CitizenRequest, Category, Urgency, RequestStatus } from '../types';
 import { CATEGORY_COLORS, getCategoryIcon } from '../mockData';
+import { useLanguage } from '../i18n/LanguageContext';
 import { CategoryBarChart, MonthlyTrendLineChart, UrgencyDonutChart } from './CustomChart';
 import HotspotMap from './HotspotMap';
 import { Search, SlidersHorizontal, ArrowUpRight, CheckSquare, Clock, AlertTriangle, HelpCircle, Activity } from 'lucide-react';
@@ -13,13 +14,14 @@ interface MPDashboardProps {
 }
 
 export default function MPDashboard({ requests, onStatusChange, onNavigate }: MPDashboardProps) {
+  const { currentLang, t } = useLanguage();
   // Filters State
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
   const [selectedUrgency, setSelectedUrgency] = useState<Urgency | 'All'>('All');
   
   // Highlighted states
-  const [selectedConstituency, setSelectedConstituency] = useState<string>('Varanasi');
+  const [selectedConstituency, setSelectedConstituency] = useState<string>('Visakhapatnam');
 
   // Compute stats
   const totalCount = requests.length;
@@ -69,11 +71,11 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-fadeIn">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-1 px-2.5 rounded bg-gold-50 text-gold-950 border border-gold-700/20 font-bold text-xs uppercase font-serif">GOVERNMENT TELEMETRY</span>
-            <span className="text-[11px] text-[#5C6670] font-bold">• SECURE COMMAND ACCESS</span>
+            <span className="p-1 px-2.5 rounded bg-gold-50 text-gold-950 border border-gold-700/20 font-bold text-xs uppercase font-serif">{t('govtTelemetry')}</span>
+            <span className="text-[11px] text-[#5C6670] font-bold">• {t('secureAccess')}</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-navy-900 tracking-tight font-serif mt-1">MP Command Center Dashboard</h2>
-          <p className="text-xs text-slate-500">Real-time analytical visualization of public development needs and AI-priority actions</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-navy-900 tracking-tight font-serif mt-1">{t('dashboardTitle')}</h2>
+          <p className="text-xs text-slate-500">{t('dashboardSubtitle')}</p>
         </div>
 
         {/* Action triggers */}
@@ -83,7 +85,7 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
             className="btn-gov-primary px-5 py-2.5 text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-xs cursor-pointer"
             id="btn-nav-ai-recs"
           >
-            <span>View AI Ranked Recommendations</span>
+            <span>{t('viewAiRecommendations')}</span>
             <ArrowUpRight className="w-3.5 h-3.5 text-gold-700" />
           </button>
           <button 
@@ -91,7 +93,7 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
             className="btn-gov-secondary px-5 py-2.5 text-xs uppercase tracking-wider cursor-pointer shadow-xs"
             id="btn-nav-proposal-comp"
           >
-            Sanction Comparisons
+            {t('sanctionComparisons')}
           </button>
         </div>
       </div>
@@ -100,53 +102,53 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 animate-fadeIn" id="kpi-scorecard-grid">
         <div className="bg-white card-gov p-5 flex flex-col justify-between hover:-translate-y-1">
           <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Submissions</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('totalSubmissions')}</p>
             <h3 className="text-2xl font-bold text-navy-900 font-mono mt-1">{totalCount}</h3>
           </div>
-          <p className="text-[10px] text-slate-500 mt-2 font-bold flex items-center gap-1">
+          <p className="text-[10px] text-slate-505 mt-2 font-bold flex items-center gap-1">
             <Activity className="w-3 h-3 text-gold-700 animate-pulse" /> 
-            100% Verified Lodges
+            {t('verifiedLodges')}
           </p>
         </div>
 
         <div className="bg-white card-gov p-5 flex flex-col justify-between hover:-translate-y-1">
           <div>
-            <p className="text-[10px] font-bold text-rose-700 uppercase tracking-wider">High Priority Issues</p>
+            <p className="text-[10px] font-bold text-rose-700 uppercase tracking-wider">{t('highPriorityIssues')}</p>
             <h3 className="text-2xl font-bold text-rose-700 font-mono mt-1">{highPriorityCount}</h3>
           </div>
           <p className="text-[10px] text-rose-700 font-bold mt-2 flex items-center gap-1">
             <AlertTriangle className="w-3 h-3 text-rose-700" />
-            Safety Risk Triggers
+            {t('safetyRiskTriggers')}
           </p>
         </div>
 
         <div className="bg-white card-gov p-5 flex flex-col justify-between hover:-translate-y-1">
           <div>
-            <p className="text-[10px] font-bold text-gold-950 uppercase tracking-wider">Top Demand Category</p>
-            <h3 className="text-base font-bold text-[#C89B3C] mt-1 truncate">{topCategory}</h3>
+            <p className="text-[10px] font-bold text-gold-950 uppercase tracking-wider">{t('topDemandCategory')}</p>
+            <h3 className="text-base font-bold text-[#C89B3C] mt-1 truncate">{t(topCategory)}</h3>
           </div>
           <p className="text-[10px] text-gold-900 font-bold mt-2">
-            Highest Citizen Influx
+            {t('highestCitizenInflux')}
           </p>
         </div>
 
         <div className="bg-white card-gov p-5 flex flex-col justify-between hover:-translate-y-1">
           <div>
-            <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">Active Hotspots</p>
+            <p className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider">{t('activeHotspots')}</p>
             <h3 className="text-2xl font-bold text-emerald-800 font-mono mt-1">{activeHotspotsCount}</h3>
           </div>
           <p className="text-[10px] text-emerald-800 font-bold mt-2 font-serif">
-            High Density Gaps
+            {t('highDensityGaps')}
           </p>
         </div>
 
         <div className="bg-white card-gov p-5 flex flex-col justify-between col-span-2 md:col-span-1 hover:-translate-y-1">
           <div>
-            <p className="text-[10px] font-bold text-navy-900 uppercase tracking-wider">Pending Projects</p>
+            <p className="text-[10px] font-bold text-navy-900 uppercase tracking-wider">{t('pendingProjects')}</p>
             <h3 className="text-2xl font-bold text-navy-900 font-mono mt-1">{pendingProjectsCount}</h3>
           </div>
           <p className="text-[10px] text-navy-900 font-bold mt-2 font-serif">
-            Awaiting Sanctions
+            {t('awaitingSanctions')}
           </p>
         </div>
       </div>
@@ -178,8 +180,8 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
         {/* Table Controls */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5 pb-4 border-b border-gold-700/15">
           <div>
-            <h3 className="font-bold text-sm text-navy-900 font-serif">Administrative Request Database</h3>
-            <p className="text-xs text-slate-500">Live sorting, priority audits, and executive milestone overrides</p>
+            <h3 className="font-bold text-sm text-navy-900 font-serif">{t('adminDbTitle')}</h3>
+            <p className="text-xs text-slate-500">{t('adminDbSubtitle')}</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -188,7 +190,7 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
               <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-gold-700" />
               <input
                 type="text"
-                placeholder="Search database..."
+                placeholder={t('searchDbPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-3 py-1.5 text-xs input-gov"
@@ -203,17 +205,17 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
               className="bg-white input-gov px-4 py-1.5 text-xs font-bold text-slate-800 cursor-pointer"
               id="select-db-category-filter"
             >
-              <option value="All">All Categories</option>
-              <option value="Education">Education</option>
-              <option value="Roads">Roads</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Water">Water</option>
-              <option value="Sanitation">Sanitation</option>
-              <option value="Employment">Employment</option>
-              <option value="Transport">Transport</option>
-              <option value="Agriculture">Agriculture</option>
-              <option value="Digital Access">Digital Access</option>
-              <option value="Other">Other</option>
+              <option value="All">{t('allCategories')}</option>
+              <option value="Education">{t('Education')}</option>
+              <option value="Roads">{t('Roads')}</option>
+              <option value="Healthcare">{t('Healthcare')}</option>
+              <option value="Water">{t('Water')}</option>
+              <option value="Sanitation">{t('Sanitation')}</option>
+              <option value="Employment">{t('Employment')}</option>
+              <option value="Transport">{t('Transport')}</option>
+              <option value="Agriculture">{t('Agriculture')}</option>
+              <option value="Digital Access">{t('Digital Access')}</option>
+              <option value="Other">{t('Other')}</option>
             </select>
 
             {/* Urgency Filter */}
@@ -223,10 +225,10 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
               className="bg-white input-gov px-4 py-1.5 text-xs font-bold text-slate-800 cursor-pointer"
               id="select-db-urgency-filter"
             >
-              <option value="All">All Urgencies</option>
-              <option value="High">High Only</option>
-              <option value="Medium">Medium Only</option>
-              <option value="Low">Low Only</option>
+              <option value="All">{t('allUrgencies')}</option>
+              <option value="High">{t('highOnly')}</option>
+              <option value="Medium">{t('mediumOnly')}</option>
+              <option value="Low">{t('lowOnly')}</option>
             </select>
           </div>
         </div>
@@ -236,12 +238,12 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
           <table className="w-full text-left border-collapse table-gov">
             <thead>
               <tr className="border-b border-gold-700/35 text-[10px] font-bold text-navy-900 uppercase tracking-wider bg-[#FAF6E8]">
-                <th className="py-3.5 px-4 font-serif">Tracking ID</th>
-                <th className="py-3.5 px-4 font-serif">Citizen details</th>
-                <th className="py-3.5 px-4 font-serif">Development Demand</th>
-                <th className="py-3.5 px-4 font-serif">Urgency / Priority</th>
-                <th className="py-3.5 px-4 font-serif">AI Score</th>
-                <th className="py-3.5 px-4 font-serif">Executive Status Override</th>
+                <th className="py-3.5 px-4 font-serif">{t('trackingId')}</th>
+                <th className="py-3.5 px-4 font-serif">{t('citizenDetails')}</th>
+                <th className="py-3.5 px-4 font-serif">{t('developmentDemand')}</th>
+                <th className="py-3.5 px-4 font-serif">{t('urgencyPriority')}</th>
+                <th className="py-3.5 px-4 font-serif">{t('aiScore')}</th>
+                <th className="py-3.5 px-4 font-serif">{t('execStatusOverride')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gold-700/10 text-xs">
@@ -265,11 +267,11 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
                         <div className="flex items-center gap-1.5 mb-1">
                           <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-[#FAF6E8] text-[#0F2D52] border border-gold-700/20 font-serif">
                             {getCategoryIcon(req.category, "w-2.5 h-2.5")}
-                            {req.category}
+                            {t(req.category)}
                           </span>
                           <span className="text-[10px] text-slate-400 font-bold">{req.mandal}, {req.constituency}</span>
                         </div>
-                        <p className="text-slate-600 line-clamp-2 leading-relaxed font-serif">{req.description}</p>
+                        <p className="text-slate-605 line-clamp-2 leading-relaxed font-serif">{req.description}</p>
                       </td>
 
                       {/* Urgency */}
@@ -281,9 +283,9 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
                             ? 'bg-gold-50 text-gold-900 border border-gold-700/20' 
                             : 'bg-emerald-50 text-emerald-800 border border-emerald-250'
                         }`}>
-                          {req.urgency}
+                          {t(req.urgency.toLowerCase())}
                         </span>
-                        <p className="text-[9px] text-slate-400 font-mono mt-1 font-medium">★ {req.upvotes} upvotes</p>
+                        <p className="text-[9px] text-slate-400 font-mono mt-1 font-medium">★ {req.upvotes} {currentLang === 'en' ? 'upvotes' : t('supportVotes')}</p>
                       </td>
 
                       {/* AI Priority Rank */}
@@ -304,12 +306,12 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
                           onChange={(e) => onStatusChange(req.id, e.target.value as RequestStatus)}
                           className="bg-white input-gov px-2.5 py-1 text-[11px] font-bold text-slate-700 cursor-pointer"
                         >
-                          <option value="Submitted">Submitted</option>
-                          <option value="Verified">Verified</option>
-                          <option value="Prioritized">Prioritized</option>
-                          <option value="Allocated">Allocated</option>
-                          <option value="In Progress">In Progress</option>
-                          <option value="Completed">Completed</option>
+                          <option value="Submitted">{t('Submitted')}</option>
+                          <option value="Verified">{t('Verified')}</option>
+                          <option value="Prioritized">{t('Prioritized')}</option>
+                          <option value="Allocated">{t('Allocated')}</option>
+                          <option value="In Progress">{t('In Progress')}</option>
+                          <option value="Completed">{t('Completed')}</option>
                         </select>
                       </td>
                     </tr>
@@ -318,7 +320,7 @@ export default function MPDashboard({ requests, onStatusChange, onNavigate }: MP
               ) : (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-slate-500 font-medium font-serif">
-                    No records found matching the active search/filter options.
+                    {t('noRecordsFound')}
                   </td>
                 </tr>
               )}

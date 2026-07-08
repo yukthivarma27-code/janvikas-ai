@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CitizenRequest } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
+import { compareProposals } from '../services/api';
 import { Sparkles, ArrowRight, CheckCircle2, ShieldCheck, Scale, Award, Info, Loader2 } from 'lucide-react';
 
 interface ProposalComparisonProps {
@@ -25,6 +27,7 @@ interface ComparisonData {
 }
 
 export default function ProposalComparison({ requests }: ProposalComparisonProps) {
+  const { t, currentLang } = useLanguage();
   const [selectedIdA, setSelectedIdA] = useState('');
   const [selectedIdB, setSelectedIdB] = useState('');
   const [comparisonResult, setComparisonResult] = useState<ComparisonData | null>(null);
@@ -54,15 +57,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
     setError('');
     setIsLoading(true);
 
-    fetch('/api/compare', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idA, idB })
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch comparison');
-        return res.json();
-      })
+    compareProposals(idA, idB)
       .then(data => {
         if (data && !data.error) {
           setComparisonResult(data);
@@ -87,9 +82,9 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
       <div className="max-w-5xl mx-auto px-4 py-12 text-center font-serif">
         <div className="bg-white card-gov p-10 border border-gold-700/20 max-w-xl mx-auto space-y-4">
           <Scale className="w-12 h-12 text-gold-700 mx-auto" />
-          <h3 className="text-xl font-bold text-navy-900">Insufficient Data</h3>
-          <p className="text-sm text-slate-550">
-            You need at least 2 citizen requests in the database to run dynamic comparisons. Please file more requests first!
+          <h3 className="text-xl font-bold text-navy-900">{t('insufficientData')}</h3>
+          <p className="text-sm text-slate-555">
+            {t('insufficientDataDesc')}
           </p>
         </div>
       </div>
@@ -104,10 +99,10 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
         <div>
           <div className="flex items-center gap-1.5 text-xs font-bold text-[#C89B3C] uppercase">
             <Scale className="w-4 h-4 text-gold-700" />
-            <span>MPLADS Feasibility Optimizer</span>
+            <span>{t('feasibilityOptimizer')}</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-navy-900 tracking-tight mt-1 font-serif">Proposal Comparison Hub</h2>
-          <p className="text-xs text-slate-500">Multi-criteria algorithmic trade-offs of competing developmental proposals</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-navy-900 tracking-tight mt-1 font-serif">{t('comparisonHubTitle')}</h2>
+          <p className="text-xs text-slate-500">{t('comparisonHubDesc')}</p>
         </div>
       </div>
 
@@ -116,29 +111,29 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
         <form onSubmit={handleRunComparison} className="flex flex-col md:flex-row gap-4 items-end">
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Select Proposal A</label>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">{t('selectProposalA')}</label>
               <select
                 value={selectedIdA}
                 onChange={(e) => setSelectedIdA(e.target.value)}
-                className="w-full bg-white input-gov px-3 py-2 text-xs font-bold text-slate-800 cursor-pointer"
+                className="w-full bg-white input-gov px-3 py-2 text-xs font-bold text-slate-850 cursor-pointer"
               >
                 {requests.map(req => (
                   <option key={req.id} value={req.id}>
-                    [{req.id}] {req.locality} - {req.category} (Score: {req.priorityScore})
+                    [{req.id}] {req.locality} - {t(req.category)} ({t('priorityScoreText') || 'Score'}: {req.priorityScore})
                   </option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Select Proposal B</label>
+              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">{t('selectProposalB')}</label>
               <select
                 value={selectedIdB}
                 onChange={(e) => setSelectedIdB(e.target.value)}
-                className="w-full bg-white input-gov px-3 py-2 text-xs font-bold text-slate-800 cursor-pointer"
+                className="w-full bg-white input-gov px-3 py-2 text-xs font-bold text-slate-850 cursor-pointer"
               >
                 {requests.map(req => (
                   <option key={req.id} value={req.id}>
-                    [{req.id}] {req.locality} - {req.category} (Score: {req.priorityScore})
+                    [{req.id}] {req.locality} - {t(req.category)} ({t('priorityScoreText') || 'Score'}: {req.priorityScore})
                   </option>
                 ))}
               </select>
@@ -152,11 +147,11 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
             {isLoading ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Comparing...
+                {t('comparing')}
               </>
             ) : (
               <>
-                <span>Generate AI Comparison</span>
+                <span>{t('generateComparison')}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-gold-700" />
               </>
             )}
@@ -164,7 +159,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
         </form>
 
         {error && (
-          <p className="text-xs text-rose-800 font-bold mt-3 bg-rose-50 p-2 rounded border border-rose-200">{error}</p>
+          <p className="text-xs text-rose-800 font-bold mt-3 bg-rose-50 p-2 rounded border border-rose-200">{t(error) || error}</p>
         )}
       </div>
 
@@ -190,7 +185,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
             <>
               {/* Header of the Case study */}
               <div className="text-center pb-4 border-b border-gold-700/15">
-                <span className="text-[10px] font-mono font-bold uppercase text-slate-400 tracking-wider">CONSTITUENCY: {comparisonResult.constituency}</span>
+                <span className="text-[10px] font-mono font-bold uppercase text-slate-400 tracking-wider">{t('constituency')}: {comparisonResult.constituency}</span>
                 <div className="flex flex-col md:flex-row items-center justify-center gap-3.5 mt-2">
                   <span className="text-sm font-bold text-navy-900 bg-gold-50 border border-gold-700/30 px-5 py-2.5 rounded-full block max-w-xs truncate shadow-2xs">
                     {comparisonResult.titleA}
@@ -204,7 +199,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
 
               {/* Comparison Matrix Rows */}
               <div className="space-y-4">
-                <h4 className="text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">Metrics Matrix</h4>
+                <h4 className="text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">{t('metricsMatrix')}</h4>
                 
                 <div className="divide-y divide-gold-700/10 text-xs">
                   {comparisonResult.metrics.map((metric, index) => (
@@ -216,7 +211,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                     >
                       {/* Metric Label */}
                       <div className="text-slate-500 font-bold uppercase text-[10px] tracking-wide pr-2">
-                        {metric.label}
+                        {t(metric.label) || metric.label}
                       </div>
 
                       {/* Option A value */}
@@ -226,7 +221,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                             ? 'bg-[#E6F5F2] text-[#0E7C66] border border-[#0E7C66]/20' 
                             : 'text-slate-600'
                         }`}>
-                          {metric.valueA}
+                          {t(metric.valueA.toString()) || metric.valueA}
                         </span>
                       </div>
 
@@ -237,7 +232,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                             ? 'bg-[#E6F5F2] text-[#0E7C66] border border-[#0E7C66]/20' 
                             : 'text-slate-600'
                         }`}>
-                          {metric.valueB}
+                          {t(metric.valueB.toString()) || metric.valueB}
                         </span>
                       </div>
                     </div>
@@ -250,33 +245,33 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                 <div className="space-y-4 pt-4 border-t border-gold-700/15">
                   <h4 className="text-xs font-bold text-[#0F2D52] uppercase tracking-wider mb-2 font-serif flex items-center gap-1">
                     <ShieldCheck className="w-4 h-4 text-gold-700" />
-                    Verified Open Government Data (OGD) Indicators
+                    {t('verifiedOgdIndicators') || 'Verified Open Government Data (OGD) Indicators'}
                   </h4>
                   <div className="divide-y divide-gold-700/10 text-xs border border-gold-700/20 rounded-xl overflow-hidden shadow-xs">
                     {/* Header */}
                     <div className="grid grid-cols-3 py-2 bg-[#FAF6E8]/40 text-[#0F2D52] font-bold text-[10px] tracking-wide text-center">
-                      <div>INDICATOR</div>
-                      <div>PROPOSAL A ({reqA.id})</div>
-                      <div>PROPOSAL B ({reqB.id})</div>
+                      <div>{t('indicatorLabel')}</div>
+                      <div>{t('proposalALabel') || 'PROPOSAL A'} ({reqA.id})</div>
+                      <div>{t('proposalBLabel') || 'PROPOSAL B'} ({reqB.id})</div>
                     </div>
                     
                     {/* Village Name & LGD */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">LGD Location</div>
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">{t('villageLgdCode')}</div>
                       <div className="font-bold text-navy-950">{reqA?.baselineData?.villageName || 'N/A'} (LGD: {reqA?.baselineData?.villageLgdCode || 'N/A'})</div>
                       <div className="font-bold text-navy-950">{reqB?.baselineData?.villageName || 'N/A'} (LGD: {reqB?.baselineData?.villageLgdCode || 'N/A'})</div>
                     </div>
 
                     {/* Population */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Census Population</div>
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">{t('censusPopulation')}</div>
                       <div className="font-bold text-slate-800">{reqA?.baselineData?.totalPopulation?.toLocaleString() || 'N/A'}</div>
                       <div className="font-bold text-slate-800">{reqB?.baselineData?.totalPopulation?.toLocaleString() || 'N/A'}</div>
                     </div>
 
                     {/* SC/ST Percentage */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">SC/ST Share</div>
+                      <div className="text-left pl-3 text-slate-555 font-bold uppercase text-[9px]">{t('scStShare')}</div>
                       <div className="font-bold text-slate-800">
                         {reqA?.baselineData?.totalPopulation
                           ? `${Math.round((reqA.baselineData.scStPopulation || 0) / reqA.baselineData.totalPopulation * 100)}%`
@@ -291,14 +286,14 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
 
                     {/* Literacy Rate */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Literacy Rate</div>
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">{t('literacyRate')}</div>
                       <div className="font-bold text-slate-800">{reqA?.baselineData?.literacyRate ? `${reqA.baselineData.literacyRate}%` : 'N/A'}</div>
                       <div className="font-bold text-slate-800">{reqB?.baselineData?.literacyRate ? `${reqB.baselineData.literacyRate}%` : 'N/A'}</div>
                     </div>
 
                     {/* UDISE School Stats */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">UDISE+ School Status</div>
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">{t('udiseStatus')}</div>
                       <div className="text-slate-800 text-[11px] leading-tight font-serif px-2">
                         {reqA?.baselineData?.schoolCode ? (
                           <>
@@ -323,7 +318,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
 
                     {/* Pupil Teacher Ratio */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Pupil-Teacher Ratio</div>
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">{t('pupilTeacherRatio')}</div>
                       <div className="font-bold text-slate-850">
                         {reqA?.baselineData?.pupilTeacherRatio ? `${reqA.baselineData.pupilTeacherRatio}:1` : 'N/A'}
                       </div>
@@ -334,8 +329,8 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
 
                     {/* Health facility beds and doctors */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Nearest PHC / Health Clinic</div>
-                      <div className="text-slate-850 leading-tight px-2 text-xs">
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">{t('nearestFacility')}</div>
+                      <div className="text-slate-855 leading-tight px-2 text-xs">
                         {reqA?.baselineData?.nearestFacilityName ? (
                           <>
                             <p className="font-bold">{reqA.baselineData.nearestFacilityName}</p>
@@ -344,7 +339,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                           </>
                         ) : 'N/A'}
                       </div>
-                      <div className="text-slate-850 leading-tight px-2 text-xs">
+                      <div className="text-slate-855 leading-tight px-2 text-xs">
                         {reqB?.baselineData?.nearestFacilityName ? (
                           <>
                             <p className="font-bold">{reqB.baselineData.nearestFacilityName}</p>
@@ -357,7 +352,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
 
                     {/* JJM tap connections */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-[#FDFBF7]">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">JJM Tap Connections</div>
+                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">{t('jjmConnections')}</div>
                       <div className="text-slate-850 leading-tight px-2 text-xs">
                         {reqA?.baselineData?.totalHouseholds ? (
                           <>
@@ -378,7 +373,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
 
                     {/* Verified gaps badges */}
                     <div className="grid grid-cols-3 py-3 items-center text-center bg-white">
-                      <div className="text-left pl-3 text-slate-550 font-bold uppercase text-[9px]">Verified Infrastructure Gaps</div>
+                      <div className="text-left pl-3 text-slate-555 font-bold uppercase text-[9px]">{t('verifiedInfraGaps')}</div>
                       <div className="flex flex-wrap justify-center gap-1 px-1">
                         {reqA?.verifiedGaps && reqA.verifiedGaps.length > 0 ? (
                           reqA.verifiedGaps.map(g => (
@@ -400,7 +395,7 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
             </>
           ) : (
             <div className="py-12 text-center text-slate-400 font-medium">
-              Select two proposals above and click "Generate AI Comparison" to run evaluation.
+              {t('selectProposalsToCompare') || 'Select two proposals above and click "Generate AI Comparison" to run evaluation.'}
             </div>
           )}
         </div>
@@ -424,29 +419,29 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                     <Sparkles className="w-4 h-4 text-gold-700 fill-gold-700" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold font-mono text-gold-600">DECISION OPTIMIZATION</h4>
-                    <p className="text-sm font-bold text-[#FAF6E8]">AI Final Sanction Verdict</p>
+                    <h4 className="text-xs font-bold font-mono text-gold-600">{t('decisionOptimization')}</h4>
+                    <p className="text-sm font-bold text-[#FAF6E8]">{t('aiVerdict')}</p>
                   </div>
                 </div>
 
                 {/* Rec Text Box */}
-                <div className="bg-navy-950/60 p-4.5 rounded-xl border border-gold-700/20 space-y-3">
+                <div className="bg-navy-955/60 p-4.5 rounded-xl border border-gold-700/20 space-y-3">
                   <div className="flex items-center gap-2">
                     <Award className="w-5 h-5 text-gold-700 fill-gold-700/10 shrink-0" />
-                    <span className="text-[11px] font-bold text-gold-600 uppercase tracking-widest font-mono">RELIABILITY ADVISORY</span>
+                    <span className="text-[11px] font-bold text-gold-600 uppercase tracking-widest font-mono">{t('reliabilityAdvisory')}</span>
                   </div>
-                  <p className="text-[11.5px] text-slate-300 leading-relaxed font-medium">
+                  <p className="text-[11.5px] text-slate-350 leading-relaxed font-medium">
                     {comparisonResult.aiRecommendation}
                   </p>
                 </div>
 
                 {/* Verdict Bullet info */}
                 <div className="space-y-2">
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Project Trade-off Breakdown</p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t('projectBreakdown')}</p>
                   <div className="space-y-1.5 text-xs">
                     <div className="flex items-start gap-1.5 text-slate-300">
                       <CheckCircle2 className="w-3.5 h-3.5 text-gold-700 mt-0.5 shrink-0" />
-                      <span>Recommended project: **Project {comparisonResult.finalChoice}**.</span>
+                      <span>{t('recommendedProject') || 'Recommended project: Project'} **{comparisonResult.finalChoice}**.</span>
                     </div>
                   </div>
                 </div>
@@ -459,13 +454,13 @@ export default function ProposalComparison({ requests }: ProposalComparisonProps
                 
                 {/* Sanction final selection trigger */}
                 <span className="bg-[#FAF6E8] text-[#0F2D52] text-[10px] font-bold px-3.5 py-1.5 rounded-md border border-gold-700/30 uppercase tracking-widest flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-gold-700" /> Selected: Project {comparisonResult.finalChoice}
+                  <ShieldCheck className="w-3.5 h-3.5 text-gold-700" /> {t('selectedVerdict') || 'Selected: Project'} {comparisonResult.finalChoice}
                 </span>
               </div>
             </>
           ) : (
             <div className="h-full flex items-center justify-center py-12 text-slate-450 text-xs italic">
-              Awaiting selection and AI analysis...
+              {t('awaitingSelection')}
             </div>
           )}
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Category, Urgency } from '../types';
 import { CATEGORY_COLORS } from '../mockData';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Milestone, GraduationCap, HeartPulse, Droplets, Trash2, Briefcase, Bus, Sprout, Wifi, HelpCircle } from 'lucide-react';
 
 // Help helper to get matching lucide icon for categories
@@ -30,6 +31,7 @@ interface CategoryBarChartProps {
 }
 
 export function CategoryBarChart({ data }: CategoryBarChartProps) {
+  const { t } = useLanguage();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const maxCount = Math.max(...data.map(d => d.count), 1);
 
@@ -37,10 +39,10 @@ export function CategoryBarChart({ data }: CategoryBarChartProps) {
     <div className="w-full bg-white card-gov p-5" id="category-bar-chart">
       <div className="flex justify-between items-center mb-4 border-b border-gold-700/15 pb-2">
         <div>
-          <h4 className="font-bold text-sm text-navy-900">Requests by Category</h4>
-          <p className="text-xs text-slate-500">Live citizen priority trends</p>
+          <h4 className="font-bold text-sm text-navy-900">{t('requestsByCategory') || 'Requests by Category'}</h4>
+          <p className="text-xs text-slate-500">{t('livePriorityTrends') || 'Live citizen priority trends'}</p>
         </div>
-        <span className="text-[9px] font-mono bg-gold-50 text-gold-950 border border-gold-700/15 px-2 py-0.5 rounded-sm">100% Reliable SVG</span>
+        <span className="text-[9px] font-mono bg-gold-50 text-gold-950 border border-gold-700/15 px-2 py-0.5 rounded-sm">100% SVG</span>
       </div>
 
       <div className="space-y-3.5">
@@ -60,7 +62,7 @@ export function CategoryBarChart({ data }: CategoryBarChartProps) {
                   <div className="p-1.5 rounded-md bg-[#FAF6E8] text-[#0F2D52] border border-gold-700/15">
                     {getCategoryIcon(item.category, "w-3.5 h-3.5")}
                   </div>
-                  <span>{item.category}</span>
+                  <span>{t(item.category)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-navy-900">{item.count}</span>
@@ -86,6 +88,7 @@ export function CategoryBarChart({ data }: CategoryBarChartProps) {
 }
 
 export function MonthlyTrendLineChart() {
+  const { t } = useLanguage();
   const points = [
     { month: 'Jan', requests: 45, projects: 2 },
     { month: 'Feb', requests: 62, projects: 3 },
@@ -127,11 +130,11 @@ export function MonthlyTrendLineChart() {
     <div className="bg-white card-gov p-5" id="monthly-trend-chart">
       <div className="flex justify-between items-center mb-4 border-b border-gold-700/15 pb-2">
         <div>
-          <h4 className="font-bold text-sm text-navy-900">Monthly Submission Influx</h4>
-          <p className="text-xs text-slate-500">First-half 2026 growth trend</p>
+          <h4 className="font-bold text-sm text-navy-900">{t('monthlySubmissionInflux') || 'Monthly Submission Influx'}</h4>
+          <p className="text-xs text-slate-500">{t('growthTrend') || 'First-half 2026 growth trend'}</p>
         </div>
         <div className="flex items-center gap-3 text-[10px]">
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-navy-900 inline-block"></span>Submissions</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-navy-900 inline-block"></span>{t('submissionsLabel') || 'Submissions'}</span>
         </div>
       </div>
 
@@ -218,7 +221,7 @@ export function MonthlyTrendLineChart() {
                 fill="#475569" 
                 className="font-sans font-medium"
               >
-                {c.month}
+                {t(c.month.toLowerCase()) || c.month}
               </text>
             </g>
           ))}
@@ -227,9 +230,9 @@ export function MonthlyTrendLineChart() {
         {/* Hover Tooltip Overlay */}
         {activePoint && (
           <div className="absolute top-2 left-[40%] transform -translate-x-1/2 bg-navy-900 border border-gold-700/35 text-[#FAF6E8] text-[11px] px-2.5 py-1.5 rounded-lg shadow-md flex flex-col gap-0.5 pointer-events-none">
-            <span className="font-bold text-[10px] text-slate-300">{activePoint.month} 2026</span>
-            <span className="font-bold text-[#C89B3C]">{activePoint.requests} New Requests</span>
-            <span className="text-emerald-400 font-bold">{activePoint.projects} AI Prioritized</span>
+            <span className="font-bold text-[10px] text-slate-300">{t(activePoint.month.toLowerCase()) || activePoint.month} 2026</span>
+            <span className="font-bold text-[#C89B3C]">{activePoint.requests} {t('newRequestsLabel') || 'New Requests'}</span>
+            <span className="text-emerald-400 font-bold">{activePoint.projects} {t('aiPrioritizedLabel') || 'AI Prioritized'}</span>
           </div>
         )}
       </div>
@@ -238,6 +241,7 @@ export function MonthlyTrendLineChart() {
 }
 
 export function UrgencyDonutChart() {
+  const { t } = useLanguage();
   const data = [
     { label: 'High', count: 18, color: '#C89B3C', hoverBg: 'bg-amber-600' }, // Gold
     { label: 'Medium', count: 24, color: '#0F2D52', hoverBg: 'bg-navy-900' }, // Navy
@@ -257,8 +261,8 @@ export function UrgencyDonutChart() {
 
   return (
     <div className="bg-white card-gov p-5" id="urgency-donut-chart">
-      <h4 className="font-bold text-sm text-navy-900 mb-0.5 font-serif">Urgency Segmentation</h4>
-      <p className="text-xs text-slate-500 mb-4">Request distribution by civic emergency levels</p>
+      <h4 className="font-bold text-sm text-navy-900 mb-0.5 font-serif">{t('urgencySegmentation') || 'Urgency Segmentation'}</h4>
+      <p className="text-xs text-slate-500 mb-4">{t('urgencySegmentationDesc') || 'Request distribution by civic emergency levels'}</p>
 
       <div className="flex items-center gap-6 justify-center">
         {/* Radial Donut */}
@@ -301,9 +305,9 @@ export function UrgencyDonutChart() {
 
           {/* Central Statistics overlay */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-[10px] text-slate-400 font-bold tracking-wide">TOTAL</span>
+            <span className="text-[10px] text-slate-400 font-bold tracking-wide">{t('totalLabel') || 'TOTAL'}</span>
             <span className="text-xl font-bold text-navy-900 font-serif">{total}</span>
-            <span className="text-[9px] text-slate-400 font-bold">Issues</span>
+            <span className="text-[9px] text-slate-400 font-bold">{t('issuesLabel') || 'Issues'}</span>
           </div>
         </div>
 
@@ -313,9 +317,9 @@ export function UrgencyDonutChart() {
             <div key={idx} className="flex items-center gap-2">
               <span className="w-3 h-3 rounded-xs inline-block" style={{ backgroundColor: item.color }} />
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-slate-700">{item.label}</span>
+                <span className="text-xs font-bold text-slate-700">{t(item.label.toLowerCase()) || item.label}</span>
                 <span className="text-[10px] text-slate-400 font-mono font-bold">
-                  {item.count} items ({Math.round((item.count / total) * 100)}%)
+                  {item.count} {t('itemsLabel') || 'items'} ({Math.round((item.count / total) * 100)}%)
                 </span>
               </div>
             </div>

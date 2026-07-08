@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import hotspotsData from '../../data/hotspots.json';
 import statesData from '../assets/india_states_simplified.json';
 import mapBg from '../assets/india_dark_satellite.png';
+import { useLanguage } from '../i18n/LanguageContext';
 import { 
   AlertCircle, 
   Flame, 
@@ -160,6 +161,7 @@ const getSvgPath = (state: any) => {
 };
 
 export default function HotspotMap({ onConstituencySelect, selectedConstituency }: HotspotMapProps) {
+  const { t, currentLang } = useLanguage();
   const [filterStatus, setFilterStatus] = useState<'All' | 'Critical' | 'Active' | 'Normal'>('All');
   // Default to Visakhapatnam if found, otherwise first hotspot
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(
@@ -334,12 +336,12 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-450 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
             </span>
-            <h3 className="font-bold text-base text-slate-100">National Priority Hotspot GIS</h3>
+            <h3 className="font-bold text-base text-slate-100">{t('nationalPriorityHotspotGis') || 'National Priority Hotspot GIS'}</h3>
           </div>
           <p className="text-xs text-slate-400">
-            {zoomLevel < 100 ? "National Zoom — Displaying clustered hotspots" : 
-             zoomLevel < 130 ? "State Zoom — Displaying constituencies with overlap filters" :
-             "District Zoom — Displaying deep constituency metrics"}
+            {zoomLevel < 100 ? (t('nationalZoomDesc') || "National Zoom — Displaying clustered hotspots") : 
+             zoomLevel < 130 ? (t('stateZoomDesc') || "State Zoom — Displaying constituencies with overlap filters") :
+             (t('districtZoomDesc') || "District Zoom — Displaying deep constituency metrics")}
           </p>
         </div>
 
@@ -356,7 +358,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                   : 'text-slate-300 hover:text-white'
               }`}
             >
-              {status}
+              {t(status.toLowerCase()) || status}
             </button>
           ))}
         </div>
@@ -382,11 +384,11 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
 
           {/* Priority Level Legend (Mockup top-left) */}
           <div className="absolute top-3 left-3 bg-navy-950/85 backdrop-blur-xs border border-gold-700/20 rounded-lg p-2.5 space-y-1.5 z-10 text-[9px]">
-            <p className="font-bold text-gold-600 uppercase tracking-wider text-[8px] mb-0.5 font-sans">Priority Level</p>
-            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#CD1A30]"></span> <span className="text-slate-200">Critical</span></div>
-            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EA580C]"></span> <span className="text-slate-200">High</span></div>
-            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#CA8A04]"></span> <span className="text-slate-200">Medium</span></div>
-            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#16A34A]"></span> <span className="text-slate-200">Low</span></div>
+            <p className="font-bold text-gold-600 uppercase tracking-wider text-[8px] mb-0.5 font-sans">{t('priorityLevel')}</p>
+            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#CD1A30]"></span> <span className="text-slate-200">{t('critical')}</span></div>
+            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#EA580C]"></span> <span className="text-slate-200">{t('high')}</span></div>
+            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#CA8A04]"></span> <span className="text-slate-200">{t('medium')}</span></div>
+            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#16A34A]"></span> <span className="text-slate-200">{t('low')}</span></div>
           </div>
 
           {/* Zoom Controls (Mockup bottom-left) */}
@@ -407,13 +409,13 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
 
           {/* Category Filter Indicators (Mockup bottom-left center) */}
           <div className="absolute bottom-3 left-14 flex items-center gap-2 bg-navy-950/85 backdrop-blur-xs p-2 rounded-lg border border-gold-700/20 z-10 text-[9px] font-mono leading-none">
-            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> Roads</span>
-            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> Water</span>
-            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Education</span>
-            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span> Healthcare</span>
-            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></span> Sanitation</span>
-            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> Transport</span>
-            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-sky-500 rounded-full"></span> Digital</span>
+            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> {t('Roads')}</span>
+            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {t('Water')}</span>
+            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> {t('Education')}</span>
+            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-red-500 rounded-full"></span> {t('Healthcare')}</span>
+            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></span> {t('Sanitation')}</span>
+            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> {t('Transport')}</span>
+            <span className="flex items-center gap-1 text-slate-300"><span className="w-1.5 h-1.5 bg-sky-500 rounded-full"></span> {t('Digital Access') || 'Digital'}</span>
           </div>
 
           {/* Hover / Click Tooltip Overlay (Priority details) */}
@@ -430,27 +432,27 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
               <p className="font-bold text-slate-100 leading-none">{hoveredHotspot.constituency}</p>
               <p className="text-slate-450 text-[8px]">{hoveredHotspot.state}</p>
               <div className="flex justify-between border-t border-slate-800 pt-1 mt-1 text-slate-355">
-                <span>Priority Score</span>
+                <span>{t('priorityScoreText') || 'Priority Score'}</span>
                 <span className="font-bold font-mono text-[#C89B3C]">{hoveredHotspot.priorityScore}</span>
               </div>
               <div className="flex justify-between text-slate-355">
-                <span>Requests</span>
+                <span>{t('requestsLabel') || 'Requests'}</span>
                 <span className="font-bold font-mono">{hoveredHotspot.count}</span>
               </div>
               <div className="flex justify-between text-slate-355">
-                <span>Main Issue</span>
-                <span className="font-bold text-gold-600">{hoveredHotspot.category}</span>
+                <span>{t('mainIssue') || 'Main Issue'}</span>
+                <span className="font-bold text-gold-600">{t(hoveredHotspot.category)}</span>
               </div>
               <div className="flex justify-between text-slate-355 items-center">
-                <span>Level</span>
+                <span>{t('level') || 'Level'}</span>
                 <span className={`font-bold text-[8px] uppercase ${
                   hoveredHotspot.priorityLevel === 'Critical' ? 'text-[#CD1A30]' : 
                   hoveredHotspot.priorityLevel === 'High' ? 'text-[#EA580C]' : 'text-slate-400'
-                }`}>{hoveredHotspot.priorityLevel}</span>
+                }`}>{t(hoveredHotspot.priorityLevel.toLowerCase()) || hoveredHotspot.priorityLevel}</span>
               </div>
               {hoveredHotspot.isCluster && (
                 <div className="border-t border-slate-800 pt-1 text-[7px] text-emerald-400 italic">
-                  * Cluster of {hoveredHotspot.childHotspots.length} hotspots. Click to zoom.
+                  {t('clusterHint') || '* Cluster of'} {hoveredHotspot.childHotspots.length} {t('hotspotsHint') || 'hotspots. Click to zoom.'}
                 </div>
               )}
             </div>
@@ -614,7 +616,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
             {/* Tray Title */}
             <h4 className="text-xs font-mono text-gold-600 font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5 border-b border-gold-700/15 pb-1">
               <Flame className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-              HOTSPOT ANALYSIS TRAY
+              {t('hotspotAnalysisTray') || 'HOTSPOT ANALYSIS TRAY'}
             </h4>
 
             {currentSelectTarget ? (
@@ -622,29 +624,29 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                 {/* Location Detail block */}
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Constituency</p>
+                    <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">{t('constituency')}</p>
                     <p className="text-base font-bold text-[#FAF6E8] flex items-center gap-1">
                       <MapPin className="w-4 h-4 text-gold-700 shrink-0" />
                       {currentSelectTarget.constituency} ({getStateAbbr(currentSelectTarget.state)})
                     </p>
                   </div>
                   <span className="bg-emerald-950/40 text-emerald-300 border border-emerald-800 text-[8px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-                    Active
+                    {t('active')}
                   </span>
                 </div>
 
                 {/* Severity Indicators Grid */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-navy-900/60 p-2.5 rounded-lg border border-gold-700/15">
-                    <p className="text-[9px] text-slate-400 font-bold uppercase">Demand Volume</p>
-                    <p className="text-sm font-bold text-slate-100">{currentSelectTarget.count} requests</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase">{t('demandVolume') || 'Demand Volume'}</p>
+                    <p className="text-sm font-bold text-slate-100">{currentSelectTarget.count} {currentLang === 'en' ? 'requests' : t('submissionsLabel')}</p>
                     <p className="text-[9px] text-emerald-400 font-bold flex items-center gap-0.5 mt-0.5">
                       <TrendingUp className="w-3 h-3 text-emerald-400" />
                       {currentSelectTarget.demandVolumeChange}
                     </p>
                   </div>
                   <div className="bg-navy-900/60 p-2.5 rounded-lg border border-gold-700/15">
-                    <p className="text-[9px] text-slate-400 font-bold uppercase">Severe Status</p>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase">{t('severeStatus') || 'Severe Status'}</p>
                     <span className={`border text-[8px] font-bold px-1.5 py-0.5 mt-0.5 rounded inline-block uppercase font-mono ${
                       currentSelectTarget.priorityLevel === 'Critical' 
                         ? 'bg-red-950/40 text-red-300 border-red-800' 
@@ -652,17 +654,17 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                         ? 'bg-amber-950/40 text-amber-300 border-amber-800'
                         : 'bg-yellow-950/40 text-yellow-300 border-yellow-800'
                     }`}>
-                      {currentSelectTarget.priorityLevel}
+                      {t(currentSelectTarget.priorityLevel.toLowerCase()) || currentSelectTarget.priorityLevel}
                     </span>
                     <p className="text-[9px] text-slate-300 font-bold mt-1">
-                      Priority Score: <span className="text-gold-700 font-mono">{currentSelectTarget.priorityScore}/100</span>
+                      {t('priorityScoreText') || 'Priority Score'}: <span className="text-gold-700 font-mono">{currentSelectTarget.priorityScore}/100</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Primary Demand Gaps Explanation */}
                 <div className="space-y-1">
-                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Primary Demand Gaps</p>
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">{t('primaryDemandGaps') || 'Primary Demand Gaps'}</p>
                   <p className="text-xs text-gold-100 bg-[#0F2D52]/60 p-2.5 rounded-lg border border-gold-700/20 font-medium font-serif leading-relaxed">
                     {currentSelectTarget.primaryGapsText}
                   </p>
@@ -670,46 +672,46 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
 
                 {/* 8-Demographic Metrics Grid (Mockup 4x2 Grid) */}
                 <div className="space-y-1.5">
-                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Key Open Data Metrics</p>
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">{t('keyOpenDataMetrics') || 'Key Open Data Metrics'}</p>
                   <div className="grid grid-cols-4 gap-1.5 text-center text-[9px] font-serif">
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <Users className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Population</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('population') || 'Population'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.population}</p>
                     </div>
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <Award className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Literacy</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('literacy') || 'Literacy'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.literacyRate}</p>
                     </div>
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <Warehouse className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Wards/Vill</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('wardsVill') || 'Wards/Vill'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.villagesWards}</p>
                     </div>
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <Map className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Area</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('area') || 'Area'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.area}</p>
                     </div>
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <School className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Schools</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('schools') || 'Schools'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.schools}</p>
                     </div>
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <Hospital className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Clinics</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('clinics') || 'Clinics'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.healthcareFacilities}</p>
                     </div>
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <Droplet className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Water Cov</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('waterCov') || 'Water Cov'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.waterCoverage}</p>
                     </div>
-                    <div className="bg-navy-950/60 p-1.5 border border-gold-700/10 rounded">
+                    <div className="bg-navy-955/60 p-1.5 border border-gold-700/10 rounded">
                       <Waypoints className="w-3.5 h-3.5 mx-auto text-gold-700 mb-1" />
-                      <p className="text-[8px] text-slate-400 uppercase">Road Conn</p>
+                      <p className="text-[8px] text-slate-400 uppercase">{t('roadConn') || 'Road Conn'}</p>
                       <p className="font-bold text-slate-100 font-mono">{currentSelectTarget.metrics.roadConnectivity}</p>
                     </div>
                   </div>
@@ -717,12 +719,12 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
 
                 {/* Top Issues by Category Progress Bars */}
                 <div className="space-y-2">
-                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Top Issues by Category</p>
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">{t('topIssuesByCategory') || 'Top Issues by Category'}</p>
                   <div className="space-y-2">
                     {currentSelectTarget.topIssues.map((issue, idx) => (
                       <div key={idx} className="space-y-0.5 text-[10px]">
                         <div className="flex justify-between text-slate-350 leading-none">
-                          <span>{issue.category}</span>
+                          <span>{t(issue.category)}</span>
                           <span className="font-bold font-mono">{issue.percent}%</span>
                         </div>
                         <div className="w-full bg-navy-950/60 h-1.5 rounded-full overflow-hidden border border-gold-700/10">
@@ -741,7 +743,7 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                   <div className="absolute top-0 right-0 w-16 h-16 bg-gold-200 rounded-full blur-2xl opacity-10 pointer-events-none"></div>
                   <div className="flex items-center gap-1.5 text-gold-600 font-bold uppercase tracking-wider font-sans text-[9px] border-b border-gold-700/15 pb-1">
                     <Sparkles className="w-3.5 h-3.5 text-gold-700 fill-gold-700/10 shrink-0" />
-                    <span>Recommended Action</span>
+                    <span>{t('recommendedAction') || 'Recommended Action'}</span>
                   </div>
                   <p className="font-bold text-slate-100 text-xs flex items-center gap-1 font-serif leading-tight">
                     <Droplet className="w-4 h-4 text-blue-400 shrink-0" />
@@ -749,29 +751,29 @@ export default function HotspotMap({ onConstituencySelect, selectedConstituency 
                   </p>
                   <div className="grid grid-cols-2 gap-2 text-[9px] border-t border-gold-700/15 pt-1.5 mt-1">
                     <div>
-                      <p className="text-slate-400">Est. Beneficiaries</p>
+                      <p className="text-slate-400">{t('estBeneficiaries') || 'Est. Beneficiaries'}</p>
                       <p className="font-bold text-slate-200 font-mono text-xs">{currentSelectTarget.recommendedAction.beneficiaries}</p>
                     </div>
                     <div className="border-l border-gold-700/15 pl-2">
-                      <p className="text-slate-400">Est. Budget</p>
+                      <p className="text-slate-400">{t('estBudget') || 'Est. Budget'}</p>
                       <p className="font-bold text-[#C89B3C] font-mono text-xs">{currentSelectTarget.recommendedAction.budget}</p>
                     </div>
                   </div>
-                  <p className="text-[9px] text-slate-350 italic pt-1 leading-normal font-sans border-t border-gold-700/10">
+                  <p className="text-[9px] text-slate-355 italic pt-1 leading-normal font-sans border-t border-gold-700/10">
                     💡 {currentSelectTarget.recommendedAction.details}
                   </p>
                 </div>
               </div>
             ) : (
               <div className="py-12 text-center text-slate-550 text-xs font-serif">
-                Select any constituency pin on the GIS map to view localized priority analytics.
+                {t('selectConstituencyMap') || 'Select any constituency pin on the GIS map to view localized priority analytics.'}
               </div>
             )}
           </div>
 
           <div className="mt-4 pt-3 border-t border-gold-700/10 text-[9px] text-slate-400 flex items-center gap-1.5 font-sans leading-relaxed">
             <AlertCircle className="w-3.5 h-3.5 text-gold-700 shrink-0" />
-            <span>AI recommends allocating MPLADS Q1 grants directly to Critical status areas first.</span>
+            <span>{t('aiMapRecommendation') || 'AI recommends allocating MPLADS Q1 grants directly to Critical status areas first.'}</span>
           </div>
         </div>
 

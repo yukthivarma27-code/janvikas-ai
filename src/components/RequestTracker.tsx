@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { CitizenRequest, RequestStatus } from '../types';
 import { CATEGORY_COLORS, getCategoryIcon } from '../mockData';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Search, ThumbsUp, Calendar, MapPin, User, Sparkles, CheckCircle2, CircleDot, ChevronRight, AlertCircle } from 'lucide-react';
 
 interface RequestTrackerProps {
@@ -10,16 +11,17 @@ interface RequestTrackerProps {
   initialTrackID?: string;
 }
 
-const TIMELINE_STEPS: { status: RequestStatus; title: string; desc: string }[] = [
-  { status: 'Submitted', title: 'Request Submitted', desc: 'Citizen successfully filed demand, GPS-coordinates verified by system.' },
-  { status: 'Verified', title: 'District Verification', desc: 'Regional administrative office confirmed local physical feasibility.' },
-  { status: 'Prioritized', title: 'AI Prioritization', desc: 'Algorithmic assessment of density, safety, & budget fit completed.' },
-  { status: 'Allocated', title: 'Fund Allocation', desc: 'Project added to MP budget, MPLADS Q1 resources earmarked.' },
-  { status: 'In Progress', title: 'Execution Started', desc: 'Contract signed. Physical civil works underway on site.' },
-  { status: 'Completed', title: 'Completed & Certified', desc: 'Project built successfully. Local third-party audit certified completion.' }
+const TIMELINE_STEPS: { status: RequestStatus; titleKey: string; descKey: string }[] = [
+  { status: 'Submitted', titleKey: 'timelineSubmitted', descKey: 'timelineSubmittedDesc' },
+  { status: 'Verified', titleKey: 'timelineVerified', descKey: 'timelineVerifiedDesc' },
+  { status: 'Prioritized', titleKey: 'timelinePrioritized', descKey: 'timelinePrioritizedDesc' },
+  { status: 'Allocated', titleKey: 'timelineAllocated', descKey: 'timelineAllocatedDesc' },
+  { status: 'In Progress', titleKey: 'timelineInProgress', descKey: 'timelineInProgressDesc' },
+  { status: 'Completed', titleKey: 'timelineCompleted', descKey: 'timelineCompletedDesc' }
 ];
 
 export default function RequestTracker({ requests, onUpvote, initialTrackID = '' }: RequestTrackerProps) {
+  const { currentLang, t } = useLanguage();
   const [searchID, setSearchID] = useState(initialTrackID);
   const [activeRequest, setActiveRequest] = useState<CitizenRequest | null>(
     requests.find(r => r.id === initialTrackID) || requests[0]
@@ -47,9 +49,9 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
       {/* Tracker Heading */}
       <div className="mb-6">
         <h2 className="text-xl md:text-2xl font-bold text-navy-900 tracking-tight flex items-center gap-2">
-          <span>Development Request Monitoring System</span>
+          <span>{t('trackerTitle')}</span>
         </h2>
-        <p className="text-xs text-slate-500 mt-1">Verify real-time executive progress, financial sanctions, and milestone timelines</p>
+        <p className="text-xs text-slate-500 mt-1">{t('trackerSubtitle')}</p>
       </div>
 
       {/* Tracking ID Search Box */}
@@ -59,7 +61,7 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
             <Search className="absolute left-3.5 top-3.5 w-5 h-5 text-gold-700" />
             <input 
               type="text" 
-              placeholder="Enter Citizen Tracking ID (e.g. JV-2026-9041, JV-2026-1102)"
+              placeholder={t('trackerPlaceholder')}
               value={searchID}
               onChange={(e) => setSearchID(e.target.value)}
               className="w-full pl-11 pr-4 py-3 text-sm input-gov text-[#0F2D52] font-bold font-mono tracking-wider uppercase"
@@ -71,14 +73,14 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
             className="btn-gov-primary px-7 py-3 text-xs uppercase tracking-wider cursor-pointer shadow-xs"
             id="btn-tracker-search-submit"
           >
-            Locate Request
+            {t('locateRequest')}
           </button>
         </form>
 
         {showError && (
           <div className="mt-3 text-xs text-rose-800 flex items-center gap-1 bg-rose-50 p-2.5 rounded-lg border border-rose-200 font-bold">
             <AlertCircle className="w-3.5 h-3.5" />
-            No matching request found with ID "{searchID}". Please try selecting from the active list below.
+            {t('noMatchingRequest')} "{searchID}". {t('selectFromList')}
           </div>
         )}
       </div>
@@ -101,15 +103,15 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
                     <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
                       activeRequest.urgency === 'High' ? 'bg-rose-50 text-rose-800 border border-rose-200' : 'bg-gold-50 text-gold-900 border border-gold-700/20'
                     }`}>
-                      {activeRequest.urgency} Urgency
+                      {t(activeRequest.urgency.toLowerCase())} {currentLang === 'en' ? 'Urgency' : ''}
                     </span>
                   </div>
                   <h3 className="text-lg md:text-xl font-bold text-navy-900 leading-tight">
-                    {activeRequest.locality} • {activeRequest.category} Demand
+                    {activeRequest.locality} • {t(activeRequest.category)} {currentLang === 'en' ? 'Demand' : ''}
                   </h3>
                   <p className="text-xs text-slate-500 flex items-center gap-3">
                     <span className="flex items-center gap-1 font-medium"><MapPin className="w-3 h-3 text-gold-700" /> {activeRequest.mandal}, {activeRequest.constituency}</span>
-                    <span className="flex items-center gap-1 font-medium"><Calendar className="w-3 h-3 text-slate-400" /> Filed {activeRequest.date}</span>
+                    <span className="flex items-center gap-1 font-medium"><Calendar className="w-3 h-3 text-slate-400" /> {t('timelineSubmitted')}: {activeRequest.date}</span>
                   </p>
                 </div>
 
@@ -120,24 +122,24 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
                   id="btn-tracker-upvote"
                 >
                   <ThumbsUp className="w-3.5 h-3.5 text-gold-700 fill-gold-700" />
-                  <span>{activeRequest.upvotes} Support Votes</span>
+                  <span>{activeRequest.upvotes} {t('supportVotes')}</span>
                 </button>
               </div>
 
               {/* Original complaint explanation */}
               <div className="bg-[#FAF6E8]/30 rounded-xl p-4.5 border border-gold-700/15 space-y-2">
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Citizen Testimonial</p>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{t('citizenTestimonial')}</p>
                 <p className="text-slate-700 text-xs md:text-sm leading-relaxed italic">
                   "{activeRequest.description}"
                 </p>
                 <p className="text-[10px] text-slate-500 flex items-center gap-1">
-                  <User className="w-3 h-3 text-gold-700" /> Submitted by <strong className="text-slate-650">{activeRequest.name}</strong>
+                  <User className="w-3 h-3 text-gold-700" /> {t('submittedBy')} <strong className="text-slate-650">{activeRequest.name}</strong>
                 </p>
               </div>
 
               {/* Progress Milestones timeline */}
               <div>
-                <p className="text-xs font-bold text-navy-900 uppercase tracking-wider mb-5">Milestone Timeline Progress</p>
+                <p className="text-xs font-bold text-navy-900 uppercase tracking-wider mb-5">{t('timelineProgress')}</p>
                 
                 {/* Visual Timeline Stepper */}
                 <div className="space-y-5 relative pl-4 border-l border-gold-700/20 ml-2" id="milestone-timeline">
@@ -165,20 +167,20 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <span className={`text-xs font-bold ${isCompleted ? 'text-slate-800' : 'text-slate-400'}`}>
-                              {step.title}
+                              {t(step.titleKey)}
                             </span>
                             {isCurrent && (
                               <span className="bg-gold-50 text-gold-900 border border-gold-700/25 text-[9px] font-bold px-1.5 py-0.2 rounded-sm animate-pulse uppercase tracking-wider">
-                                Current Milestone
+                                {t('currentMilestone')}
                               </span>
                             )}
                           </div>
                           <p className={`text-[11px] mt-0.5 leading-normal ${isCompleted ? 'text-slate-600' : 'text-slate-400'}`}>
-                            {step.desc}
+                            {t(step.descKey)}
                           </p>
                           {isCompleted && (
                             <span className="text-[9px] text-slate-400 font-mono font-medium">
-                              Verified on: {new Date(new Date(activeRequest.date).getTime() + idx * 86400000).toISOString().split('T')[0]}
+                              {t('verifiedOn')}: {new Date(new Date(activeRequest.date).getTime() + idx * 86400000).toISOString().split('T')[0]}
                             </span>
                           )}
                         </div>
@@ -193,23 +195,23 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
                 <div className="absolute top-0 right-0 w-20 h-20 bg-gold-200 rounded-full blur-2xl opacity-20 pointer-events-none"></div>
                 <div className="flex items-center gap-1.5 mb-3 border-b border-gold-700/15 pb-2">
                   <Sparkles className="w-4 h-4 text-gold-700 fill-gold-700" />
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-navy-900">SYSTEM AI ANALYTICS OVERVIEW</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-navy-900">{t('aiAnalyticsOverview')}</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
                   <div className="bg-white p-3.5 rounded-xl border border-gold-700/15 shadow-xs">
-                    <p className="text-[8px] text-slate-500 font-bold uppercase">Estimated Direct Impact</p>
-                    <p className="text-sm font-bold text-navy-900 mt-0.5">{activeRequest.aiAnalysis.estimatedImpactUsers} citizens</p>
-                    <p className="text-[9px] text-slate-400 mt-0.5">Primary beneficiary network</p>
+                    <p className="text-[8px] text-slate-500 font-bold uppercase">{t('estimatedImpact')}</p>
+                    <p className="text-sm font-bold text-navy-900 mt-0.5">{activeRequest.aiAnalysis.estimatedImpactUsers} {t('citizensCount')}</p>
+                    <p className="text-[9px] text-slate-400 mt-0.5">{t('primaryBeneficiary')}</p>
                   </div>
                   <div className="bg-white p-3.5 rounded-xl border border-gold-700/15 shadow-xs">
-                    <p className="text-[8px] text-slate-500 font-bold uppercase">Financial Outlay Forecast</p>
-                    <p className="text-sm font-bold text-amber-700 mt-0.5">₹{activeRequest.aiAnalysis.estimatedCostLakhs} Lakhs</p>
-                    <p className="text-[9px] text-slate-400 mt-0.5">Required municipal budget</p>
+                    <p className="text-[8px] text-slate-500 font-bold uppercase">{t('financialOutlay')}</p>
+                    <p className="text-sm font-bold text-amber-700 mt-0.5">₹{activeRequest.aiAnalysis.estimatedCostLakhs} L</p>
+                    <p className="text-[9px] text-slate-400 mt-0.5">{t('requiredBudget')}</p>
                   </div>
                   <div className="bg-white p-3.5 rounded-xl border border-gold-700/15 shadow-xs">
-                    <p className="text-[8px] text-slate-500 font-bold uppercase">Calculated Priority Index</p>
+                    <p className="text-[8px] text-slate-500 font-bold uppercase">{t('calculatedPriorityIndex')}</p>
                     <span className="text-sm font-bold text-emerald-800 mt-0.5">{activeRequest.priorityScore} / 100</span>
-                    <p className="text-[9px] text-slate-400 mt-0.5">National rank priority</p>
+                    <p className="text-[9px] text-slate-400 mt-0.5">{t('nationalRankPriority')}</p>
                   </div>
                 </div>
               </div>
@@ -217,7 +219,7 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
             </div>
           ) : (
             <div className="bg-gold-50/20 rounded-2xl p-12 text-center text-slate-500 border border-gold-700/20 font-serif">
-              Select or search a Citizen Development Request from the side menu to track its milestone status.
+              {t('clickToLoad')}
             </div>
           )}
         </div>
@@ -225,8 +227,8 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
         {/* Directory list of all other issues in the database */}
         <div className="bg-white border border-gold-700/20 rounded-2xl p-4 md:p-5 shadow-xs space-y-4">
           <div>
-            <h4 className="font-bold text-sm text-navy-900 font-serif">Citizen Request Registry</h4>
-            <p className="text-[11px] text-slate-550 font-serif font-medium">Click any card to load timeline progress</p>
+            <h4 className="font-bold text-sm text-navy-900 font-serif">{t('registryTitle')}</h4>
+            <p className="text-[11px] text-slate-550 font-serif font-medium">{t('clickToLoad')}</p>
           </div>
 
           <div className="space-y-3 overflow-y-auto max-h-[500px]" id="tracker-directory-list">
@@ -258,7 +260,7 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
                         ? 'bg-[#FAF6E8] text-[#0F2D52] animate-pulse border border-gold-700/30'
                         : 'bg-slate-200 text-slate-700'
                     }`}>
-                      {req.status}
+                      {t(req.status)}
                     </span>
                   </div>
 
@@ -274,10 +276,10 @@ export default function RequestTracker({ requests, onUpvote, initialTrackID = ''
                   <div className={`flex justify-between items-center text-[10px] border-t pt-1.5 mt-0.5 ${isSelected ? 'border-gold-700/20' : 'border-slate-200/40'}`}>
                     <span className="flex items-center gap-1 font-medium">
                       <span className="w-1.5 h-1.5 rounded-full bg-gold-700 inline-block"></span>
-                      {req.category}
+                      {t(req.category)}
                     </span>
                     <span className={`flex items-center gap-1 font-bold ${isSelected ? 'text-gold-500' : 'text-[#C89B3C]'}`}>
-                      ★ {req.priorityScore}% Priority
+                      ★ {req.priorityScore}% {currentLang === 'en' ? 'Priority' : ''}
                     </span>
                   </div>
                 </div>

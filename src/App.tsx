@@ -5,8 +5,9 @@ import RequestTracker from './components/RequestTracker';
 import MPDashboard from './components/MPDashboard';
 import AIRecommendations from './components/AIRecommendations';
 import ProposalComparison from './components/ProposalComparison';
-import { LANGUAGES } from './mockData';
+import { useLanguage } from './i18n/LanguageContext';
 import { CitizenRequest, Language, RequestStatus } from './types';
+import { fetchRequests, upvoteRequest, updateRequestStatus, isUsingFallback, FORCE_MOCK_DATA } from './services/api';
 import { 
   Sparkles, 
   PlusCircle, 
@@ -24,52 +25,49 @@ import {
 
 export default function App() {
   // Global States
-  const [currentLang, setCurrentLang] = useState<Language>('en');
+  const { currentLang, setLanguage, t } = useLanguage();
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
   const [activeView, setActiveView] = useState<string>('landing');
   const [requests, setRequests] = useState<CitizenRequest[]>([]);
   const [selectedTrackID, setSelectedTrackID] = useState<string>('');
 
-  useEffect(() => {
-    fetch('/api/requests')
-      .then(res => res.json())
-      .then(data => setRequests(data))
-      .catch(err => console.error('Error fetching requests:', err));
-  }, []);
+  const [fallbackActive, setFallbackActive] = useState<boolean>(isUsingFallback());
 
-  const langData = LANGUAGES[currentLang] || LANGUAGES.en;
+  const loadRequests = () => {
+    fetchRequests().then(data => {
+      setRequests(data);
+      setFallbackActive(isUsingFallback());
+    });
+  };
+
+  useEffect(() => {
+    loadRequests();
+  }, []);
 
   // Handlers
   const handleAddRequest = (newReq: CitizenRequest) => {
     setRequests(prev => [newReq, ...prev]);
+    setFallbackActive(isUsingFallback());
   };
 
   const handleUpvote = (id: string) => {
-    fetch('/api/upvote', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    })
-      .then(res => res.json())
+    upvoteRequest(id)
       .then(updatedReq => {
-        if (updatedReq && !updatedReq.error) {
+        if (updatedReq) {
           setRequests(prev => prev.map(req => req.id === id ? updatedReq : req));
         }
+        setFallbackActive(isUsingFallback());
       })
       .catch(err => console.error('Error upvoting:', err));
   };
 
   const handleStatusChange = (id: string, newStatus: RequestStatus) => {
-    fetch('/api/status', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status: newStatus })
-    })
-      .then(res => res.json())
+    updateRequestStatus(id, newStatus)
       .then(updatedReq => {
-        if (updatedReq && !updatedReq.error) {
+        if (updatedReq) {
           setRequests(prev => prev.map(req => req.id === id ? updatedReq : req));
         }
+        setFallbackActive(isUsingFallback());
       })
       .catch(err => console.error('Error updating status:', err));
   };
@@ -98,7 +96,7 @@ export default function App() {
       {/* Dynamic Global Header */}
       <Header 
         currentLang={currentLang}
-        onLangChange={(lang) => setCurrentLang(lang)}
+        onLangChange={(lang) => setLanguage(lang)}
         isAdminMode={isAdminMode}
         onModeToggle={(isAdmin) => setIsAdminMode(isAdmin)}
         activeView={activeView}
@@ -111,6 +109,28 @@ export default function App() {
           }
         }}
       />
+
+      {fallbackActive && (
+        <div className="bg-[#FAF6E8] border-b border-gold-700/25 px-4 py-2 text-center text-xs text-[#0F2D52] flex justify-center items-center gap-3 animate-fadeIn" id="fallback-status-bar">
+          <span className="inline-flex items-center gap-1.5 font-bold font-serif">
+            ⚠️ Backend is currently unavailable. Demo data is being displayed.
+          </span>
+          {!FORCE_MOCK_DATA && (
+            <button 
+              onClick={() => {
+                fetchRequests().then(data => {
+                  setRequests(data);
+                  setFallbackActive(isUsingFallback());
+                });
+              }}
+              className="px-2.5 py-0.5 bg-navy-900 hover:bg-navy-950 text-white font-serif text-[10px] uppercase rounded border border-gold-700/25 cursor-pointer shadow-xs transition-all"
+              id="btn-retry-backend"
+            >
+              Try Again
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="flex-1">
@@ -152,23 +172,27 @@ export default function App() {
               
               <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-gold-200 rounded-full blur-3xl opacity-15 pointer-events-none"></div>
               <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-navy-700 rounded-full blur-3xl opacity-10 pointer-events-none"></div>
-
+ 
               <div className="max-w-5xl mx-auto text-center relative z-10 space-y-6">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/90 hover:bg-gold-50 backdrop-blur-md rounded-full border border-gold-700/35 transition-all cursor-pointer">
                   <Sparkles className="w-4 h-4 text-gold-700 fill-gold-700" />
                   <span className="text-[11px] font-bold tracking-wider uppercase font-serif text-navy-900">
-                    National Civic Innovation Portal • Digital India Initiative
+                    {t('digitalIndiaInit')}
                   </span>
                 </div>
                 
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight max-w-4xl mx-auto text-navy-900 font-serif">
-                  Democratizing Civic Priority with <span className="text-[#0E7C66]">JanVikas AI</span>
+                  {currentLang === 'en' ? (
+                    <>Democratizing Civic Priority with <span className="text-[#0E7C66]">JanVikas AI</span></>
+                  ) : (
+                    t('heroTitle')
+                  )}
                 </h1>
                 
                 <p className="text-base md:text-lg text-slate-650 max-w-3xl mx-auto leading-relaxed font-serif">
-                  JanVikas AI parses local citizen submissions in 8 major Indian languages, analyzes physical feasibility, projects fiscal outlays, and clusters community demands to empower representatives to allocate budget funds.
+                  {t('heroDesc')}
                 </p>
-
+ 
                 {/* Styled Hero Buttons */}
                 <div className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
                   <button
@@ -177,7 +201,7 @@ export default function App() {
                     id="hero-btn-file-request"
                   >
                     <PlusCircle className="w-4.5 h-4.5 text-gold-700" />
-                    <span>File Development Need</span>
+                    <span>{t('fileDevelopmentNeed')}</span>
                   </button>
                   <button
                     onClick={() => setActiveView('track-request')}
@@ -185,12 +209,12 @@ export default function App() {
                     id="hero-btn-track-status"
                   >
                     <Search className="w-4.5 h-4.5 text-gold-700" />
-                    <span>Track Request Status</span>
+                    <span>{t('trackRequestStatus')}</span>
                   </button>
                 </div>
               </div>
             </div>
-
+ 
             {/* Platform Metrics Highlights */}
             <div className="max-w-5xl mx-auto px-4 -mt-8 relative z-20">
               <div className="bg-white rounded-2xl border border-gold-700/20 shadow-md p-5 md:p-6 grid grid-cols-2 md:grid-cols-4 gap-4 md:divide-x md:divide-gold-700/15 hover:shadow-lg transition-all duration-300">
@@ -201,54 +225,54 @@ export default function App() {
                     <Users className="w-5.5 h-5.5 text-navy-900" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">Total Filed Needs</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">{t('totalFiledNeeds')}</p>
                     <p className="text-xl font-bold text-navy-900 mt-0.5 font-serif">{totalSubmissionsCount}</p>
                   </div>
                 </div>
-
+ 
                 {/* Metric 2 */}
                 <div className="flex items-center gap-3.5 p-1 md:pl-6">
                   <div className="w-11 h-11 rounded-2xl bg-gold-50 text-gold-900 flex items-center justify-center shrink-0 border border-gold-700/20">
                     <Sparkles className="w-5.5 h-5.5 text-gold-800" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">Avg Priority Index</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">{t('avgPriorityIndex')}</p>
                     <p className="text-xl font-bold text-navy-900 mt-0.5 font-serif">{avgPriorityScore}%</p>
                   </div>
                 </div>
-
+ 
                 {/* Metric 3 */}
                 <div className="flex items-center gap-3.5 p-1 md:pl-6">
                   <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-900 flex items-center justify-center shrink-0 border border-emerald-700/10">
                     <Coins className="w-5.5 h-5.5 text-emerald-800" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">Budget Allocated</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">{t('budgetAllocated')}</p>
                     <p className="text-xl font-bold text-emerald-850 mt-0.5 font-serif">₹{totalSanctionedLakhs.toFixed(1)} L</p>
                   </div>
                 </div>
-
+ 
                 {/* Metric 4 */}
                 <div className="flex items-center gap-3.5 p-1 md:pl-6">
                   <div className="w-11 h-11 rounded-2xl bg-navy-50 text-navy-900 flex items-center justify-center shrink-0 border border-gold-700/10">
                     <CheckCircle2 className="w-5.5 h-5.5 text-navy-800" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">Resolved Projects</p>
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-serif">{t('resolvedProjects')}</p>
                     <p className="text-xl font-bold text-navy-950 mt-0.5 font-serif">{completedProjectsCount}</p>
                   </div>
                 </div>
-
+ 
               </div>
             </div>
-
+ 
             {/* Core Features Grid */}
             <div className="max-w-5xl mx-auto px-4 py-16 space-y-12">
               <div className="text-center space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight text-navy-900 font-serif">Two Integrated Portals. One United Vision.</h2>
-                <p className="text-sm text-slate-500 max-w-xl mx-auto font-serif">Explore features customized for both civic participants and local Member of Parliament administrative units.</p>
+                <h2 className="text-3xl font-bold tracking-tight text-navy-900 font-serif">{t('twoPortalsTitle')}</h2>
+                <p className="text-sm text-slate-500 max-w-xl mx-auto font-serif">{t('twoPortalsDesc')}</p>
               </div>
-
+ 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Panel 1: Citizen Corner */}
                 <div className="bg-white rounded-2xl border border-gold-700/15 p-6 md:p-8 flex flex-col justify-between shadow-xs hover:border-gold-700 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
@@ -256,42 +280,42 @@ export default function App() {
                     <div className="w-12 h-12 rounded-2xl bg-gold-50 text-gold-900 border border-gold-700/20 flex items-center justify-center">
                       <Users className="w-6 h-6 text-gold-800" />
                     </div>
-                    <h3 className="text-2xl font-bold text-navy-900 font-serif">1. Citizen Civic Portal</h3>
+                    <h3 className="text-2xl font-bold text-navy-900 font-serif">{t('citizenPortalTitle')}</h3>
                     <p className="text-sm text-slate-600 leading-relaxed font-serif font-normal">
-                      Empowering every citizen to voice local infrastructure, health, educational, or resource deficits directly to regional authorities. High-quality support system allows communities to cluster around identical issues.
+                      {t('citizenPortalDesc')}
                     </p>
                     <ul className="space-y-2.5 text-xs text-slate-650 font-medium font-serif">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                        <span>Submit in 8 Indian Languages (Hindi, Tamil, Telugu, etc.)</span>
+                        <span>{t('citizenPortalBullet1')}</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                        <span>Voice dictation simulation & photo uploads</span>
+                        <span>{t('citizenPortalBullet2')}</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                        <span>Interactive tracking IDs with full milestone timelines</span>
+                        <span>{t('citizenPortalBullet3')}</span>
                       </li>
                     </ul>
                   </div>
-
+ 
                   <div className="pt-6 border-t border-slate-100 mt-6 flex gap-3">
                     <button
                       onClick={() => setActiveView('submit-request')}
                       className="flex-1 btn-gov-primary py-2.5 text-xs tracking-wider uppercase cursor-pointer"
                     >
-                      File New Need
+                      {t('fileNewNeed')}
                     </button>
                     <button
                       onClick={() => setActiveView('track-request')}
                       className="flex-1 btn-gov-secondary py-2.5 text-xs tracking-wider uppercase cursor-pointer"
                     >
-                      Track Existing
+                      {t('trackExisting')}
                     </button>
                   </div>
                 </div>
-
+ 
                 {/* Panel 2: MP Command Hub */}
                 <div className="bg-white rounded-2xl border border-gold-700/15 p-6 md:p-8 flex flex-col justify-between shadow-xs hover:border-gold-700 hover:shadow-md transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gold-600 rounded-full blur-3xl opacity-5 pointer-events-none"></div>
@@ -300,26 +324,26 @@ export default function App() {
                     <div className="w-12 h-12 rounded-2xl bg-navy-900 text-gold-600 border border-gold-700/30 flex items-center justify-center">
                       <Building2 className="w-6 h-6 text-gold-700" />
                     </div>
-                    <h3 className="text-2xl font-bold text-navy-900 font-serif">2. MP Command & Sanction Center</h3>
+                    <h3 className="text-2xl font-bold text-navy-900 font-serif">{t('mpCenterTitle')}</h3>
                     <p className="text-sm text-slate-650 leading-relaxed font-serif font-normal">
-                      Administrative decision-making panel driven by spatial telemetry and algorithmic rankings. Compare candidate civil works side-by-side on upvotes, cost projections, safety, and societal benefits.
+                      {t('mpCenterDesc')}
                     </p>
                     <ul className="space-y-2.5 text-xs text-slate-650 font-medium font-serif">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-[#0E7C66]" />
-                        <span>Live spatial mapping of regional priority Hot-zones</span>
+                        <span>{t('mpCenterBullet1')}</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-[#0E7C66]" />
-                        <span>Side-by-side comparative feasibility matrixes</span>
+                        <span>{t('mpCenterBullet2')}</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-[#0E7C66]" />
-                        <span>MPLADS annual fund tracking and milestone overrides</span>
+                        <span>{t('mpCenterBullet3')}</span>
                       </li>
                     </ul>
                   </div>
-
+ 
                   <div className="pt-6 border-t border-gold-700/15 mt-6 flex gap-3">
                     <button
                       onClick={() => {
@@ -328,62 +352,62 @@ export default function App() {
                       }}
                       className="w-full btn-gov-primary py-2.5 text-xs tracking-wider uppercase flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
                     >
-                      <span>Enter MP Command Center</span>
+                      <span>{t('enterMpCenter')}</span>
                       <ArrowRight className="w-4 h-4 text-gold-700" />
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-
+ 
             {/* Seamless Workflow Diagram */}
             <div className="bg-[#FAF8F5] border-y border-gold-700/20 py-16 px-4">
               <div className="max-w-5xl mx-auto space-y-12">
                 <div className="text-center space-y-2">
-                  <h2 className="text-3xl font-bold text-navy-900 tracking-tight font-serif">System Algorithmic Pipelines</h2>
-                  <p className="text-sm text-slate-500 max-w-lg mx-auto font-serif">How native citizen messages are processed, ranked, and mapped to sanctioned financial releases.</p>
+                  <h2 className="text-3xl font-bold text-navy-900 tracking-tight font-serif">{t('pipelinesTitle')}</h2>
+                  <p className="text-sm text-slate-500 max-w-lg mx-auto font-serif">{t('pipelinesDesc')}</p>
                 </div>
-
+ 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   {/* Step 1 */}
                   <div className="bg-white rounded-2xl p-5 border border-gold-700/15 shadow-xs hover:border-gold-700 hover:-translate-y-1 transition-all duration-300 relative">
-                    <span className="text-[10px] font-mono font-bold text-navy-900 bg-gold-50 border border-gold-700/20 px-2 py-0.5 rounded">PHASE 1</span>
-                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">Ingest & Translate</h4>
+                    <span className="text-[10px] font-mono font-bold text-navy-900 bg-gold-50 border border-gold-700/20 px-2 py-0.5 rounded">{t('phase1')}</span>
+                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">{t('phase1Title')}</h4>
                     <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                      Citizen inputs voice memos or text descriptions in their regional tongue. AI normalizes input and runs safety risk sentiment parsing.
+                      {t('phase1Desc')}
                     </p>
                   </div>
-
+ 
                   {/* Step 2 */}
                   <div className="bg-white rounded-2xl p-5 border border-gold-700/15 shadow-xs hover:border-gold-700 hover:-translate-y-1 transition-all duration-300 relative">
-                    <span className="text-[10px] font-mono font-bold text-navy-900 bg-gold-50 border border-gold-700/20 px-2 py-0.5 rounded">PHASE 2</span>
-                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">Deduplicate & Cluster</h4>
+                    <span className="text-[10px] font-mono font-bold text-navy-900 bg-gold-50 border border-gold-700/20 px-2 py-0.5 rounded">{t('phase2')}</span>
+                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">{t('phase2Title')}</h4>
                     <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                      Adjacent municipal submissions are checked against GPS bounds. Multiple reports are clustered into singular "Deficit Hotspots."
+                      {t('phase2Desc')}
                     </p>
                   </div>
-
+ 
                   {/* Step 3 */}
                   <div className="bg-white rounded-2xl p-5 border border-gold-700/15 shadow-xs hover:border-gold-700 hover:-translate-y-1 transition-all duration-300 relative">
-                    <span className="text-[10px] font-mono font-bold text-[#8C6D2D] bg-gold-50 border border-gold-700/20 px-2 py-0.5 rounded">PHASE 3</span>
-                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">Priority Indexing</h4>
+                    <span className="text-[10px] font-mono font-bold text-[#8C6D2D] bg-gold-50 border border-gold-700/20 px-2 py-0.5 rounded">{t('phase3')}</span>
+                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">{t('phase3Title')}</h4>
                     <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                      The neural ranker outputs a 0-100 Priority score based on population density, risk factors, upvotes, and budget feasibility.
+                      {t('phase3Desc')}
                     </p>
                   </div>
-
+ 
                   {/* Step 4 */}
                   <div className="bg-white rounded-2xl p-5 border border-gold-700/15 shadow-xs hover:border-gold-700 hover:-translate-y-1 transition-all duration-300 relative">
-                    <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-700/20 px-2 py-0.5 rounded">PHASE 4</span>
-                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">Resource Sanction</h4>
+                    <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 border border-emerald-700/20 px-2 py-0.5 rounded">{t('phase4')}</span>
+                    <h4 className="font-bold text-base text-navy-900 mt-3.5 mb-1.5 font-serif">{t('phase4Title')}</h4>
                     <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                      MP selects highly ranked issues, runs multi-criteria feasibility comparisons, and authorizes instant MPLAD fund releases.
+                      {t('phase4Desc')}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-
+ 
             {/* Indian National Branding Footer block */}
             <footer className="bg-navy-950 text-[#FAF6E8] py-16 px-4 border-t-2 border-gold-700 text-xs text-center font-serif">
               <div className="max-w-5xl mx-auto space-y-4">
@@ -391,19 +415,19 @@ export default function App() {
                   <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
                   <span className="w-2.5 h-2.5 rounded-full bg-white"></span>
                   <span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>
-                  <span className="font-serif font-bold text-white text-xs tracking-wide">JanVikas AI CIVIC HUB</span>
+                  <span className="font-serif font-bold text-white text-xs tracking-wide">{t('footerCell')}</span>
                 </div>
                 <p className="text-xs text-[#E8DCC4] max-w-xl mx-auto leading-relaxed font-normal">
-                  National Civic Innovation Framework under Article 243. Designed for regional constituencies of Guntur, Varanasi, Bengaluru, Pune, Lucknow, and Coimbatore. Powered by Indian Government Digital Infrastructure stack.
+                  {t('footerText')}
                 </p>
                 <div className="pt-4 border-t border-gold-700/20 text-[10px] text-gold-200 font-mono">
-                  © 2026 MEITY CIVIC CELL. DEPLOYED CONTAINER RUN: STABLE • SECURITY ENFORCED (SSL-256)
+                  {t('footerCopy')}
                 </div>
               </div>
             </footer>
           </div>
         )}
-
+ 
         {/* View Router conditionals */}
         {activeView === 'submit-request' && (
           <RequestForm 
@@ -412,7 +436,7 @@ export default function App() {
             onNavigateToTrack={handleNavigateToTrack}
           />
         )}
-
+ 
         {activeView === 'track-request' && (
           <RequestTracker 
             requests={requests}
@@ -420,7 +444,7 @@ export default function App() {
             initialTrackID={selectedTrackID}
           />
         )}
-
+ 
         {activeView === 'dashboard' && (
           <MPDashboard 
             requests={requests}
@@ -428,11 +452,11 @@ export default function App() {
             onNavigate={(view) => setActiveView(view)}
           />
         )}
-
+ 
         {activeView === 'ai-recommendations' && (
           <AIRecommendations />
         )}
-
+ 
         {activeView === 'proposal-comparison' && (
           <ProposalComparison requests={requests} />
         )}

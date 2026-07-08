@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { CONSTITUENCIES, CATEGORY_COLORS } from '../mockData';
 import { Category, Urgency, CitizenRequest, Language } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
+import { prioritizeRequest, submitRequest } from '../services/api';
 import { Mic, UploadCloud, MapPin, Sparkles, AlertCircle, CheckCircle, FileText, Compass, CornerDownRight } from 'lucide-react';
 
 interface RequestFormProps {
@@ -11,19 +13,20 @@ interface RequestFormProps {
 }
 
 export default function RequestForm({ currentLang, onAddRequest, onNavigateToTrack }: RequestFormProps) {
+  const { t } = useLanguage();
   // Form States
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
-  const [constituency, setConstituency] = useState('Varanasi');
-  const [mandal, setMandal] = useState('Kashi Vidyapith');
+  const [constituency, setConstituency] = useState('Visakhapatnam');
+  const [mandal, setMandal] = useState('Bheemunipatnam');
   const [locality, setLocality] = useState('');
   const [category, setCategory] = useState<Category>('Roads');
   const [description, setDescription] = useState('');
   const [urgency, setUrgency] = useState<Urgency>('Medium');
   
   // Location simulation
-  const [lat, setLat] = useState(25.3176);
-  const [lng, setLng] = useState(82.9739);
+  const [lat, setLat] = useState(17.89);
+  const [lng, setLng] = useState(83.44);
   
   // Sub-states & Mock UIs
   const [isRecording, setIsRecording] = useState(false);
@@ -85,12 +88,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
 
     setIsAnalyzing(true);
     const delayDebounceFn = setTimeout(() => {
-      fetch('/api/prioritize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, description, urgency, latitude: lat, longitude: lng, locality, mandal })
-      })
-        .then(res => res.json())
+      prioritizeRequest({ category, description, urgency, latitude: lat, longitude: lng, locality, mandal })
         .then(data => {
           if (data && !data.error) {
             setAiAnalysisPreview({
@@ -134,30 +132,25 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !description || !contact) {
-      alert("Please fill in Name, Contact, and Request Description.");
+      alert(t('fillRequiredAlert'));
       return;
     }
 
     setIsSubmitting(true);
-    fetch('/api/requests', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        contact,
-        constituency,
-        district,
-        mandal,
-        locality: locality || 'Main Village Road',
-        category,
-        description,
-        urgency,
-        latitude: lat,
-        longitude: lng,
-        language: currentLang
-      })
+    submitRequest({
+      name,
+      contact,
+      constituency,
+      district,
+      mandal,
+      locality: locality || 'Main Village Road',
+      category,
+      description,
+      urgency,
+      latitude: lat,
+      longitude: lng,
+      language: currentLang
     })
-      .then(res => res.json())
       .then(newRequest => {
         if (newRequest && !newRequest.error) {
           onAddRequest(newRequest);
@@ -169,7 +162,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
       })
       .catch(err => {
         console.error('Error submitting request:', err);
-        alert('Failed to connect to the server.');
+        alert('Backend is currently unavailable. Demo data is being displayed.');
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -188,10 +181,10 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
           <span className="text-xs font-bold uppercase tracking-wider font-serif">Cognitive Civic Prioritizer</span>
         </div>
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-[#FAF6E8] font-serif">
-          Submit Development Request
+          {t('submitDevRequest')}
         </h2>
         <p className="text-slate-355 text-xs md:text-sm max-w-2xl mt-1 leading-relaxed font-serif">
-          Fill in the details below. Our real-time NLP algorithms will automatically evaluate your request, rank urgency based on safety impact, and map it for immediate Member of Parliament consideration.
+          {t('formHeaderDesc')}
         </p>
       </div>
 
@@ -204,11 +197,11 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
             {/* Row 1: Name and Contact */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-1.5 font-serif">Your Full Name</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-1.5 font-serif">{t('yourFullName')}</label>
                 <input 
                   type="text" 
                   required
-                  placeholder="e.g. Ramesh Chandra Verma" 
+                  placeholder={t('fullNamePlaceholder')} 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full input-gov px-3.5 py-2.5 text-sm font-serif font-medium text-slate-800"
@@ -216,11 +209,11 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-1.5 font-serif">Phone or Email Address</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-1.5 font-serif">{t('phoneEmail')}</label>
                 <input 
                   type="text" 
                   required
-                  placeholder="e.g. +91 98765 43210 or ramesh@verma.com" 
+                  placeholder={t('phoneEmailPlaceholder')} 
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   className="w-full input-gov px-3.5 py-2.5 text-sm font-serif font-medium text-slate-800"
@@ -232,7 +225,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
             {/* Row 2: Location Hierarchy (Constituency dropdown, district, ward) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gold-50/40 p-4 rounded-xl border border-gold-700/15">
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-serif">Constituency</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-serif">{t('constituency')}</label>
                 <select 
                   value={constituency}
                   onChange={(e) => setConstituency(e.target.value)}
@@ -246,7 +239,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-serif">District</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-serif">{t('district')}</label>
                 <input 
                   type="text" 
                   disabled
@@ -256,7 +249,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-serif">Mandal / Ward</label>
+                <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1 font-serif">{t('mandalWard')}</label>
                 <select 
                   value={mandal}
                   onChange={(e) => setMandal(e.target.value)}
@@ -272,10 +265,10 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
 
             {/* Locality & Village level */}
             <div>
-              <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-1.5 font-serif">Locality, Village or Land Mark</label>
+              <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-1.5 font-serif">{t('localityVillage')}</label>
               <input 
                 type="text" 
-                placeholder="e.g. Ward No.4, opposite Hanuman Temple lane" 
+                placeholder={t('localityPlaceholder')} 
                 value={locality}
                 onChange={(e) => setLocality(e.target.value)}
                 className="w-full input-gov px-3.5 py-2.5 text-sm text-slate-800 font-serif font-medium"
@@ -285,7 +278,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
 
             {/* Category selection - Grid of Cards */}
             <div>
-              <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">Issue / Development Category</label>
+              <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">{t('issueCategory')}</label>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2" id="category-picker-grid">
                 {(['Education', 'Roads', 'Healthcare', 'Water', 'Sanitation', 'Employment', 'Transport', 'Agriculture', 'Digital Access', 'Other'] as Category[]).map(cat => {
                   const isSelected = category === cat;
@@ -297,7 +290,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                       className={`p-2.5 rounded-xl border text-center cursor-pointer select-none transition-all duration-200 flex flex-col items-center justify-center gap-1.5 ${
                         isSelected 
                           ? 'bg-[#FAF6E8] text-[#0F2D52] border-gold-700 ring-2 ring-gold-700/10 font-bold shadow-xs' 
-                          : 'bg-white text-slate-650 border-gold-700/15 hover:bg-gold-50/40'
+                          : 'bg-white text-slate-655 border-gold-700/15 hover:bg-gold-50/40'
                       }`}
                     >
                       <div className={`p-1 rounded-md ${isSelected ? 'bg-gold-100 text-[#0F2D52]' : 'bg-slate-100 text-slate-500'}`}>
@@ -306,7 +299,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                         {cat === 'Healthcare' && <Sparkles className="w-4 h-4 text-gold-700" />}
                         {cat !== 'Roads' && cat !== 'Education' && cat !== 'Healthcare' && <FileText className="w-4 h-4 text-gold-700" />}
                       </div>
-                      <span className="text-[10px] font-bold tracking-tight font-serif">{cat}</span>
+                      <span className="text-[10px] font-bold tracking-tight font-serif">{t(cat)}</span>
                     </div>
                   );
                 })}
@@ -316,7 +309,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
             {/* Description Area & Voice Assist */}
             <div className="relative">
               <div className="flex justify-between items-center mb-1.5">
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider font-serif">Detailed Description of the Request</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider font-serif">{t('detailedDescription')}</label>
                 
                 {/* Voice Assist Trigger Button */}
                 <button
@@ -331,14 +324,14 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                   id="btn-voice-assist"
                 >
                   <Mic className="w-3.5 h-3.5 text-gold-700" />
-                  {isRecording ? 'Listening (AI Recording)...' : 'AI Voice Assist'}
+                  {isRecording ? t('listening') : t('voiceAssist')}
                 </button>
               </div>
 
               <textarea 
                 rows={4}
                 required
-                placeholder="Explain the developmental requirement, how many families are impacted, and any emergency safety/health concerns..."
+                placeholder={t('descPlaceholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full input-gov px-3.5 py-2.5 text-sm text-slate-800 font-serif"
@@ -347,7 +340,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
 
               {description.length > 0 && description.length < 15 && (
                 <p className="text-[10px] text-amber-600 flex items-center gap-1 mt-0.5 font-medium font-serif">
-                  <AlertCircle className="w-3 h-3 text-gold-700" /> Minimum 15 characters required for deep AI prioritization assessment.
+                  <AlertCircle className="w-3 h-3 text-gold-700" /> {t('minCharWarning')}
                 </p>
               )}
             </div>
@@ -356,7 +349,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Urgency */}
               <div className="bg-gold-50/40 p-4 rounded-xl border border-gold-700/15">
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">Urgency Level</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">{t('urgencyLevel')}</label>
                 <div className="flex items-center gap-3">
                   {(['Low', 'Medium', 'High'] as Urgency[]).map(level => (
                     <label 
@@ -379,7 +372,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                         onChange={() => setUrgency(level)} 
                         className="sr-only" 
                       />
-                      {level}
+                      {t(level.toLowerCase())}
                     </label>
                   ))}
                 </div>
@@ -387,7 +380,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
 
               {/* Photo Upload dropzone */}
               <div className="bg-gold-50/40 p-4 rounded-xl border border-gold-700/15 flex flex-col justify-center">
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">Supporting Photos / Documents (Optional)</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2 font-serif">{t('supportingPhotos')}</label>
                 <div className="border border-dashed border-gold-700/30 hover:border-gold-700 bg-white rounded-lg p-2.5 flex flex-col items-center justify-center cursor-pointer relative transition-all">
                   <input 
                     type="file" 
@@ -396,7 +389,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                     className="absolute inset-0 opacity-0 cursor-pointer" 
                   />
                   <UploadCloud className="w-5 h-5 text-gold-700 mb-1" />
-                  <p className="text-[10px] text-slate-600 font-serif font-bold">Click to select files or drag-and-drop</p>
+                  <p className="text-[10px] text-slate-600 font-serif font-bold">{t('uploadClick')}</p>
                 </div>
                 {uploadedFiles.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-1.5">
@@ -414,8 +407,8 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
             {/* Coordinates Verification */}
             <div className="bg-gold-50/40 p-4 rounded-xl border border-gold-700/15">
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider font-serif">Locational Coordinates Verification</label>
-                <span className="text-[10px] font-mono bg-navy-50 text-navy-900 border border-gold-700/20 px-2 py-0.5 rounded-sm">GPS Auto-locked</span>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider font-serif">{t('coordsVerification')}</label>
+                <span className="text-[10px] font-mono bg-navy-50 text-navy-900 border border-gold-700/20 px-2 py-0.5 rounded-sm">{t('gpsLocked')}</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="bg-white p-2.5 rounded-lg border border-gold-700/15 flex items-center gap-2 shadow-xs">
@@ -441,7 +434,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                     }}
                     className="text-[10px] font-bold text-navy-900 hover:text-gold-800 flex items-center gap-1 font-serif cursor-pointer"
                   >
-                    <MapPin className="w-3.5 h-3.5 text-gold-700" /> Recalibrate Location
+                    <MapPin className="w-3.5 h-3.5 text-gold-700" /> {t('recalibrateLoc')}
                   </button>
                 </div>
               </div>
@@ -456,7 +449,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                 id="btn-citizen-submit"
               >
                 <Sparkles className="w-4.5 h-4.5 text-gold-600 fill-gold-600 animate-pulse" />
-                {isSubmitting ? 'Submitting & Prioritizing...' : 'Submit and AI Prioritize Request'}
+                {isSubmitting ? t('submittingBtn') : t('submitRequestBtn')}
               </button>
             </div>
 
@@ -471,10 +464,10 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
             <div className="flex items-center justify-between mb-4 border-b border-gold-700/15 pb-2">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-gold-700 fill-gold-700 animate-pulse" />
-                <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 font-serif">REALTIME AI ASSESSMENT</h4>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-navy-900 font-serif">{t('realtimeAssessment')}</h4>
               </div>
               {isAnalyzing && (
-                <span className="text-[10px] text-gold-800 font-bold animate-pulse">Analyzing...</span>
+                <span className="text-[10px] text-gold-800 font-bold animate-pulse">{t('analyzing')}</span>
               )}
             </div>
 
@@ -498,40 +491,41 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                   </div>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 font-bold uppercase font-serif">Estimated Priority Rank</p>
+                  <p className="text-[9px] text-slate-500 font-bold uppercase font-serif">{t('priorityRank')}</p>
                   <p className="text-sm font-bold text-navy-900 font-serif">
-                    {aiAnalysisPreview.priorityScore > 80 ? 'Critical Priority' : aiAnalysisPreview.priorityScore > 50 ? 'Medium Priority' : 'Standard Priority'}
+                    {aiAnalysisPreview.priorityScore > 80 ? t('criticalPriority') : aiAnalysisPreview.priorityScore > 50 ? t('mediumPriority') : t('standardPriority')}
                   </p>
-                  <p className="text-[10px] text-slate-600 leading-normal font-serif">Score calculated based on safety impact risk & location demographics</p>
+                  <p className="text-[10px] text-slate-605 leading-normal font-serif">{t('scoreCalcDesc')}</p>
                 </div>
               </div>
 
               {/* Sentiment Analyzer */}
               <div className="space-y-1">
-                <p className="text-[9px] font-bold text-slate-500 uppercase font-serif">Detected Citizen Sentiment</p>
+                <p className="text-[9px] font-bold text-slate-500 uppercase font-serif">{t('detectedSentiment')}</p>
                 <div className="flex items-center gap-2">
                   <span className={`inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-sm uppercase tracking-wider ${
                     aiAnalysisPreview.sentiment === 'Critical' 
-                      ? 'bg-rose-50 text-rose-800 border border-rose-200' 
+                      ? 'bg-rose-50 text-rose-800 border border-rose-205' 
                       : aiAnalysisPreview.sentiment === 'Neutral' 
                       ? 'bg-gold-50 text-gold-900 border border-gold-700/30' 
-                      : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                      : 'bg-emerald-50 text-emerald-800 border border-emerald-205'
                   }`}>
-                    {aiAnalysisPreview.sentiment}
+                    {t(aiAnalysisPreview.sentiment) || aiAnalysisPreview.sentiment}
                   </span>
-                  <span className="text-[10px] text-slate-500 font-serif">Emotional severity classification</span>
+                  <span className="text-[10px] text-slate-500 font-serif">{t('emotionalSeverity')}</span>
                 </div>
-              </div>              {/* Cost layout */}
+              </div>              
+              {/* Cost layout */}
               <div className="grid grid-cols-2 gap-3.5 bg-white p-3.5 rounded-xl border border-gold-700/20">
                 <div>
-                  <p className="text-[9px] text-slate-500 uppercase font-serif font-bold">Cost Projection</p>
+                  <p className="text-[9px] text-slate-500 uppercase font-serif font-bold">{t('costProjection')}</p>
                   <p className="text-base font-bold text-navy-900 font-serif">₹{aiAnalysisPreview.costLakhs} L</p>
-                  <p className="text-[8px] text-slate-400">Estim. outlay</p>
+                  <p className="text-[8px] text-slate-400">{t('estimOutlay')}</p>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-500 uppercase font-serif font-bold">Voter Urgency</p>
-                  <p className="text-base font-bold text-emerald-800 font-serif">{aiAnalysisPreview.demandLevel}</p>
-                  <p className="text-[8px] text-slate-400">Predicted priority</p>
+                  <p className="text-[9px] text-slate-500 uppercase font-serif font-bold">{t('voterUrgency')}</p>
+                  <p className="text-base font-bold text-emerald-800 font-serif">{t(aiAnalysisPreview.demandLevel) || aiAnalysisPreview.demandLevel}</p>
+                  <p className="text-[8px] text-slate-400">{t('predictedPriority')}</p>
                 </div>
               </div>
 
@@ -539,7 +533,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
               {baselineData && (
                 <div className="space-y-2 bg-slate-50 p-3.5 rounded-xl border border-gold-700/15 text-xs text-slate-700">
                   <p className="text-[9px] font-bold text-[#0F2D52] uppercase font-serif tracking-wider border-b border-gold-700/10 pb-1">
-                    ✓ Verified Open Government Data
+                    ✓ {t('verifiedOgd')}
                   </p>
                   <div className="space-y-1.5 text-[11px] font-serif leading-relaxed">
                     <p className="flex items-center gap-1">
@@ -571,7 +565,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
 
                     {category === 'Healthcare' && baselineData.nearestFacilityName && (
                       <div className="pl-3 mt-1 space-y-0.5 border-l border-gold-700/20">
-                        <p className="text-[10px] text-slate-500 font-bold">HEALTH FACILITY REGISTRY VERIFICATION:</p>
+                        <p className="text-[10px] text-slate-500 font-bold">HEALTH FACILITY REGIFICATION:</p>
                         <p className="font-bold">🏥 Closest: {baselineData.nearestFacilityName} ({baselineData.nearestFacilityDistanceKm} km)</p>
                         <p>• Capacity: {baselineData.nearestFacilityBeds} Beds, {baselineData.nearestFacilityDoctors} Doctors</p>
                       </div>
@@ -594,7 +588,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
               {scoreBreakdown && (
                 <div className="space-y-2 bg-[#FAF6E8]/45 p-3.5 rounded-xl border border-gold-700/15 text-xs text-slate-700">
                   <p className="text-[9px] font-bold text-navy-900 uppercase font-serif tracking-wider border-b border-gold-700/10 pb-1">
-                    📊 Explainable AI Score Breakdown
+                    📊 {t('explainableAi')}
                   </p>
                   <div className="space-y-1.5 font-mono text-[10px]">
                     <div className="space-y-0.5">
@@ -628,7 +622,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                     </div>
 
                     <div className="space-y-0.5">
-                      <div className="flex justify-between text-slate-600">
+                      <div className="flex justify-between text-slate-650 font-sans">
                         <span>Population Density (15%)</span>
                         <span>{scoreBreakdown.density} / 15</span>
                       </div>
@@ -674,28 +668,28 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
               <div className="text-[10px] text-slate-655 leading-relaxed bg-[#F5EFE6]/40 p-3 rounded-lg border border-gold-700/15">
                 <p className="font-bold text-navy-900 mb-0.5 flex items-center gap-1 font-serif">
                   <AlertCircle className="w-3.5 h-3.5 text-gold-700" />
-                  Evidence-based Scoring
+                  {t('evidenceScoring')}
                 </p>
-                Priority is dynamically calculated using local census files, UDISE+ school indicators, healthcare distance grids, and tap connections percentage.
+                {t('evidenceScoringDesc')}
               </div>
             </div>
           </div>
 
           {/* Quick FAQ info box */}
           <div className="bg-white rounded-2xl border border-gold-700/20 p-5 shadow-xs">
-            <h4 className="text-xs font-bold text-navy-900 mb-3 font-serif uppercase tracking-wider border-b border-slate-100 pb-1.5">Our Process After Submission</h4>
+            <h4 className="text-xs font-bold text-navy-900 mb-3 font-serif uppercase tracking-wider border-b border-slate-100 pb-1.5">{t('ourProcessTitle')}</h4>
             <div className="space-y-3.5 text-xs text-slate-655 font-serif">
               <div className="flex gap-2">
-                <div className="w-5 h-5 rounded-full bg-gold-50 text-gold-900 flex items-center justify-center font-bold text-[10px] shrink-0 border border-gold-700/20">1</div>
-                <p><strong>GPS Validation:</strong> Coords verified to prevent double entries or fraudulent bulk postings.</p>
+                <div className="w-5 h-5 rounded-full bg-gold-50 text-gold-900 flex items-center justify-center font-bold text-[10px] shrink-0 border border-gold-700/20 font-sans">1</div>
+                <p><strong>{t('processStep1')}:</strong> {t('processStep1Desc')}</p>
               </div>
               <div className="flex gap-2">
-                <div className="w-5 h-5 rounded-full bg-gold-50 text-gold-900 flex items-center justify-center font-bold text-[10px] shrink-0 border border-gold-700/20">2</div>
-                <p><strong>Clustering:</strong> Duplicate complaints grouped dynamically into a single priority hub.</p>
+                <div className="w-5 h-5 rounded-full bg-gold-50 text-gold-900 flex items-center justify-center font-bold text-[10px] shrink-0 border border-gold-700/20 font-sans">2</div>
+                <p><strong>{t('processStep2')}:</strong> {t('processStep2Desc')}</p>
               </div>
               <div className="flex gap-2">
-                <div className="w-5 h-5 rounded-full bg-gold-50 text-gold-900 flex items-center justify-center font-bold text-[10px] shrink-0 border border-gold-700/20">3</div>
-                <p><strong>MPLADS Review:</strong> MP audits high priority items on the executive Command board for quick fund allocation.</p>
+                <div className="w-5 h-5 rounded-full bg-gold-50 text-gold-900 flex items-center justify-center font-bold text-[10px] shrink-0 border border-gold-700/20 font-sans">3</div>
+                <p><strong>{t('processStep3')}:</strong> {t('processStep3Desc')}</p>
               </div>
             </div>
           </div>
@@ -712,24 +706,24 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                 <CheckCircle className="w-8 h-8 text-emerald-700" />
               </div>
               
-              <h3 className="text-xl font-bold text-navy-900 font-serif">Request Lodged Successfully!</h3>
-              <p className="text-xs text-slate-500 mt-1 font-serif">Thank you for participating in civic development innovation.</p>
+              <h3 className="text-xl font-bold text-navy-900 font-serif">{t('reqSuccess')}</h3>
+              <p className="text-xs text-slate-500 mt-1 font-serif">{t('reqSuccessSub')}</p>
 
               {/* Highlight ID box */}
               <div className="my-5 bg-[#FAF6E8] border border-gold-700/30 p-4.5 rounded-2xl w-full">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-gold-900 font-serif">YOUR TRACKING ID</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gold-900 font-serif">{t('yourTrackingId')}</p>
                 <p className="text-2xl font-bold text-[#0F2D52] font-serif tracking-widest">{createdID}</p>
-                <p className="text-[10px] text-slate-600 font-serif mt-1">Keep this ID safe to track status and MP actions in the future.</p>
+                <p className="text-[10px] text-slate-600 font-serif mt-1">{t('trackingIdDesc')}</p>
               </div>
 
               <div className="w-full text-left space-y-3 bg-gold-50/20 p-3.5 rounded-xl border border-gold-700/15 mb-5">
                 <div className="flex items-start gap-2 text-[11px] text-slate-600 font-serif">
                   <CornerDownRight className="w-3.5 h-3.5 text-gold-700 shrink-0 mt-0.5" />
-                  <span>Your local MP office has been instantly alerted via our priorization dashboard.</span>
+                  <span>{t('mpAlerted')}</span>
                 </div>
                 <div className="flex items-start gap-2 text-[11px] text-slate-600 font-serif">
                   <CornerDownRight className="w-3.5 h-3.5 text-gold-700 shrink-0 mt-0.5" />
-                  <span>The request priority index scored <span className="font-bold text-navy-900">{aiAnalysisPreview.priorityScore}/100</span>.</span>
+                  <span>{t('priorityIndexScored')} <span className="font-bold text-navy-900">{aiAnalysisPreview.priorityScore}/100</span>.</span>
                 </div>
               </div>
 
@@ -742,7 +736,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                   className="flex-1 btn-gov-primary py-2.5 text-xs tracking-wider cursor-pointer"
                   id="btn-modal-track-req"
                 >
-                  Track Status Now
+                  {t('trackStatusNow')}
                 </button>
                 <button
                   onClick={() => {
@@ -755,7 +749,7 @@ export default function RequestForm({ currentLang, onAddRequest, onNavigateToTra
                   }}
                   className="flex-1 btn-gov-secondary py-2.5 text-xs tracking-wider cursor-pointer"
                 >
-                  Submit Another
+                  {t('submitAnother')}
                 </button>
               </div>
             </div>
