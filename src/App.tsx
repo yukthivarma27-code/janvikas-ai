@@ -110,27 +110,6 @@ export default function App() {
         }}
       />
 
-      {fallbackActive && (
-        <div className="bg-[#FAF6E8] border-b border-gold-700/25 px-4 py-2 text-center text-xs text-[#0F2D52] flex justify-center items-center gap-3 animate-fadeIn" id="fallback-status-bar">
-          <span className="inline-flex items-center gap-1.5 font-bold font-serif">
-            ⚠️ Backend is currently unavailable. Demo data is being displayed.
-          </span>
-          {!FORCE_MOCK_DATA && (
-            <button 
-              onClick={() => {
-                fetchRequests().then(data => {
-                  setRequests(data);
-                  setFallbackActive(isUsingFallback());
-                });
-              }}
-              className="px-2.5 py-0.5 bg-navy-900 hover:bg-navy-950 text-white font-serif text-[10px] uppercase rounded border border-gold-700/25 cursor-pointer shadow-xs transition-all"
-              id="btn-retry-backend"
-            >
-              Try Again
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Main Content Area */}
       <main className="flex-1">
